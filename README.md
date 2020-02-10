@@ -18,3 +18,17 @@ to make an offline program. A game like is the most
 interesting project to me because it is the best offline
 program to make with the skills I currently have in my 
 opinion.
+
+## User Stories
+
+- As a user, I want to be able to move my player in one of
+4 directions by 1 unit.
+
+- As a user, I want to be able to view a list of all the
+objects on in the game along with their coordinates
+
+- As a user, I want to be able to add a bullet in the game
+facing in the direction the player moved last.
+
+- As a user, I want to be able to view a list of all the
+coordinates occupied by walls.
