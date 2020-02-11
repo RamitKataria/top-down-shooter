@@ -1,4 +1,4 @@
-# My Personal Project
+# My Personal Project: Game
 
 ## Introduction
 
@@ -25,10 +25,10 @@ opinion.
 4 directions by 1 unit.
 
 - As a user, I want to be able to view a list of all the
-objects on in the game along with their coordinates
+objects in the game along with their coordinates and types.
 
 - As a user, I want to be able to add a bullet in the game
 facing in the direction the player moved last.
 
 - As a user, I want to be able to view a list of all the
-coordinates occupied by walls.
+coordinates that the players is not allowed to move into.
