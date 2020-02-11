@@ -39,7 +39,7 @@ public class Game {
     // EFFECTS: updates all the moving objects
     public void update() {
         for (MovingObject movingObject : movingObjects) {
-            movingObject.update();
+            movingObject.move();
         }
     }
 

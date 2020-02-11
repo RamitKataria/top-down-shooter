@@ -22,10 +22,21 @@ public abstract class MovingObject extends GameObject {
         return dx;
     }
 
+    public void setDx(int dx) {
+        this.dx = dx;
+    }
+
+    public void setDy(int dy) {
+        this.dy = dy;
+    }
+
     // MODIFIES: this
     // EFFECTS: adds velocity to position
-    public void update() {
+    public void move() {
         posX += dx;
         posY += dy;
     }
+
+    // EFFECTS: returns the name of the Object
+    public abstract String getName();
 }

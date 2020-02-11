@@ -80,4 +80,20 @@ class GameTest {
         assertEquals(Game.WIDTH / 2, movingObjects.get(movingObjects.size() - 1).getPosX());
         assertEquals(Game.HEIGHT / 2, movingObjects.get(movingObjects.size() - 1).getPosY());
     }
+
+    @Test
+    public void testSetVelocity() {
+        player.setDx(5);
+        player.setDy(-4);
+        assertEquals(5, player.getDx());
+        assertEquals(-4, player.getDy());
+    }
+
+    @Test
+    public void testNames() {
+        assertEquals("Player", player.getName());
+        assertEquals("Enemy", game.getMovingObjects().get(1).getName());
+        game.handleKey(KeyEvent.VK_SPACE);
+        assertEquals("Bullet", movingObjects.get(movingObjects.size() - 1).getName());
+    }
 }
