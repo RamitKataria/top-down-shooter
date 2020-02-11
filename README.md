@@ -31,4 +31,5 @@ objects in the game along with their coordinates and types.
 facing in the direction the player moved last.
 
 - As a user, I want to be able to view a list of all the
-coordinates that the players is not allowed to move into.
+coordinates that the player is not allowed to move into
+because of walls.
