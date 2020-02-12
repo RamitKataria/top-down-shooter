@@ -49,6 +49,7 @@ public class ConsoleUI {
         } else if ("s".equals(command)) {
             fireBullet();
         } else if ("w".equals(command)) {
+            System.out.println("Game refreshed");
             game.update();
         } else {
             displayNotRecognizedMessage();
@@ -66,14 +67,6 @@ public class ConsoleUI {
         game.handleKey(KeyEvent.VK_SPACE);
         System.out.println("bullet fired!");
         game.update();
-    }
-
-    // EFFECTS: print the positions of all the walls
-    private void viewWalls() {
-        System.out.println("Walls:");
-        for (GameObject wall : game.getWalls()) {
-            System.out.println("\t(" + wall.getPosX() + ", " + wall.getPosY() + ")");
-        }
     }
 
     // EFFECTS: print the list of all moving objects in the game
