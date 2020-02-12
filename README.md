@@ -21,8 +21,8 @@ opinion.
 
 ## User Stories
 
-- As a user, I want to be able to move my player in one of
-4 directions by 1 unit.
+- As a user, I want to be able to change my player's
+ direction.
 
 - As a user, I want to be able to view a list of all the
 objects in the game along with their coordinates and types.
@@ -30,6 +30,6 @@ objects in the game along with their coordinates and types.
 - As a user, I want to be able to add a bullet in the game
 facing in the direction the player moved last.
 
-- As a user, I want to be able to view a list of all the
-coordinates that the player is not allowed to move into
-because of walls.
+- As a user, I want to be able to refresh the game without
+having to do an action such as changing direction and firing
+bullet.

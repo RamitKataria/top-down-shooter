@@ -8,8 +8,8 @@ public abstract class MovingObject extends GameObject {
     protected int dy;
 
     // EFFECTS: constructs a moving object
-    public MovingObject(int posX, int posY, int dx, int dy) {
-        super(posX, posY);
+    public MovingObject(int posX, int posY, int dx, int dy, String name) {
+        super(posX, posY, name);
         this.dx = dx;
         this.dy = dy;
     }
@@ -36,7 +36,4 @@ public abstract class MovingObject extends GameObject {
         posX += dx;
         posY += dy;
     }
-
-    // EFFECTS: returns the name of the Object
-    public abstract String getName();
 }

@@ -5,8 +5,8 @@ package model;
  */
 public class Wall extends GameObject {
 
-    // EFFECTS: constructs a wall with
+    // EFFECTS: constructs a wall
     public Wall(int posX, int posY) {
-        super(posX, posY);
+        super(posX, posY, "Wall  ");
     }
 }
