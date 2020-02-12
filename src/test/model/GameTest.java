@@ -92,8 +92,9 @@ class GameTest {
     @Test
     public void testNames() {
         assertEquals("Player", player.getName());
-        assertEquals("Enemy", game.getMovingObjects().get(1).getName());
+        assertEquals("Enemy ", game.getMovingObjects().get(1).getName());
         game.handleKey(KeyEvent.VK_SPACE);
         assertEquals("Bullet", movingObjects.get(movingObjects.size() - 1).getName());
+        assertEquals("Wall  ", game.getWalls().get(0).getName());
     }
 }
