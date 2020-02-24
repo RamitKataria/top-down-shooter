@@ -33,3 +33,9 @@ facing in the direction the player moved last.
 - As a user, I want to be able to refresh the game without
 having to do an action such as changing direction and firing
 bullet.
+
+- As a user, I want to be able to save the state of the game
+to file.
+
+- As a user, I want to be able to optionally load the game
+from file when the program starts.
