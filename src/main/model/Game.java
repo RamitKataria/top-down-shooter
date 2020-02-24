@@ -1,20 +1,25 @@
 package model;
 
+import com.google.gson.Gson;
+import persistence.Saveable;
+
 import java.awt.event.KeyEvent;
+import java.io.FileWriter;
 import java.util.ArrayList;
+import java.util.List;
 
 /*
  * Represents the game
  */
-public class Game {
+public class Game implements Saveable {
     public static final int WIDTH = 500;
     public static final int HEIGHT = 500;
     public static final int INITIAL_ENEMIES = 2;
     public static int BULLET_SPEED = 10;
     public static int PLAYER_SPEED = 1;
 
-    private ArrayList<MovingObject> movingObjects;
-    private ArrayList<GameObject> walls;
+    private List<MovingObject> movingObjects;
+    private List<GameObject> walls;
     private Player player;
 
     // EFFECTS: constructs a new game and resets everything to default values
@@ -22,6 +27,13 @@ public class Game {
         movingObjects = new ArrayList<>();
         walls = new ArrayList<>();
         setUp();
+    }
+
+    // EFFECTS: constructs a game with given objects
+    // NOTE: this constructor is intended to be used to load game from saved data
+    public Game(List<MovingObject> movingObjects, List<GameObject> walls) {
+        this.movingObjects = movingObjects;
+        this.walls = walls;
     }
 
     // MODIFIES: this
@@ -54,11 +66,11 @@ public class Game {
         return player;
     }
 
-    public ArrayList<MovingObject> getMovingObjects() {
+    public List<MovingObject> getMovingObjects() {
         return movingObjects;
     }
 
-    public ArrayList<GameObject> getWalls() {
+    public List<GameObject> getWalls() {
         return walls;
     }
 
@@ -69,6 +81,14 @@ public class Game {
         if (keyCode == KeyEvent.VK_SPACE) {
             fireBullet();
         }
+    }
 
+    @Override
+    public void save(FileWriter fileWriter) {
+        List<Object> toSave = new ArrayList<>();
+        toSave.add(movingObjects);
+        toSave.add(walls);
+        Gson gson = new Gson();
+        gson.toJson(toSave, fileWriter);
     }
 }

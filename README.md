@@ -34,8 +34,13 @@ facing in the direction the player moved last.
 having to do an action such as changing direction and firing
 bullet.
 
+- As a user, I want to be able to restart a game while the
+game is running.
+
 - As a user, I want to be able to save the state of the game
 to file.
 
-- As a user, I want to be able to optionally load the game
+- As a user, I want the game to continue from the saved game
 from file when the program starts.
+
+- As a user, I want to be able to delete the saved game.
