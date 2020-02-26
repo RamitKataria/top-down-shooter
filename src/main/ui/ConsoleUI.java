@@ -13,7 +13,7 @@ import java.io.IOException;
 import java.util.Scanner;
 
 public class ConsoleUI {
-    private static final String GAME_SAVE_FILE_LOC = "./data/gamesave.json";
+    private static final File GAME_SAVE_FILE = new File("./data/gamesave.json");
     private Game game;
     private Scanner input;
 
@@ -47,7 +47,7 @@ public class ConsoleUI {
 
     private void loadGame() {
         try {
-            game = Reader.readGame(new File(GAME_SAVE_FILE_LOC));
+            game = Reader.readGame(GAME_SAVE_FILE);
         } catch (FileNotFoundException e) {
             game = new Game();
         }
@@ -79,6 +79,14 @@ public class ConsoleUI {
     }
 
     private void deleteSavedGame() {
+        try {
+            Writer writer = new Writer(GAME_SAVE_FILE);
+            writer.write(new Game());
+            System.out.println("Saved game deleted");
+        } catch (IOException e) {
+            System.out.println("Deletion failed");
+        }
+
     }
 
     // EFFECTS: print the message associated with unrecognized command
@@ -89,12 +97,12 @@ public class ConsoleUI {
     // EFFECTS: saves the current state of game
     private void saveGame() {
         try {
-            Writer writer = new Writer(new File(GAME_SAVE_FILE_LOC));
+            Writer writer = new Writer(GAME_SAVE_FILE);
             writer.write(game);
             writer.close();
-            System.out.println("Game saved successfully to file " + GAME_SAVE_FILE_LOC);
+            System.out.println("Game saved successfully to file " + GAME_SAVE_FILE.getPath());
         } catch (IOException e) {
-            System.out.println("Unable to save game to file " + GAME_SAVE_FILE_LOC);
+            System.out.println("Unable to save game to file " + GAME_SAVE_FILE.getPath());
         }
     }
 
@@ -109,17 +117,21 @@ public class ConsoleUI {
     // EFFECTS: print the list of all moving objects in the game
     private void viewObjects() {
         System.out.println("Objects:");
-        for (GameObject go : game.getMovingObjects()) {
-            printListing(go);
+        printListing(game.getPlayer(), "Player");
+        for (GameObject go : game.getEnemies()) {
+            printListing(go, "Enemy");
+        }
+        for (GameObject go : game.getBullets()) {
+            printListing(go, "Bullet");
         }
         for (GameObject go : game.getWalls()) {
-            printListing(go);
+            printListing(go, "Wall");
         }
     }
 
     // EFFECTS: print a listing of a game object with its name and location
-    private void printListing(GameObject go) {
-        System.out.println("\t" + go.getName() + ": (" + go.getPosX() + ", " + go.getPosY() + ")");
+    private void printListing(GameObject go, String name) {
+        System.out.println("\t" + name + ": (" + go.getPosX() + ", " + go.getPosY() + ")");
     }
 
     // MODIFIES: this
@@ -164,13 +176,14 @@ public class ConsoleUI {
     // EFFECTS: print the main menu
     private void displayMenu() {
         System.out.println("\nSelect from:");
-        System.out.print("\tm -> move   ");
-        System.out.print("\to -> view objects   ");
-        System.out.print("\tf -> fire bullet    ");
-        System.out.print("\tw -> wait   ");
-        System.out.print("\ts -> save   ");
-        System.out.print("\tr -> restart");
-        System.out.print("\tq -> quit\n");
+        System.out.print("\t\tm -> change direction");
+        System.out.print("\t\to -> view objects");
+        System.out.print("\t\tf -> fire bullet");
+        System.out.print("\t\tw -> wait");
+        System.out.print("\t\ts -> save");
+        System.out.print("\t\tr -> restart");
+        System.out.print("\t\td -> delete saved game");
+        System.out.print("\t\tq -> quit\n");
     }
 
     // EFFECTS: print the initial instructions
@@ -179,7 +192,7 @@ public class ConsoleUI {
         System.out.println("After every refresh of the game, you can:\n - change the direction of the player\n"
                 + " - view a list of all objects in the game (enemies, walls, player, bullets) along with their "
                 + "coordinates\n - fire a bullet in the direction the player is facing\n - do nothing and wait "
-                + "for the next refresh\n - save the current state of the game\n - restart the game");
-        System.out.println("NOTE: you can only keep 1 game saved at a time.");
+                + "for the next refresh\n - save the current state of the game\n - restart the game\n - delete "
+                + "saved game progress");
     }
 }

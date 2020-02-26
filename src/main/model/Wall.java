@@ -7,6 +7,6 @@ public class Wall extends GameObject {
 
     // EFFECTS: constructs a wall
     public Wall(int posX, int posY) {
-        super(posX, posY, "Wall  ");
+        super(posX, posY);
     }
 }

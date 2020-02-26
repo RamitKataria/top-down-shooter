@@ -1,39 +1,42 @@
-[
-  [
+{
+  "enemies": [
     {
-      "dx": 1,
-      "dy": -1,
-      "posX": 252,
-      "posY": 248,
-      "name": "Player"
+      "dx": -1,
+      "dy": 1,
+      "posX": -8,
+      "posY": 8
     },
     {
       "dx": -1,
       "dy": 1,
-      "posX": -1,
-      "posY": 1,
-      "name": "Enemy "
-    },
-    {
-      "dx": -1,
-      "dy": 1,
-      "posX": 0,
-      "posY": 2,
-      "name": "Enemy "
-    },
-    {
-      "dx": 10,
-      "dy": -10,
-      "posX": 270,
-      "posY": 230,
-      "name": "Bullet"
+      "posX": -7,
+      "posY": 9
     }
   ],
-  [
+  "bullets": [
+    {
+      "dx": 10,
+      "dy": 0,
+      "posX": 340,
+      "posY": 250
+    },
+    {
+      "dx": 0,
+      "dy": 10,
+      "posX": 253,
+      "posY": 283
+    }
+  ],
+  "walls": [
     {
       "posX": 248,
-      "posY": 252,
-      "name": "Wall  "
+      "posY": 252
     }
-  ]
-]
+  ],
+  "player": {
+    "dx": 0,
+    "dy": 1,
+    "posX": 253,
+    "posY": 256
+  }
+}
