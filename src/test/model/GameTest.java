@@ -2,13 +2,14 @@ package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
+import persistence.Reader;
 
 import java.awt.event.KeyEvent;
+import java.io.FileNotFoundException;
 import java.util.List;
 
 import static model.Game.*;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
 
 class GameTest {
     private Game game;
@@ -19,32 +20,35 @@ class GameTest {
 
     @BeforeEach
     public void runBeforeEach() {
-        game = new Game();
+        try {
+            game = Reader.readGame(NEW_GAME_FILE);
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
         player = game.getPlayer();
         enemies = game.getEnemies();
+        walls = game.getWalls();
+        bullets = game.getBullets();
     }
 
     @Test
-    public void testConstructor() {
+    public void testConstructors() {
+        game = new Game();
         assertEquals(Game.WIDTH / 2, player.getPosX());
         assertEquals(Game.HEIGHT / 2, player.getPosY());
+        assertEquals(0, game.getEnemies().size());
+        assertEquals(0, game.getBullets().size());
+        assertEquals(0, game.getWalls().size());
 
-        assertEquals(INITIAL_ENEMIES + 1, enemies.size());
-        assertEquals(Game.WIDTH / 2, player.getPosX());
-        assertEquals(Game.HEIGHT / 2, player.getPosY());
-        assertEquals(player, enemies.remove(0));
+        Enemy testEnemy = new Enemy(10, 20, -2, 5);
+        assertEquals(10, testEnemy.getPosX());
+        assertEquals(20, testEnemy.getPosY());
+        assertEquals(-2, testEnemy.getDx());
+        assertEquals(5, testEnemy.getDy());
 
-        for (GameObject go : enemies) {
-            assertFalse(enemies.contains(player));
-        }
-        for (int i = 0; i < INITIAL_ENEMIES; i++) {
-            assertEquals(i + 1, enemies.get(i).posX);
-            assertEquals(i - 1, enemies.get(i).posY);
-        }
-
-        assertEquals(1, game.getWalls().size());
-        assertEquals(Game.WIDTH / 2 - 2, game.getWalls().get(0).getPosX());
-        assertEquals(Game.WIDTH / 2 + 2, game.getWalls().get(0).getPosY());
+        Wall testWall = new Wall(25, 53);
+        assertEquals(25, testWall.getPosX());
+        assertEquals(53, testWall.getPosY());
     }
 
     @Test
@@ -52,18 +56,16 @@ class GameTest {
         game.handleKey(KeyEvent.VK_SPACE);
         game.update();
         assertEquals(Game.WIDTH / 2 + PLAYER_SPEED, player.getPosX());
-        assertEquals(Game.HEIGHT / 2 - PLAYER_SPEED, player.getPosY());
-        assertEquals(Game.WIDTH / 2 + player.getDx() * BULLET_SPEED,
-                enemies.get(enemies.size() - 1).getPosX());
-        assertEquals(Game.HEIGHT / 2 + player.getDy() * BULLET_SPEED,
-                enemies.get(enemies.size() - 1).getPosY());
+        assertEquals(Game.HEIGHT / 2, player.getPosY());
 
-        for (int i = 0; i < INITIAL_ENEMIES; i++) {
-            assertEquals(i, enemies.get(i + 1).posX);
-            assertEquals(i, enemies.get(i + 1).posX);
-        }
+        assertEquals(Game.WIDTH / 2 + player.getDx() * BULLET_SPEED, bullets.get(0).getPosX());
+        assertEquals(Game.HEIGHT / 2 + player.getDy() * BULLET_SPEED, bullets.get(0).getPosY());
 
-        assertEquals(1, game.getWalls().size());
+        assertEquals(201, enemies.get(0).getPosX());
+        assertEquals(-181, enemies.get(0).getPosY());
+        assertEquals(269, enemies.get(1).getPosX());
+        assertEquals(101, enemies.get(1).getPosY());
+
         assertEquals(Game.WIDTH / 2 - 2, game.getWalls().get(0).getPosX());
         assertEquals(Game.WIDTH / 2 + 2, game.getWalls().get(0).getPosY());
     }
@@ -72,19 +74,19 @@ class GameTest {
     public void testKeyHandlerInvalid() {
         game.handleKey(KeyEvent.BUTTON1_DOWN_MASK);
         game.handleKey(KeyEvent.VK_S);
-        testConstructor();
+        assertEquals(0, bullets.size());
     }
 
     @Test
     public void testKeyHandlerFire() {
         game.handleKey(KeyEvent.VK_SPACE);
-        assertEquals(INITIAL_ENEMIES + 2, enemies.size());
-        assertEquals(Game.WIDTH / 2, enemies.get(enemies.size() - 1).getPosX());
-        assertEquals(Game.HEIGHT / 2, enemies.get(enemies.size() - 1).getPosY());
+        assertEquals(1, bullets.size());
+        assertEquals(Game.WIDTH / 2, bullets.get(0).getPosX());
+        assertEquals(Game.HEIGHT / 2, bullets.get(0).getPosY());
     }
 
     @Test
-    public void testSetVelocity() {
+    public void testPLayerSetVelocity() {
         player.setDx(5);
         player.setDy(-4);
         assertEquals(5, player.getDx());

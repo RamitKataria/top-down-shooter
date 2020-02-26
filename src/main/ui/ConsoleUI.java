@@ -7,13 +7,14 @@ import persistence.Reader;
 import persistence.Writer;
 
 import java.awt.event.KeyEvent;
-import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
 
+import static model.Game.GAME_SAVE_FILE;
+import static model.Game.NEW_GAME_FILE;
+
 public class ConsoleUI {
-    private static final File GAME_SAVE_FILE = new File("./data/gamesave.json");
     private Game game;
     private Scanner input;
 
@@ -29,7 +30,7 @@ public class ConsoleUI {
         boolean keepGoing = true;
         String command;
         input = new Scanner(System.in);
-        loadGame();
+        setUpGame();
 
         displayInitInstructions();
 
@@ -45,11 +46,28 @@ public class ConsoleUI {
         }
     }
 
-    private void loadGame() {
+    // MODIFIES: this
+    // EFFECTS: Load previous saved game if it exists
+    //          Otherwise, make a new game
+    private void setUpGame() {
         try {
             game = Reader.readGame(GAME_SAVE_FILE);
+            if (game == null) {
+                throw new FileNotFoundException();
+            }
         } catch (FileNotFoundException e) {
-            game = new Game();
+            game = getDefaultGame();
+        }
+    }
+
+    // EFFECTS: return the default game
+    private Game getDefaultGame() {
+        try {
+            return Reader.readGame(NEW_GAME_FILE);
+        } catch (FileNotFoundException e) {
+            System.out.println("New game file not found");
+            e.printStackTrace();
+            return new Game();
         }
     }
 
@@ -69,7 +87,7 @@ public class ConsoleUI {
         } else if ("s".equals(command)) {
             saveGame();
         } else if ("r".equals(command)) {
-            game = new Game();
+            game = getDefaultGame();
             System.out.println("game restarted");
         } else if ("d".equals(command)) {
             deleteSavedGame();
@@ -78,15 +96,14 @@ public class ConsoleUI {
         }
     }
 
+    // EFFECTS: delete the file containing the saved game
     private void deleteSavedGame() {
-        try {
-            Writer writer = new Writer(GAME_SAVE_FILE);
-            writer.write(new Game());
+        boolean success = GAME_SAVE_FILE.delete();
+        if (success) {
             System.out.println("Saved game deleted");
-        } catch (IOException e) {
+        } else {
             System.out.println("Deletion failed");
         }
-
     }
 
     // EFFECTS: print the message associated with unrecognized command
@@ -94,12 +111,10 @@ public class ConsoleUI {
         System.out.println("command not recognized");
     }
 
-    // EFFECTS: saves the current state of game
+    // EFFECTS: save the current state of game
     private void saveGame() {
         try {
-            Writer writer = new Writer(GAME_SAVE_FILE);
-            writer.write(game);
-            writer.close();
+            new Writer(GAME_SAVE_FILE).write(game);
             System.out.println("Game saved successfully to file " + GAME_SAVE_FILE.getPath());
         } catch (IOException e) {
             System.out.println("Unable to save game to file " + GAME_SAVE_FILE.getPath());

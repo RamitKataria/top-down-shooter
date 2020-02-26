@@ -1,5 +1,7 @@
 package persistence;
 
+import model.Game;
+
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
@@ -13,15 +15,9 @@ public class Writer {
     }
 
     // MODIFIES: this
-    // EFFECTS: writes saveable to file
-    public void write(Saveable saveable) {
-        saveable.save(fileWriter);
-    }
-
-    // MODIFIES: this
-    // EFFECTS: close print writer
-    // NOTE: you MUST call this method when you are done writing data!
-    public void close() throws IOException {
+    // EFFECTS: writes game to file
+    public void write(Game game) throws IOException {
+        game.save(fileWriter);
         fileWriter.close();
     }
 }

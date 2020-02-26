@@ -9,6 +9,7 @@ import java.io.FileReader;
 
 public class Reader {
 
+    // EFFECTS: read saved game from file and return it
     public static Game readGame(File file) throws FileNotFoundException {
         return new Gson().fromJson(new FileReader(file), Game.class);
     }

@@ -9,5 +9,4 @@ public class Player extends MovingObject {
     public Player(int posX, int posY, int dx, int dy) {
         super(posX, posY, dx, dy);
     }
-
 }

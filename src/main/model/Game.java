@@ -1,9 +1,9 @@
 package model;
 
 import com.google.gson.Gson;
-import persistence.Saveable;
 
 import java.awt.event.KeyEvent;
+import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -11,10 +11,11 @@ import java.util.List;
 /*
  * Represents the game
  */
-public class Game implements Saveable {
+public class Game {
+    public static final File GAME_SAVE_FILE = new File("./data/gamesave.json");
+    public static final File NEW_GAME_FILE = new File("./data/newgame.json");
     public static final int WIDTH = 500;
     public static final int HEIGHT = 500;
-    public static final int INITIAL_ENEMIES = 2;
     public static int BULLET_SPEED = 10;
     public static int PLAYER_SPEED = 1;
 
@@ -23,41 +24,24 @@ public class Game implements Saveable {
     private List<Wall> walls;
     private Player player;
 
-    // EFFECTS: constructs a new game and resets everything to default values
+    // EFFECTS: constructs a new game with only the player
     public Game() {
         enemies = new ArrayList<>();
         bullets = new ArrayList<>();
         walls = new ArrayList<>();
-        setUp();
-    }
-
-    // EFFECTS: constructs a game with given objects
-    // NOTE: this constructor is intended to be used to load game from saved data
-    public Game(List<Enemy> enemies, List<Bullet> bullets, List<Wall> walls) {
-        this.enemies = enemies;
-        this.bullets = bullets;
-        this.walls = walls;
-    }
-
-    // MODIFIES: this
-    // EFFECTS: adds player, initial enemies and walls to the game
-    private void setUp() {
-        player = new Player(WIDTH / 2, HEIGHT / 2, PLAYER_SPEED, 0);
-        for (int i = 0; i < INITIAL_ENEMIES; i++) {
-            enemies.add(new Enemy(i + 1, i - 1, -1, +1));
-        }
-        walls.add(new Wall(WIDTH / 2 - 2, HEIGHT / 2 + 2));
+        player = new Player(WIDTH / 2, HEIGHT / 2, 0, 0);
     }
 
     // MODIFIES: this
     // EFFECTS: updates all the moving objects
     public void update() {
-        for (Enemy enemy : enemies) {
-            enemy.move();
-        }
-
-        for (Bullet bullet : bullets) {
-            bullet.move();
+        List<List> listsToUpdate = new ArrayList<>();
+        listsToUpdate.add(enemies);
+        listsToUpdate.add(bullets);
+        for (List<MovingObject> lomo : listsToUpdate) {
+            for (MovingObject mo : lomo) {
+                mo.move();
+            }
         }
 
         player.move();
@@ -95,7 +79,7 @@ public class Game implements Saveable {
         }
     }
 
-    @Override
+    // EFFECTS: Send the current game data to fileWriter
     public void save(FileWriter fileWriter) {
         new Gson().toJson(this, fileWriter);
     }
