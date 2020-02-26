@@ -90,4 +90,9 @@ public class ReaderTest {
             // nothing
         }
     }
+
+    @Test
+    public void testToCoverReaderClassName() {
+        new Reader();
+    }
 }
