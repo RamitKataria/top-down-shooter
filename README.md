@@ -9,7 +9,7 @@ some of the game objects and different types of enemies.
 - **Who will use it?**  
 Anyone who wants to play an offline game would play it.
 
-- **Why is this project of interest to you?**
+- **Why is this project of interest to you?**  
 I wanted to make something that would be used by people in 
 real life and not just something that I make for this 
 course. Also, I wanted it to not have any errors with the 
@@ -24,18 +24,19 @@ opinion.
 - As a user, I want to be able to change my player's
  direction.
 
-- As a user, I want to be able to view a list of all the
-objects in the game along with their coordinates and types.
+- As a user, I want to be able to view all the objects 
+in the game at their position and be able to tell the
+type of object by looking at it.
 
-- As a user, I want to be able to add a bullet in the game
-facing in the direction the player moved last.
+- As a user, I want the player to be able to shoot a 
+bullet (add X to Y) facing in the direction the player
+is facing.
 
-- As a user, I want to be able to refresh the game without
-having to do an action such as changing direction and firing
-bullet.
+- As a user, I want the game to refresh by itself many
+times a second.
 
-- As a user, I want to be able to restart a game while the
-game is running.
+- As a user, I want to be able to restart and pause the
+ game while the game is running.
 
 - As a user, I want to be able to save the state of the game
 to file.
