@@ -13,7 +13,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
 public class WriterTest {
-    private static final File TEST_FILE = new File("./data/testWriteFile.json");
+    private static final File TEST_FILE = new File("./data/testing/testWriteFile.json");
     private Writer writer;
     Game game;
     private List<Enemy> enemies;
@@ -66,7 +66,7 @@ public class WriterTest {
     @Test
     public void testWriteSampleFile() {
         try {
-            writer.write(Reader.readGame(new File("./data/sampleGame.json")));
+            writer.write(Reader.readGame(new File("./data/testing/sampleGame.json")));
             game = Reader.readGame(TEST_FILE);
 
             enemies = game.getEnemies();

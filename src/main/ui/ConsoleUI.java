@@ -6,7 +6,6 @@ import model.Player;
 import persistence.Reader;
 import persistence.Writer;
 
-import java.awt.event.KeyEvent;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.util.Scanner;
@@ -30,7 +29,7 @@ public class ConsoleUI {
         boolean keepGoing = true;
         String command;
         input = new Scanner(System.in);
-        setUpGame();
+        setUp();
 
         displayInitInstructions();
 
@@ -43,31 +42,6 @@ public class ConsoleUI {
             } else {
                 processCommand(command);
             }
-        }
-    }
-
-    // MODIFIES: this
-    // EFFECTS: Load previous saved game if it exists
-    //          Otherwise, make a new game
-    private void setUpGame() {
-        try {
-            game = Reader.readGame(GAME_SAVE_FILE);
-            if (game == null) {
-                throw new FileNotFoundException();
-            }
-        } catch (FileNotFoundException e) {
-            game = getDefaultGame();
-        }
-    }
-
-    // EFFECTS: return the default game
-    private Game getDefaultGame() {
-        try {
-            return Reader.readGame(NEW_GAME_FILE);
-        } catch (FileNotFoundException e) {
-            System.out.println("New game file not found");
-            e.printStackTrace();
-            return new Game();
         }
     }
 
@@ -87,12 +61,38 @@ public class ConsoleUI {
         } else if ("s".equals(command)) {
             saveGame();
         } else if ("r".equals(command)) {
-            game = getDefaultGame();
+            loadDefaultGame();
             System.out.println("game restarted");
         } else if ("d".equals(command)) {
             deleteSavedGame();
         } else {
             displayNotRecognizedMessage();
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: Load previous saved game if it exists
+    //          Otherwise, make a new game
+    private void setUp() {
+        try {
+            game = Reader.readGame(GAME_SAVE_FILE);
+        } catch (FileNotFoundException e) {
+            loadDefaultGame();
+        }
+        if (game == null) {
+            loadDefaultGame();
+        }
+    }
+
+    // MODIFIES: this
+    // EFFECTS: load the game from the new game file
+    //          if there is an IO problem, tell the user
+    private void loadDefaultGame() {
+        try {
+            game = Reader.readGame(NEW_GAME_FILE);
+        } catch (FileNotFoundException e) {
+            System.out.println("New game file not found");
+            e.printStackTrace();
         }
     }
 
@@ -124,7 +124,7 @@ public class ConsoleUI {
     // MODIFIES: this
     // EFFECTS: add a bullet object to the game and update the game
     private void fireBullet() {
-        game.handleKey(KeyEvent.VK_SPACE);
+        game.fireBullet();
         System.out.println("bullet fired!");
         game.update();
     }

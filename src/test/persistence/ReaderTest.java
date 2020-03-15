@@ -56,7 +56,7 @@ public class ReaderTest {
     @Test
     public void testParseSampleFile() {
         try {
-            game = Reader.readGame(new File("./data/sampleGame.json"));
+            game = Reader.readGame(new File("./data/testing/sampleGame.json"));
             enemies = game.getEnemies();
             bullets = game.getBullets();
             walls = game.getWalls();

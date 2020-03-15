@@ -4,7 +4,6 @@ import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import persistence.Reader;
 
-import java.awt.event.KeyEvent;
 import java.io.FileNotFoundException;
 import java.util.List;
 
@@ -53,7 +52,7 @@ class GameTest {
 
     @Test
     public void testUpdate() {
-        game.handleKey(KeyEvent.VK_SPACE);
+        game.fireBullet();
         game.update();
         assertEquals(Game.WIDTH / 2 + PLAYER_SPEED, player.getPosX());
         assertEquals(Game.HEIGHT / 2, player.getPosY());
@@ -71,15 +70,8 @@ class GameTest {
     }
 
     @Test
-    public void testKeyHandlerInvalid() {
-        game.handleKey(KeyEvent.BUTTON1_DOWN_MASK);
-        game.handleKey(KeyEvent.VK_S);
-        assertEquals(0, bullets.size());
-    }
-
-    @Test
-    public void testKeyHandlerFire() {
-        game.handleKey(KeyEvent.VK_SPACE);
+    public void testFireBullet() {
+        game.fireBullet();
         assertEquals(1, bullets.size());
         assertEquals(Game.WIDTH / 2, bullets.get(0).getPosX());
         assertEquals(Game.HEIGHT / 2, bullets.get(0).getPosY());

@@ -1,0 +1,29 @@
+{
+  "enemies": [
+    {
+      "dx": 1,
+      "dy": -1,
+      "posX": 200,
+      "posY": -180
+    },
+    {
+      "dx": -1,
+      "dy": 1,
+      "posX": 270,
+      "posY": 100
+    }
+  ],
+  "bullets": [],
+  "walls": [
+    {
+      "posX": 248,
+      "posY": 252
+    }
+  ],
+  "player": {
+    "dx": 1,
+    "dy": 0,
+    "posX": 250,
+    "posY": 250
+  }
+}

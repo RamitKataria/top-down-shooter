@@ -2,7 +2,6 @@ package model;
 
 import com.google.gson.Gson;
 
-import java.awt.event.KeyEvent;
 import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
@@ -12,8 +11,8 @@ import java.util.List;
  * Represents the game
  */
 public class Game {
-    public static final File GAME_SAVE_FILE = new File("./data/gamesave.json");
-    public static final File NEW_GAME_FILE = new File("./data/newgame.json");
+    public static final File GAME_SAVE_FILE = new File("./data/game/gamesave.json");
+    public static final File NEW_GAME_FILE = new File("./data/game/newgame.json");
     public static final int WIDTH = 500;
     public static final int HEIGHT = 500;
     public static int BULLET_SPEED = 10;
@@ -49,7 +48,7 @@ public class Game {
 
     // MODIFIES: this
     // EFFECTS: adds a bullet to the game with appropriate position and speed
-    private void fireBullet() {
+    public void fireBullet() {
         bullets.add(new Bullet(player.getPosX(), player.getPosY(), player.getDx() * BULLET_SPEED,
                 player.getDy() * BULLET_SPEED));
     }
@@ -68,15 +67,6 @@ public class Game {
 
     public List<Bullet> getBullets() {
         return bullets;
-    }
-
-    // MODIFIES: this
-    // EFFECTS: fires bullet if the space key is pressed
-    // source: space invaders base
-    public void handleKey(int keyCode) {
-        if (keyCode == KeyEvent.VK_SPACE) {
-            fireBullet();
-        }
     }
 
     // EFFECTS: Send the current game data to fileWriter
