@@ -25,5 +25,6 @@
     "dy": 0,
     "posX": 250,
     "posY": 250
-  }
+  },
+  "playerSpeed": 1
 }

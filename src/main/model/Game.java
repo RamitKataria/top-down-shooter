@@ -6,6 +6,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /*
  * Represents the game
@@ -16,12 +17,12 @@ public class Game {
     public static final int WIDTH = 500;
     public static final int HEIGHT = 500;
     public static int BULLET_SPEED = 10;
-    public static int PLAYER_SPEED = 1;
 
     private List<Enemy> enemies;
     private List<Bullet> bullets;
     private List<Wall> walls;
     private Player player;
+    private int playerSpeed = 1;
 
     // EFFECTS: constructs a new game with only the player
     public Game() {
@@ -31,18 +32,18 @@ public class Game {
         player = new Player(WIDTH / 2, HEIGHT / 2, 0, 0);
     }
 
+
     // MODIFIES: this
     // EFFECTS: updates all the moving objects
     public void update() {
-        List<List> listsToUpdate = new ArrayList<>();
-        listsToUpdate.add(enemies);
-        listsToUpdate.add(bullets);
+        List<List<MovingObject>> listsToUpdate = new ArrayList<>();
+        listsToUpdate.add(enemies.stream().map((enemy -> (MovingObject) enemy)).collect(Collectors.toList()));
+        listsToUpdate.add(bullets.stream().map((bullet -> (MovingObject) bullet)).collect(Collectors.toList()));
         for (List<MovingObject> lomo : listsToUpdate) {
             for (MovingObject mo : lomo) {
                 mo.move();
             }
         }
-
         player.move();
     }
 
@@ -67,6 +68,10 @@ public class Game {
 
     public List<Bullet> getBullets() {
         return bullets;
+    }
+
+    public int getPlayerSpeed() {
+        return playerSpeed;
     }
 
     // EFFECTS: Send the current game data to fileWriter

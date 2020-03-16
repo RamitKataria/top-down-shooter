@@ -7,7 +7,8 @@ import persistence.Reader;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import static model.Game.*;
+import static model.Game.BULLET_SPEED;
+import static model.Game.NEW_GAME_FILE;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class GameTest {
@@ -54,7 +55,7 @@ class GameTest {
     public void testUpdate() {
         game.fireBullet();
         game.update();
-        assertEquals(Game.WIDTH / 2 + PLAYER_SPEED, player.getPosX());
+        assertEquals(Game.WIDTH / 2 + game.getPlayerSpeed(), player.getPosX());
         assertEquals(Game.HEIGHT / 2, player.getPosY());
 
         assertEquals(Game.WIDTH / 2 + player.getDx() * BULLET_SPEED, bullets.get(0).getPosX());

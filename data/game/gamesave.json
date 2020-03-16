@@ -3,14 +3,14 @@
     {
       "dx": 1,
       "dy": -1,
-      "posX": 200,
-      "posY": -180
+      "posX": 350,
+      "posY": -330
     },
     {
       "dx": -1,
       "dy": 1,
-      "posX": 270,
-      "posY": 100
+      "posX": 120,
+      "posY": 250
     }
   ],
   "bullets": [],
@@ -23,7 +23,8 @@
   "player": {
     "dx": 1,
     "dy": 0,
-    "posX": 250,
+    "posX": 400,
     "posY": 250
-  }
+  },
+  "playerSpeed": 1
 }
