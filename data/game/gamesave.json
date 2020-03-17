@@ -3,36 +3,17 @@
     {
       "dx": 1,
       "dy": -1,
-      "posX": 1153,
-      "posY": -1133
+      "posX": 410,
+      "posY": -390
     },
     {
       "dx": -1,
       "dy": 1,
-      "posX": -683,
-      "posY": 1053
+      "posX": 60,
+      "posY": 310
     }
   ],
-  "bullets": [
-    {
-      "dx": -10,
-      "dy": 0,
-      "posX": -2086,
-      "posY": 434
-    },
-    {
-      "dx": -10,
-      "dy": 0,
-      "posX": -1186,
-      "posY": 434
-    },
-    {
-      "dx": 0,
-      "dy": -10,
-      "posX": 336,
-      "posY": -438
-    }
-  ],
+  "bullets": [],
   "walls": [
     {
       "width": 10,
@@ -44,8 +25,9 @@
   "player": {
     "dx": 0,
     "dy": 0,
-    "posX": 336,
-    "posY": 405
+    "posX": 265,
+    "posY": 192
   },
-  "playerSpeed": 1
+  "playerVel": 1,
+  "isOver": true
 }

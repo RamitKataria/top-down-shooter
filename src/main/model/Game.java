@@ -14,8 +14,8 @@ import java.util.stream.Collectors;
 public class Game {
     public static final File GAME_SAVE_FILE = new File("./data/game/gamesave.json");
     public static final File NEW_GAME_FILE = new File("./data/game/newgame.json");
-    public static final int WIDTH = 500;
-    public static final int HEIGHT = 500;
+    public static final int WIDTH = 1080;
+    public static final int HEIGHT = 680;
     public static int BULLET_SPEED = 10;
 
     private List<Enemy> enemies;
@@ -38,6 +38,12 @@ public class Game {
     // MODIFIES: this
     // EFFECTS: updates all the moving objects
     public void update() {
+        moveObjects();
+        removeExtraBullets();
+        //handleBoundary();
+    }
+
+    private void moveObjects() {
         List<List<MovingObject>> listsToUpdate = new ArrayList<>();
         listsToUpdate.add(enemies.stream().map((enemy -> (MovingObject) enemy)).collect(Collectors.toList()));
         listsToUpdate.add(bullets.stream().map((bullet -> (MovingObject) bullet)).collect(Collectors.toList()));
@@ -83,5 +89,18 @@ public class Game {
     // EFFECTS: Send the current game data to fileWriter
     public void save(FileWriter fileWriter) {
         new Gson().toJson(this, fileWriter);
+    }
+
+    private void removeExtraBullets() {
+        List<Bullet> bulletsToRemove = new ArrayList<>();
+        for (Bullet bullet : bullets) {
+            int x = bullet.getPosX();
+            int y = bullet.getPosY();
+            if (x < 0 || x > WIDTH || y < 0 || y > HEIGHT) {
+                bulletsToRemove.add(bullet);
+            }
+        }
+
+        bullets.removeAll(bulletsToRemove);
     }
 }
