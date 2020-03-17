@@ -22,7 +22,8 @@ public class Game {
     private List<Bullet> bullets;
     private List<Wall> walls;
     private Player player;
-    private int playerSpeed = 1;
+    private int playerVel = 1;
+    private boolean isOver;
 
     // EFFECTS: constructs a new game with only the player
     public Game() {
@@ -30,6 +31,7 @@ public class Game {
         bullets = new ArrayList<>();
         walls = new ArrayList<>();
         player = new Player(WIDTH / 2, HEIGHT / 2, 0, 0);
+        isOver = true;
     }
 
 
@@ -70,8 +72,12 @@ public class Game {
         return bullets;
     }
 
-    public int getPlayerSpeed() {
-        return playerSpeed;
+    public int getPlayerVel() {
+        return playerVel;
+    }
+
+    public boolean isOver() {
+        return isOver;
     }
 
     // EFFECTS: Send the current game data to fileWriter

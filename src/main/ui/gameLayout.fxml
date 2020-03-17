@@ -11,7 +11,7 @@
 
     <VBox>
         <HBox alignment="CENTER" fillHeight="false" VBox.vgrow="NEVER">
-            <Label alignment="CENTER" text="Time elapsed: 0 s">
+            <Label alignment="CENTER" text="Time elapsed: 0 s" fx:id="timeLabel">
                 <font>
                     <Font size="20.0"/>
                 </font>
@@ -32,9 +32,14 @@
             <Font size="36.0" fx:id="pButtonsFont"/>
         </fx:define>
 
-        <Button alignment="CENTER" text="Resume" font="$pButtonsFont" onAction="#handleResumeButton"/>
+        <Button alignment="CENTER" text="Resume" font="$pButtonsFont" fx:id="resumeButton"
+                onAction="#handleResumeButton"/>
 
-        <Button alignment="CENTER" text="New Game" font="$pButtonsFont" onAction="#handleNewGameButton"/>
+        <Button alignment="CENTER" text="New Game" font="$pButtonsFont" fx:id="newGameButton"
+                onAction="#handleNewGameButton"/>
+
+        <Button alignment="CENTER" text="Delete Saved Game" font="$pButtonsFont" fx:id="deleteGameButton"
+                onAction="#handleDeleteGameButton"/>
 
     </VBox>
 

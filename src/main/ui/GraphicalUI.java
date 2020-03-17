@@ -5,17 +5,20 @@ import javafx.fxml.FXML;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.Game;
-import model.Player;
+import model.*;
 import persistence.Reader;
 import persistence.Writer;
 
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashSet;
 
 import static model.Game.GAME_SAVE_FILE;
 import static model.Game.NEW_GAME_FILE;
@@ -30,9 +33,16 @@ public class GraphicalUI {
 
     @FXML
     private Canvas canvas;
-
     @FXML
     private VBox dialog;
+    @FXML
+    private Button resumeButton;
+    @FXML
+    private Button newGameButton;
+    @FXML
+    private Button deleteGameButton;
+    @FXML
+    private Label timeLabel;
 
     public GraphicalUI() {
     }
@@ -46,14 +56,23 @@ public class GraphicalUI {
         this.primaryStage = primaryStage;
         this.scene = primaryStage.getScene();
         primaryStage.setOnCloseRequest(event -> handleClose());
-        scene.setOnKeyPressed(this::handleKey);
+        scene.setOnKeyPressed(this::handleKeyDown);
+        scene.setOnKeyReleased(this::handleKeyUp);
+
     }
 
     public void handleResumeButton() {
         try {
             game = Reader.readGame(GAME_SAVE_FILE);
-        } catch (FileNotFoundException e) {
-            //TODO
+            if (game == null) {
+                throw new Exception();
+            }
+        } catch (Exception e) {
+            try {
+                game = Reader.readGame(NEW_GAME_FILE);
+            } catch (FileNotFoundException ex) {
+                ex.printStackTrace();
+            }
         }
         runGame();
     }
@@ -62,20 +81,26 @@ public class GraphicalUI {
         try {
             game = Reader.readGame(NEW_GAME_FILE);
         } catch (FileNotFoundException e) {
-            // TODO
+            e.printStackTrace();
         }
         runGame();
+    }
+
+    public void handleDeleteGameButton() {
+        boolean success = GAME_SAVE_FILE.delete();
+        deleteGameButton.setVisible(false);
+        resumeButton.setVisible(false);
     }
 
     private void handleClose() {
         try {
             new Writer(GAME_SAVE_FILE).write(game);
         } catch (IOException e) {
-            // TODO
+            e.printStackTrace();
         }
     }
 
-    private void handleKey(KeyEvent event) {
+    private void handleKeyDown(KeyEvent event) {
         if (event.getCode().equals(KeyCode.DOWN)) {
             player.setDx(0);
             player.setDy(1);
@@ -87,6 +112,19 @@ public class GraphicalUI {
             player.setDy(0);
         } else if (event.getCode().equals(KeyCode.LEFT)) {
             player.setDx(-1);
+            player.setDy(0);
+        } else if (event.getCode().equals(KeyCode.SPACE)) {
+            game.fireBullet();
+        } else if (event.getCode().equals(KeyCode.BACK_SPACE)) {
+            game.getBullets().clear();
+        }
+    }
+
+    private void handleKeyUp(KeyEvent event) {
+        HashSet<KeyCode> stopKeys = new HashSet<>();
+        stopKeys.addAll(Arrays.asList(KeyCode.DOWN, KeyCode.UP, KeyCode.LEFT, KeyCode.RIGHT));
+        if (stopKeys.contains(event.getCode())) {
+            player.setDx(0);
             player.setDy(0);
         }
     }
@@ -101,13 +139,42 @@ public class GraphicalUI {
         new AnimationTimer() {
             public void handle(long currentNanoTime) {
                 game.update();
-                draw();
+                drawGame();
             }
         }.start();
     }
 
-    private void draw() {
+    private void drawGame() {
+        clearCanvas();
+        drawPlayer();
+        drawEnemies();
+        drawBullets();
+        drawWalls();
+    }
+
+    private void drawWalls() {
+        for (Wall wall : game.getWalls()) {
+            gc.fillRect(wall.getPosX(), wall.getPosY(), wall.getWidth(), wall.getHeight());
+        }
+    }
+
+    private void drawBullets() {
+        for (Bullet bullet : game.getBullets()) {
+            gc.fillOval(bullet.getPosX(), bullet.getPosY(), 5, 5);
+        }
+    }
+
+    private void drawEnemies() {
+        for (Enemy enemy : game.getEnemies()) {
+            gc.fillRect(enemy.getPosX(), enemy.getPosY(), 20, 20);
+        }
+    }
+
+    private void clearCanvas() {
         gc.clearRect(0, 0, 1080, 680);
+    }
+
+    private void drawPlayer() {
         gc.fillOval(player.getPosX(), player.getPosY(), 20, 20);
     }
 }

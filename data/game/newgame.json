@@ -17,11 +17,13 @@
   "walls": [
     {
       "posX": 248,
-      "posY": 252
+      "posY": 252,
+      "width": 10,
+      "height": 20
     }
   ],
   "player": {
-    "dx": 1,
+    "dx": 0,
     "dy": 0,
     "posX": 250,
     "posY": 250

@@ -46,7 +46,7 @@ class GameTest {
         assertEquals(-2, testEnemy.getDx());
         assertEquals(5, testEnemy.getDy());
 
-        Wall testWall = new Wall(25, 53);
+        Wall testWall = new Wall(25, 53, 10, 20);
         assertEquals(25, testWall.getPosX());
         assertEquals(53, testWall.getPosY());
     }
@@ -55,7 +55,7 @@ class GameTest {
     public void testUpdate() {
         game.fireBullet();
         game.update();
-        assertEquals(Game.WIDTH / 2 + game.getPlayerSpeed(), player.getPosX());
+        assertEquals(Game.WIDTH / 2 + game.getPlayerVel(), player.getPosX());
         assertEquals(Game.HEIGHT / 2, player.getPosY());
 
         assertEquals(Game.WIDTH / 2 + player.getDx() * BULLET_SPEED, bullets.get(0).getPosX());
