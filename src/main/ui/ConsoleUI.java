@@ -1,20 +1,7 @@
 package ui;
 
-import model.Game;
-import model.GameObject;
-import model.Player;
-import persistence.Reader;
-import persistence.Writer;
-
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.Scanner;
-
-import static model.Game.GAME_SAVE_FILE;
-import static model.Game.NEW_GAME_FILE;
-
 public class ConsoleUI {
-    private Game game;
+    /*private Game game;
     private Scanner input;
 
     // EFFECTS: runs the game in console UI
@@ -209,5 +196,5 @@ public class ConsoleUI {
                 + "coordinates\n - fire a bullet in the direction the player is facing\n - do nothing and wait "
                 + "for the next refresh\n - save the current state of the game\n - restart the game\n - delete "
                 + "saved game progress");
-    }
+    }*/
 }

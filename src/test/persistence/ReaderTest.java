@@ -1,15 +1,8 @@
 package persistence;
 
 import model.*;
-import org.junit.jupiter.api.Test;
 
-import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.List;
-
-import static model.Game.NEW_GAME_FILE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
 
 public class ReaderTest {
     private Game game;
@@ -17,7 +10,7 @@ public class ReaderTest {
     private List<Bullet> bullets;
     private List<Wall> walls;
     private Player player;
-
+/*
     @Test
     public void testParseNewGameFile() {
         try {
@@ -94,5 +87,5 @@ public class ReaderTest {
     @Test
     public void testToCoverReaderClassName() {
         new Reader();
-    }
+    }*/
 }

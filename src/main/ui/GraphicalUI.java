@@ -11,7 +11,8 @@ import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import model.*;
+import model.Game;
+import model.Player;
 import persistence.Reader;
 import persistence.Writer;
 
@@ -115,9 +116,9 @@ public class GraphicalUI {
             player.setDy(0);
         } else if (event.getCode().equals(KeyCode.SPACE)) {
             game.fireBullet();
-        } else if (event.getCode().equals(KeyCode.BACK_SPACE)) {
+        } /*else if (event.getCode().equals(KeyCode.BACK_SPACE)) {
             game.getBullets().clear();
-        }
+        }*/
     }
 
     private void handleKeyUp(KeyEvent event) {
@@ -145,36 +146,7 @@ public class GraphicalUI {
     }
 
     private void drawGame() {
-        clearCanvas();
-        drawPlayer();
-        drawEnemies();
-        drawBullets();
-        drawWalls();
-    }
-
-    private void drawWalls() {
-        for (Wall wall : game.getWalls()) {
-            gc.fillRect(wall.getPosX(), wall.getPosY(), wall.getWidth(), wall.getHeight());
-        }
-    }
-
-    private void drawBullets() {
-        for (Bullet bullet : game.getBullets()) {
-            gc.fillOval(bullet.getPosX(), bullet.getPosY(), 5, 5);
-        }
-    }
-
-    private void drawEnemies() {
-        for (Enemy enemy : game.getEnemies()) {
-            gc.fillRect(enemy.getPosX(), enemy.getPosY(), 20, 20);
-        }
-    }
-
-    private void clearCanvas() {
         gc.clearRect(0, 0, 1080, 680);
-    }
-
-    private void drawPlayer() {
-        gc.fillOval(player.getPosX(), player.getPosY(), 20, 20);
+        game.draw(gc);
     }
 }

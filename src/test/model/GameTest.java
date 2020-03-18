@@ -1,18 +1,7 @@
 package model;
 
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import persistence.Reader;
-
-import java.io.FileNotFoundException;
-import java.util.List;
-
-import static model.Game.BULLET_SPEED;
-import static model.Game.NEW_GAME_FILE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-
 class GameTest {
-    private Game game;
+    /*private Game game;
     private List<Enemy> enemies;
     private List<Bullet> bullets;
     private List<Wall> walls;
@@ -84,5 +73,5 @@ class GameTest {
         player.setDy(-4);
         assertEquals(5, player.getDx());
         assertEquals(-4, player.getDy());
-    }
+    }*/
 }

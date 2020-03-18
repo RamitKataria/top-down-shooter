@@ -1,19 +1,7 @@
 package persistence;
 
-import model.*;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-
-import java.io.File;
-import java.io.IOException;
-import java.util.List;
-
-import static model.Game.NEW_GAME_FILE;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
-
 public class WriterTest {
-    private static final File TEST_FILE = new File("./data/testing/testWriteFile.json");
+    /*private static final File TEST_FILE = new File("./data/testing/testWriteFile.json");
     private Writer writer;
     Game game;
     private List<Enemy> enemies;
@@ -90,5 +78,5 @@ public class WriterTest {
         } catch (IOException e) {
             fail("IOException should not have been thrown");
         }
-    }
+    }*/
 }
