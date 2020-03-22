@@ -3,9 +3,7 @@ package model;
 import static model.Game.HEIGHT;
 import static model.Game.WIDTH;
 
-/*
- * Represents a generic game object
- */
+//  Represents a generic game object
 public abstract class MovingObject extends GameObject {
     protected double dx;
     protected double dy;
@@ -44,6 +42,8 @@ public abstract class MovingObject extends GameObject {
         posY = (posY + dy) % HEIGHT;
     }
 
+    // MODIFIES: this
+    // EFFECTS: if this goes beyond the bounds, then set the position to come out of the opposite side
     private void handleBoundary() {
         if (posX < 0) {
             posX = WIDTH + posX;

@@ -5,9 +5,7 @@ import javafx.geometry.VerticalDirection;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 
-/*
- * Represents the player of the game
- */
+// Represents the player of the game
 public class Player extends MovingObject {
     public static final double maxHP = 100;
 
@@ -17,13 +15,15 @@ public class Player extends MovingObject {
     HorizontalDirection horizontalMovingDirection;
     VerticalDirection verticalMovingDirection;
 
-    // EFFECTS: constructs a player
+    // EFFECTS: constructs a player facing UP
     public Player(double posX, double posY, double width, double height, double speed) {
         super(posX, posY, width, height, 0, 0, maxHP);
         this.speed = speed;
         verticalFacingDirection = VerticalDirection.UP;
     }
 
+    // MODIFIES: this
+    // EFFECTS: in addition to moving, sets the appropriate facing direction
     public void update() {
         super.update();
         if (dx > 0) {
@@ -46,6 +46,8 @@ public class Player extends MovingObject {
         return verticalFacingDirection;
     }
 
+    // MODIFIES: this
+    // EFFECTS: sets the horizontal moving direction and accordingly sets the facing direction
     public void setHorizontalMovingDirection(HorizontalDirection horizontalMovingDirection) {
         this.horizontalMovingDirection = horizontalMovingDirection;
 
@@ -54,6 +56,12 @@ public class Player extends MovingObject {
             horizontalFacingDirection = horizontalMovingDirection;
         }
 
+        updateHorizontalVelocity();
+    }
+
+    // MODIFIES: this
+    // EFFECTS: updates the horizontal velocity based on moving direction
+    private void updateHorizontalVelocity() {
         if (horizontalMovingDirection == HorizontalDirection.RIGHT) {
             dx = speed;
         } else if (horizontalMovingDirection == HorizontalDirection.LEFT) {
@@ -63,7 +71,9 @@ public class Player extends MovingObject {
         }
     }
 
-    public void setVerticalMovingDirection(VerticalDirection verticalMovingDirection) {
+    // MODIFIES: this
+    // EFFECTS: sets the vertical moving direction and accordingly sets the facing direction
+    public void updateVerticalMovingDirection(VerticalDirection verticalMovingDirection) {
         this.verticalMovingDirection = verticalMovingDirection;
 
         if (verticalMovingDirection != null && horizontalMovingDirection == null) {
@@ -71,6 +81,12 @@ public class Player extends MovingObject {
             verticalFacingDirection = verticalMovingDirection;
         }
 
+        setVerticalVelocity();
+    }
+
+    // MODIFIES: this
+    // EFFECTS: updates the vertical velocity based on moving direction
+    private void setVerticalVelocity() {
         if (verticalMovingDirection == VerticalDirection.DOWN) {
             dy = speed;
         } else if (verticalMovingDirection == VerticalDirection.UP) {
@@ -80,6 +96,8 @@ public class Player extends MovingObject {
         }
     }
 
+    // MODIFIES: gc
+    // EFFECTS: fill the Graphics Context with a cyan square at the player position
     @Override
     protected void render(GraphicsContext gc) {
         gc.setFill(new Color(92 / 255.0, 237 / 255.0, 237 / 255.0, 1));

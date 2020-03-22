@@ -13,6 +13,8 @@ public class Enemy extends MovingObject {
         super(posX, posY, width, height, dx, dy, hp);
     }
 
+    // MODIFIES: gc
+    // EFFECTS: fills gc with a red square with  width, height, and position of this
     @Override
     protected void render(GraphicsContext gc) {
         gc.setFill(new Color(196 / 255.0, 14 / 255.0, 14 / 255.0, 1));

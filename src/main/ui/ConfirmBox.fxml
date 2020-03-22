@@ -2,19 +2,19 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.text.Font?>
-<VBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="ui.ConfirmBox" spacing="10"
-      alignment="CENTER" fx:id="layout">
+<HBox xmlns="http://javafx.com/javafx" xmlns:fx="http://javafx.com/fxml" fx:controller="ui.ConfirmBox" spacing="10"
+      alignment="CENTER">
 
     <fx:define>
         <Font size="36.0" fx:id="pButtonsFont"/>
     </fx:define>
 
-    <Label fx:id="label"/>
+    <Label/>
 
     <Button text="Yes" font="$pButtonsFont" fx:id="yesButton" onAction="#handleButtons"/>
 
     <Button text="No" font="$pButtonsFont" fx:id="noButton" onAction="#handleButtons"/>
 
-</VBox>
+</HBox>

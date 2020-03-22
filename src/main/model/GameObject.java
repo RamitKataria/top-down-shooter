@@ -3,6 +3,7 @@ package model;
 import javafx.geometry.Rectangle2D;
 import javafx.scene.canvas.GraphicsContext;
 
+// represents a generic game object
 public abstract class GameObject {
     protected double posX;
     protected double posY;
@@ -35,35 +36,40 @@ public abstract class GameObject {
         return height;
     }
 
+    // MODIFIES: this
+    // EFFECTS: subtract the other's hp from this' hp
     public void hit(GameObject other) {
         hp -= other.hp;
     }
 
-    public void update() {
-
-    }
-
+    // EFFECTS: returns the x value of the centre of object as opposed to the leftmost x value
     public double getCentrePosX() {
         return posX + width / 2.0;
     }
 
+    // EFFECTS: returns the y value of the centre of object as opposed to the leftmost y value
     public double getCentrePosY() {
         return posY + height / 2.0;
     }
 
+    // EFFECTS: returns true if object is dead, otherwise false
     public boolean isDead() {
         return hp <= 0;
     }
 
+    // EFFECTS: returns true if this object intersects the other object
     // source: https://github.com/tutsplus/Introduction-to-JavaFX-for-Game-Development/blob/master/Sprite.java
     protected boolean intersects(GameObject other) {
         return this.getBounds().intersects(other.getBounds());
     }
 
+    // EFFECTS: returns the rectangle bounds of the object
     // source: https://github.com/tutsplus/Introduction-to-JavaFX-for-Game-Development/blob/master/Sprite.java
     protected Rectangle2D getBounds() {
         return new Rectangle2D(posX, posY, width, height);
     }
 
+    // MODIFIES: gc
+    // EFFECTS: fill the Graphics Context with appropriate shape and color
     protected abstract void render(GraphicsContext gc);
 }

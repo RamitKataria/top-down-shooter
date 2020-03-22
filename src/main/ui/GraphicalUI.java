@@ -27,6 +27,7 @@ import java.io.IOException;
 
 import static model.Game.GAME_SAVE_FILE;
 
+// represents controller for GameLayout
 public class GraphicalUI {
     private Game game;
     private Player player;
@@ -36,6 +37,7 @@ public class GraphicalUI {
     private Stage primaryStage;
     private Stage confirmStage;
     private ConfirmBox confirmBox;
+    private AnimationTimer timer;
 
     @FXML
     private Canvas canvas;
@@ -50,14 +52,20 @@ public class GraphicalUI {
     @FXML
     private Label statusLabel;
 
+    // no-args constructor required by FXML
     public GraphicalUI() {
     }
 
+    // this method is required by FXML
+    // MODIFIES: this
+    // EFFECTS: set gc from graphics context of canvas
     @FXML
     private void initialize() {
         gc = canvas.getGraphicsContext2D();
     }
 
+    // MODIFIES: this
+    // EFFECTS: initial set up of windows and event handlers
     public void setUp(Stage primaryStage) throws IOException {
         this.primaryStage = primaryStage;
         Scene scene = primaryStage.getScene();
@@ -71,6 +79,8 @@ public class GraphicalUI {
         setUpConfirmBox();
     }
 
+    // MODIFIES: this
+    // EFFECTS: initial set up of confirm box
     private void setUpConfirmBox() throws IOException {
         FXMLLoader loader = new FXMLLoader(getClass().getResource("ConfirmBox.fxml"));
         Parent root = loader.load();
@@ -82,6 +92,8 @@ public class GraphicalUI {
         confirmBox = loader.getController();
     }
 
+    // MODIFIES: this
+    // EFFECTS: change the visibility of the resume and delete game based on current situation
     private void checkSaveGame() {
         Game savedGame;
         try {
@@ -94,9 +106,14 @@ public class GraphicalUI {
             if (game == null || game.isOver()) {
                 resumeButton.setVisible(false);
             }
+        } else {
+            deleteGameButton.setVisible(true);
+            resumeButton.setVisible(true);
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: pause the game the set the UI accordingly
     private void pauseGame() {
         dialog.setVisible(true);
         game.setPaused(true);
@@ -105,6 +122,9 @@ public class GraphicalUI {
         checkSaveGame();
     }
 
+    // MODIFIES: this
+    // EFFECTS: if a game is already running, unpause it, otherwise load game from saved game. If a saved game doesn't
+    //          exist, start a new game
     public void handleResumeButton() {
         if (game != null && game.isPaused()) {
             game.setPaused(false);
@@ -117,19 +137,28 @@ public class GraphicalUI {
                     throw new Exception();
                 }
             } catch (Exception e) {
-                game = new Game();
-                game.newGame();
+                handleNewGameButton();
             }
-            runGame();
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: make a new game and set the UI accordingly
     public void handleNewGameButton() {
         game = new Game();
         game.newGame();
-        runGame();
+        dialog.setVisible(false);
+        game.setPaused(false);
+        dialog.setVisible(false);
+        canvas.setEffect(null);
+        player = game.getPlayer();
+        if (timer == null) {
+            addTimer();
+        }
     }
 
+    // MODIFIES: this
+    // EFFECTS: save game and update UI accordingly
     public void handleSaveGameButton() {
         try {
             new Writer(GAME_SAVE_FILE).write(game);
@@ -142,6 +171,8 @@ public class GraphicalUI {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: delete saved game and update UI accordingly
     public void handleDeleteGameButton() {
         boolean success = GAME_SAVE_FILE.delete();
         if (success) {
@@ -154,17 +185,21 @@ public class GraphicalUI {
         checkSaveGame();
     }
 
+    // MODIFIES: this
+    // EFFECTS: close the main window
     private void handleClose() {
         if (confirmBox.display(confirmStage)) {
             primaryStage.close();
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: call appropriate handlers whenever a key is pressed
     private void handleKeyDown(KeyEvent event) {
         if (event.getCode().equals(KeyCode.DOWN) || event.getCode().equals(KeyCode.S)) {
-            player.setVerticalMovingDirection(VerticalDirection.DOWN);
+            player.updateVerticalMovingDirection(VerticalDirection.DOWN);
         } else if (event.getCode().equals(KeyCode.UP) || event.getCode().equals(KeyCode.W)) {
-            player.setVerticalMovingDirection(VerticalDirection.UP);
+            player.updateVerticalMovingDirection(VerticalDirection.UP);
         } else if (event.getCode().equals(KeyCode.RIGHT) || event.getCode().equals(KeyCode.D)) {
             player.setHorizontalMovingDirection(HorizontalDirection.RIGHT);
         } else if (event.getCode().equals(KeyCode.LEFT) || event.getCode().equals(KeyCode.A)) {
@@ -178,30 +213,34 @@ public class GraphicalUI {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: call appropriate methods whenever a key is unpressed
     private void handleKeyUp(KeyEvent event) {
         if (event.getCode().equals(KeyCode.DOWN) || event.getCode().equals(KeyCode.S)
                 || event.getCode().equals(KeyCode.UP) || event.getCode().equals(KeyCode.W)) {
-            player.setVerticalMovingDirection(null);
+            player.updateVerticalMovingDirection(null);
         } else if (event.getCode().equals(KeyCode.RIGHT) || event.getCode().equals(KeyCode.D)
                 || event.getCode().equals(KeyCode.LEFT) || event.getCode().equals(KeyCode.A)) {
             player.setHorizontalMovingDirection(null);
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: change UI after game is over
     private void handleGameOver() {
         dialog.setVisible(true);
         resumeButton.setVisible(false);
+        game.setPaused(true);
+        canvas.setEffect(new GaussianBlur(50));
+        statusLabel.setText("Game Over");
+        checkSaveGame();
     }
 
-    private void runGame() {
-        dialog.setVisible(false);
-        player = game.getPlayer();
-        addTimer();
-    }
-
+    // MODIFIES: this
+    // EFFECTS: add the animation timer
     private void addTimer() {
         prevTime = System.nanoTime();
-        new AnimationTimer() {
+        timer = new AnimationTimer() {
             public void handle(long currentNanoTime) {
                 if (game.update(currentNanoTime - prevTime)) {
                     handleGameOver();
@@ -210,17 +249,18 @@ public class GraphicalUI {
                 drawGame();
                 updateTimeLabel();
             }
-        }.start();
+        };
+        timer.start();
     }
 
+    // MODIFIES: this
+    // EFFECTS: update the time label to reflect current time elapsed
     private void updateTimeLabel() {
-        timeLabel.setText("Time Remaining: " + (game.getTimeRemaining() / 1000000000) + "s");
-        dialog.setVisible(true);
-        game.setPaused(true);
-        canvas.setEffect(new GaussianBlur(50));
-        checkSaveGame();
+        timeLabel.setText("Time Elapsed: " + (game.getTimeElapsed() / 1000000000) + "s");
     }
 
+    // MODIFIES: this
+    // EFFECTS: draw the game on gc
     private void drawGame() {
         gc.clearRect(0, 0, 1080, 680);
         game.draw(gc);
