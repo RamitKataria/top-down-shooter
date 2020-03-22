@@ -43,6 +43,14 @@ public abstract class GameObject {
 
     }
 
+    public double getCentrePosX() {
+        return posX + width / 2.0;
+    }
+
+    public double getCentrePosY() {
+        return posY + height / 2.0;
+    }
+
     public boolean isDead() {
         return hp <= 0;
     }

@@ -12,53 +12,68 @@ public class Player extends MovingObject {
     public static final double maxHP = 100;
 
     private double speed;
-    HorizontalDirection horizontalDirection;
-    VerticalDirection verticalDirection;
+    HorizontalDirection horizontalFacingDirection;
+    VerticalDirection verticalFacingDirection;
+    HorizontalDirection horizontalMovingDirection;
+    VerticalDirection verticalMovingDirection;
 
     // EFFECTS: constructs a player
     public Player(double posX, double posY, double width, double height, double speed) {
         super(posX, posY, width, height, 0, 0, maxHP);
         this.speed = speed;
+        verticalFacingDirection = VerticalDirection.UP;
     }
 
     public void update() {
         super.update();
         if (dx > 0) {
-            horizontalDirection = HorizontalDirection.RIGHT;
+            horizontalFacingDirection = HorizontalDirection.RIGHT;
         } else if (dx < 0) {
-            horizontalDirection = HorizontalDirection.LEFT;
+            horizontalFacingDirection = HorizontalDirection.LEFT;
         }
         if (dy > 0) {
-            verticalDirection = VerticalDirection.DOWN;
+            verticalFacingDirection = VerticalDirection.DOWN;
         } else if (dy < 0) {
-            verticalDirection = VerticalDirection.UP;
+            verticalFacingDirection = VerticalDirection.UP;
         }
     }
 
-    public HorizontalDirection getHorizontalDirection() {
-        return horizontalDirection;
+    public HorizontalDirection getHorizontalFacingDirection() {
+        return horizontalFacingDirection;
     }
 
-    public VerticalDirection getVerticalDirection() {
-        return verticalDirection;
+    public VerticalDirection getVerticalFacingDirection() {
+        return verticalFacingDirection;
     }
 
-    public void setHorizontalDirection(HorizontalDirection horizontalDirection) {
-        this.horizontalDirection = horizontalDirection;
-        if (horizontalDirection == HorizontalDirection.RIGHT) {
+    public void setHorizontalMovingDirection(HorizontalDirection horizontalMovingDirection) {
+        this.horizontalMovingDirection = horizontalMovingDirection;
+
+        if (horizontalMovingDirection != null && verticalMovingDirection == null) {
+            verticalFacingDirection = null;
+            horizontalFacingDirection = horizontalMovingDirection;
+        }
+
+        if (horizontalMovingDirection == HorizontalDirection.RIGHT) {
             dx = speed;
-        } else if (horizontalDirection == HorizontalDirection.LEFT) {
+        } else if (horizontalMovingDirection == HorizontalDirection.LEFT) {
             dx = -speed;
         } else {
             dx = 0;
         }
     }
 
-    public void setVerticalDirection(VerticalDirection verticalDirection) {
-        this.verticalDirection = verticalDirection;
-        if (verticalDirection == VerticalDirection.DOWN) {
+    public void setVerticalMovingDirection(VerticalDirection verticalMovingDirection) {
+        this.verticalMovingDirection = verticalMovingDirection;
+
+        if (verticalMovingDirection != null && horizontalMovingDirection == null) {
+            horizontalFacingDirection = null;
+            verticalFacingDirection = verticalMovingDirection;
+        }
+
+        if (verticalMovingDirection == VerticalDirection.DOWN) {
             dy = speed;
-        } else if (verticalDirection == VerticalDirection.UP) {
+        } else if (verticalMovingDirection == VerticalDirection.UP) {
             dy = -speed;
         } else {
             dy = 0;

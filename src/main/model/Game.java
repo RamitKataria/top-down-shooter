@@ -9,23 +9,25 @@ import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 /*
  * Represents the game
  */
 public class Game {
     public static final File GAME_SAVE_FILE = new File("./data/game/gamesave.json");
-    public static final File NEW_GAME_FILE = new File("./data/game/newgame.json");
     public static final int WIDTH = 1080;
     public static final int HEIGHT = 680;
-    public static int BULLET_SPEED = 5;
+    public static int BULLET_SPEED = 4;
+    public static final Random RND = new Random();
 
     private List<Wall> walls;
     private List<Enemy> enemies;
     private List<Bullet> bullets;
     private Player player;
+    private long timeRemaining;
     private boolean isOver;
-    private int level;
+    private boolean isPaused;
 
     // EFFECTS: constructs a new game with only the player
     public Game() {
@@ -33,8 +35,9 @@ public class Game {
         walls = new ArrayList<>();
         enemies = new ArrayList<>();
         bullets = new ArrayList<>();
-        isOver = true;
-        level = 1;
+        isOver = false;
+        isPaused = false;
+        timeRemaining = 60000000000L;
     }
 
     public void newGame() {
@@ -45,19 +48,35 @@ public class Game {
 
     // MODIFIES: this
     // EFFECTS: updates all the moving objects
-    public void update() {
-        updateGameObjects(enemies);
-        updateGameObjects(walls);
-        updateGameObjects(bullets);
-        player.update();
-        manageCollisions();
+    public boolean update(long deltaTime) {
+        if (!isPaused) {
+            updateGameObjects(enemies);
+            updateGameObjects(walls);
+            updateGameObjects(bullets);
+            player.update();
+            if (RND.nextInt(1000) < 1) {
+                generateEnemies();
+            }
+            manageCollisions();
+            generateEnemies();
+            timeRemaining -= deltaTime;
+            if (player.isDead()) {
+                isOver = true;
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private void generateEnemies() {
+        enemies.add(new Enemy(RND.nextDouble() * WIDTH, RND.nextDouble() * HEIGHT, 20, 20,
+                RND.nextInt(2) - 1, RND.nextInt(2) - 1, 10));
     }
 
     private void manageCollisions() {
         List<Bullet> toRemove = new ArrayList<>();
         for (Bullet bullet : bullets) {
-            boolean hit = false;
-            hit = isHitEnemies(bullet, hit);
+            boolean hit = isHitEnemies(bullet, false);
             hit = isHitWalls(bullet, hit);
 
             if (!hit && player.intersects(bullet)) {
@@ -108,21 +127,21 @@ public class Game {
     // MODIFIES: this
     // EFFECTS: adds a bullet to the game with appropriate position and speed
     public void fireBullet() {
-        double bulletPosX = player.getPosX();
-        double bulletPosY = player.getPosY();
+        double bulletPosX = player.getCentrePosX();
+        double bulletPosY = player.getCentrePosY();
         double bulletDx = player.getDx();
         double bulletDy = player.getDy();
-        if (player.getHorizontalDirection() == HorizontalDirection.RIGHT) {
+        if (player.getHorizontalFacingDirection() == HorizontalDirection.RIGHT) {
             bulletPosX += player.getWidth();
             bulletDx += BULLET_SPEED;
-        } else if (player.getHorizontalDirection() == HorizontalDirection.LEFT) {
+        } else if (player.getHorizontalFacingDirection() == HorizontalDirection.LEFT) {
             bulletPosX -= player.getWidth();
             bulletDx -= BULLET_SPEED;
         }
-        if (player.getVerticalDirection() == VerticalDirection.DOWN) {
+        if (player.getVerticalFacingDirection() == VerticalDirection.DOWN) {
             bulletPosY += player.getHeight();
             bulletDy += BULLET_SPEED;
-        } else if (player.getVerticalDirection() == VerticalDirection.UP) {
+        } else if (player.getVerticalFacingDirection() == VerticalDirection.UP) {
             bulletPosY -= player.getHeight();
             bulletDy -= BULLET_SPEED;
         }
@@ -134,12 +153,24 @@ public class Game {
         return player;
     }
 
+    public long getTimeRemaining() {
+        return timeRemaining;
+    }
+
     public List<Bullet> getBullets() {
         return bullets;
     }
 
     public boolean isOver() {
         return isOver;
+    }
+
+    public boolean isPaused() {
+        return isPaused;
+    }
+
+    public void setPaused(boolean value) {
+        isPaused = value;
     }
 
     // EFFECTS: Send the current game data to fileWriter
