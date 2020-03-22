@@ -18,56 +18,65 @@ public class Game {
     public static final int HEIGHT = 680;
     public static int BULLET_SPEED = 10;
 
-    private List<GameObject> gameObjects;
+    private List<Wall> walls;
+    private List<Enemy> enemies;
+    private List<Bullet> bullets;
     private Player player;
-    private int playerVel = 1;
+    private int playerVel;
     private boolean isOver;
+    private int level;
 
     // EFFECTS: constructs a new game with only the player
     public Game() {
-        gameObjects = new ArrayList<>();
         player = new Player(WIDTH / 2, HEIGHT / 2, 0, 0);
-        gameObjects.add(player);
+        walls = new ArrayList<>();
+        enemies = new ArrayList<>();
+        bullets = new ArrayList<>();
         isOver = true;
+        playerVel = 1;
+        level = 1;
+    }
 
-        // remove after testing
-        gameObjects.add(new Enemy(200, -180, 1, -1));
-        gameObjects.add(new Enemy(270, 100, -1, 1));
-        gameObjects.add(new Wall(248, 252, 10, 20));
+    public void testingSetUp() {
+        enemies.add(new Enemy(200, -180, 1, -1));
+        enemies.add(new Enemy(270, 100, -1, 1));
+        walls.add(new Wall(248, 252, 10, 20));
     }
 
     // MODIFIES: this
     // EFFECTS: updates all the moving objects
     public void update() {
-        moveObjects();
-        removeDeadObjects();
+        updateGameObjects(enemies);
+        updateGameObjects(walls);
+        updateGameObjects(bullets);
+        player.move();
+
     }
 
-    private void removeDeadObjects() {
-        List<GameObject> objectsToRemove = new ArrayList<>();
-        for (GameObject gameObject : gameObjects) {
-            if (gameObject.getHealth() <= 0) {
-                objectsToRemove.add(gameObject);
-            }
-        }
-        gameObjects.removeAll(objectsToRemove);
-    }
-
-    private void moveObjects() {
+    private void updateGameObjects(List<? extends GameObject> gameObjects) {
+        List<GameObject> toRemove = new ArrayList<>();
         for (GameObject gameObject : gameObjects) {
             gameObject.move();
+            if (gameObject.isDead()) {
+                toRemove.add(gameObject);
+            }
         }
+        gameObjects.removeAll(toRemove);
     }
 
     // MODIFIES: this
     // EFFECTS: adds a bullet to the game with appropriate position and speed
     public void fireBullet() {
-        gameObjects.add(new Bullet(player.getPosX(), player.getPosY(), player.getDx() * BULLET_SPEED,
-                player.getDy() * BULLET_SPEED));
+        bullets.add(new Bullet(player.getPosX(), player.getPosY(),
+                player.getDx() * BULLET_SPEED, player.getDy() * BULLET_SPEED));
     }
 
     public Player getPlayer() {
         return player;
+    }
+
+    public List<Bullet> getBullets() {
+        return bullets;
     }
 
     public boolean isOver() {
@@ -80,8 +89,9 @@ public class Game {
     }
 
     public void draw(GraphicsContext gc) {
-        for (GameObject gameObject : gameObjects) {
-            gameObject.draw(gc);
-        }
+        bullets.forEach(gameObject -> gameObject.render(gc));
+        enemies.forEach(gameObject -> gameObject.render(gc));
+        walls.forEach(gameObject -> gameObject.render(gc));
+        player.render(gc);
     }
 }

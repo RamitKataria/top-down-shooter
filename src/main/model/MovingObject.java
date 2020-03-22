@@ -11,8 +11,8 @@ public abstract class MovingObject extends GameObject {
     protected int dy;
 
     // EFFECTS: constructs a moving object
-    public MovingObject(int posX, int posY, int dx, int dy, String objectType) {
-        super(posX, posY, objectType);
+    public MovingObject(int posX, int posY, int dx, int dy) {
+        super(posX, posY);
         this.dx = dx;
         this.dy = dy;
     }

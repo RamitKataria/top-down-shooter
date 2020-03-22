@@ -6,13 +6,11 @@ public abstract class GameObject {
     protected int posX;
     protected int posY;
     protected int health;
-    protected String objectType;
 
     // EFFECTS: constructs a game object
-    public GameObject(int posX, int posY, String objectType) {
+    public GameObject(int posX, int posY) {
         this.posX = posX;
         this.posY = posY;
-        this.objectType = objectType;
         this.health = 100;
     }
 
@@ -24,19 +22,15 @@ public abstract class GameObject {
         return posY;
     }
 
-    public int getHealth() {
-        return health;
+    public abstract void move();
+
+    public boolean isDead() {
+        return health <= 0;
     }
 
-    public String getObjectType() {
-        return objectType;
-    }
-
-    public void move() {
+    protected void checkForCollision(GameObject other) {
 
     }
 
-    protected abstract void checkForCollision(GameObject other);
-
-    protected abstract void draw(GraphicsContext gc);
+    protected abstract void render(GraphicsContext gc);
 }

@@ -1,46 +1,38 @@
 {
-  "gameObjects": [
+  "walls": [
     {
-      "dx": 0,
-      "dy": 0,
-      "posX": 540,
-      "posY": 340,
-      "health": 100,
-      "objectType": "Player"
-    },
+      "width": 20,
+      "height": 10,
+      "posX": 248,
+      "posY": 252,
+      "health": 100
+    }
+  ],
+  "enemies": [
     {
       "dx": 1,
       "dy": -1,
-      "posX": 200,
-      "posY": -180,
-      "health": 100,
-      "objectType": "Enemy"
+      "posX": 400,
+      "posY": 150,
+      "health": 100
     },
     {
       "dx": -1,
       "dy": 1,
       "posX": 270,
       "posY": 100,
-      "health": 100,
-      "objectType": "Enemy"
-    },
-    {
-      "width": 20,
-      "height": 10,
-      "posX": 248,
-      "posY": 252,
-      "health": 100,
-      "objectType": "Wall"
+      "health": 100
     }
   ],
+  "bullets": [],
   "player": {
     "dx": 0,
     "dy": 0,
     "posX": 540,
     "posY": 340,
-    "health": 100,
-    "objectType": "Player"
+    "health": 100
   },
   "playerVel": 1,
-  "isOver": true
+  "isOver": true,
+  "level": 1
 }

@@ -103,27 +103,22 @@ public class GraphicalUI {
 
     private void handleKeyDown(KeyEvent event) {
         if (event.getCode().equals(KeyCode.DOWN)) {
-            player.setDx(0);
             player.setDy(1);
         } else if (event.getCode().equals(KeyCode.UP)) {
-            player.setDx(0);
             player.setDy(-1);
         } else if (event.getCode().equals(KeyCode.RIGHT)) {
             player.setDx(1);
-            player.setDy(0);
         } else if (event.getCode().equals(KeyCode.LEFT)) {
             player.setDx(-1);
-            player.setDy(0);
         } else if (event.getCode().equals(KeyCode.SPACE)) {
             game.fireBullet();
-        } /*else if (event.getCode().equals(KeyCode.BACK_SPACE)) {
+        } else if (event.getCode().equals(KeyCode.BACK_SPACE)) {
             game.getBullets().clear();
-        }*/
+        }
     }
 
     private void handleKeyUp(KeyEvent event) {
-        HashSet<KeyCode> stopKeys = new HashSet<>();
-        stopKeys.addAll(Arrays.asList(KeyCode.DOWN, KeyCode.UP, KeyCode.LEFT, KeyCode.RIGHT));
+        HashSet<KeyCode> stopKeys = new HashSet<>(Arrays.asList(KeyCode.DOWN, KeyCode.UP, KeyCode.LEFT, KeyCode.RIGHT));
         if (stopKeys.contains(event.getCode())) {
             player.setDx(0);
             player.setDy(0);

@@ -9,11 +9,10 @@ import static model.Game.WIDTH;
  * Represents a bullet
  */
 public class Bullet extends MovingObject {
-    private static final String objectType = "Bullet";
 
     // EFFECTS: constructs a bullet
     public Bullet(int posX, int posY, int dx, int dy) {
-        super(posX, posY, dx, dy, objectType);
+        super(posX, posY, dx, dy);
     }
 
     public void move() {
@@ -28,7 +27,7 @@ public class Bullet extends MovingObject {
     }
 
     @Override
-    protected void draw(GraphicsContext gc) {
+    protected void render(GraphicsContext gc) {
         gc.fillOval(posX, posY, 5, 5);
     }
 
