@@ -1,6 +1,7 @@
 package model;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 /*
  * Represents an enemy of the player
@@ -8,17 +9,13 @@ import javafx.scene.canvas.GraphicsContext;
 public class Enemy extends MovingObject {
 
     // EFFECTS: constructs an enemy
-    public Enemy(int posX, int posY, int dx, int dy) {
-        super(posX, posY, dx, dy);
-    }
-
-    @Override
-    protected void checkForCollision(GameObject other) {
-
+    public Enemy(double posX, double posY, double width, double height, double dx, double dy, double hp) {
+        super(posX, posY, width, height, dx, dy, hp);
     }
 
     @Override
     protected void render(GraphicsContext gc) {
-        gc.fillRect(posX, posY, 20, 20);
+        gc.setFill(new Color(196 / 255.0, 14 / 255.0, 14 / 255.0, 1));
+        gc.fillRect(posX, posY, width, width);
     }
 }

@@ -1,36 +1,42 @@
 {
   "walls": [
     {
-      "width": 20,
-      "height": 10,
-      "posX": 248,
-      "posY": 252,
-      "health": 100
+      "posX": 248.0,
+      "posY": 252.0,
+      "width": 20.0,
+      "height": 10.0,
+      "health": 100.0
     }
   ],
   "enemies": [
     {
-      "dx": 1,
-      "dy": -1,
-      "posX": 400,
-      "posY": 150,
-      "health": 100
+      "dx": 1.0,
+      "dy": -1.0,
+      "posX": 400.0,
+      "posY": 150.0,
+      "width": 20.0,
+      "height": 20.0,
+      "health": 100.0
     },
     {
-      "dx": -1,
-      "dy": 1,
-      "posX": 270,
-      "posY": 100,
-      "health": 100
+      "dx": -1.0,
+      "dy": 1.0,
+      "posX": 270.0,
+      "posY": 100.0,
+      "width": 20.0,
+      "height": 20.0,
+      "health": 100.0
     }
   ],
   "bullets": [],
   "player": {
-    "dx": 0,
-    "dy": 0,
-    "posX": 540,
-    "posY": 340,
-    "health": 100
+    "dx": 0.0,
+    "dy": 0.0,
+    "posX": 540.0,
+    "posY": 340.0,
+    "width": 20.0,
+    "height": 20.0,
+    "health": 100.0
   },
   "playerVel": 1,
   "isOver": true,

@@ -1,6 +1,7 @@
 package model;
 
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.paint.Color;
 
 import static model.Game.HEIGHT;
 import static model.Game.WIDTH;
@@ -11,24 +12,27 @@ import static model.Game.WIDTH;
 public class Bullet extends MovingObject {
 
     // EFFECTS: constructs a bullet
-    public Bullet(int posX, int posY, int dx, int dy) {
-        super(posX, posY, dx, dy);
+    public Bullet(double posX, double posY, double width, double height, double dx, double dy, double hp) {
+        super(posX, posY, width, height, dx, dy, hp);
     }
 
-    public void move() {
-        super.move();
-    }
-
-    @Override
-    protected void checkForCollision(GameObject other) {
+    public void update() {
+        posX += dx;
+        posY += dy;
         if (isOutOfBound()) {
-            health = 0;
+            hp = 0;
         }
+    }
+
+    public void bounce() {
+        dx *= -1;
+        dy *= -1;
     }
 
     @Override
     protected void render(GraphicsContext gc) {
-        gc.fillOval(posX, posY, 5, 5);
+        gc.setFill(new Color(2 / 255.0, 44 / 255.0, 250 / 255.0, 1));
+        gc.fillOval(posX, posY, width, width);
     }
 
     public boolean isOutOfBound() {

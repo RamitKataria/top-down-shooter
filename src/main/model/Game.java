@@ -1,6 +1,8 @@
 package model;
 
 import com.google.gson.Gson;
+import javafx.geometry.HorizontalDirection;
+import javafx.geometry.VerticalDirection;
 import javafx.scene.canvas.GraphicsContext;
 
 import java.io.File;
@@ -16,31 +18,29 @@ public class Game {
     public static final File NEW_GAME_FILE = new File("./data/game/newgame.json");
     public static final int WIDTH = 1080;
     public static final int HEIGHT = 680;
-    public static int BULLET_SPEED = 10;
+    public static int BULLET_SPEED = 5;
 
     private List<Wall> walls;
     private List<Enemy> enemies;
     private List<Bullet> bullets;
     private Player player;
-    private int playerVel;
     private boolean isOver;
     private int level;
 
     // EFFECTS: constructs a new game with only the player
     public Game() {
-        player = new Player(WIDTH / 2, HEIGHT / 2, 0, 0);
+        player = new Player(WIDTH / 2.0, HEIGHT / 2.0, 20, 20, 3);
         walls = new ArrayList<>();
         enemies = new ArrayList<>();
         bullets = new ArrayList<>();
         isOver = true;
-        playerVel = 1;
         level = 1;
     }
 
-    public void testingSetUp() {
-        enemies.add(new Enemy(200, -180, 1, -1));
-        enemies.add(new Enemy(270, 100, -1, 1));
-        walls.add(new Wall(248, 252, 10, 20));
+    public void newGame() {
+        enemies.add(new Enemy(200, -180, 20, 20, 1, -1, 10));
+        enemies.add(new Enemy(270, 100, 20, 20, -1, 1, 10));
+        walls.add(new Wall(248, 252, 100, 200, 1000));
     }
 
     // MODIFIES: this
@@ -49,14 +49,55 @@ public class Game {
         updateGameObjects(enemies);
         updateGameObjects(walls);
         updateGameObjects(bullets);
-        player.move();
+        player.update();
+        manageCollisions();
+    }
 
+    private void manageCollisions() {
+        List<Bullet> toRemove = new ArrayList<>();
+        for (Bullet bullet : bullets) {
+            boolean hit = false;
+            hit = isHitEnemies(bullet, hit);
+            hit = isHitWalls(bullet, hit);
+
+            if (!hit && player.intersects(bullet)) {
+                player.hit(bullet);
+                hit = true;
+            }
+            if (hit) {
+                toRemove.add(bullet);
+            }
+        }
+        bullets.removeAll(toRemove);
+    }
+
+    private boolean isHitWalls(Bullet bullet, boolean hit) {
+        if (!hit) {
+            for (Wall wall : walls) {
+                if (bullet.intersects(wall)) {
+                    wall.hit(bullet);
+                    break;
+                }
+            }
+        }
+        return hit;
+    }
+
+    private boolean isHitEnemies(Bullet bullet, boolean hit) {
+        for (Enemy enemy : enemies) {
+            if (bullet.intersects(enemy)) {
+                enemy.hit(bullet);
+                hit = true;
+                break;
+            }
+        }
+        return hit;
     }
 
     private void updateGameObjects(List<? extends GameObject> gameObjects) {
         List<GameObject> toRemove = new ArrayList<>();
         for (GameObject gameObject : gameObjects) {
-            gameObject.move();
+            gameObject.update();
             if (gameObject.isDead()) {
                 toRemove.add(gameObject);
             }
@@ -67,8 +108,26 @@ public class Game {
     // MODIFIES: this
     // EFFECTS: adds a bullet to the game with appropriate position and speed
     public void fireBullet() {
-        bullets.add(new Bullet(player.getPosX(), player.getPosY(),
-                player.getDx() * BULLET_SPEED, player.getDy() * BULLET_SPEED));
+        double bulletPosX = player.getPosX();
+        double bulletPosY = player.getPosY();
+        double bulletDx = player.getDx();
+        double bulletDy = player.getDy();
+        if (player.getHorizontalDirection() == HorizontalDirection.RIGHT) {
+            bulletPosX += player.getWidth();
+            bulletDx += BULLET_SPEED;
+        } else if (player.getHorizontalDirection() == HorizontalDirection.LEFT) {
+            bulletPosX -= player.getWidth();
+            bulletDx -= BULLET_SPEED;
+        }
+        if (player.getVerticalDirection() == VerticalDirection.DOWN) {
+            bulletPosY += player.getHeight();
+            bulletDy += BULLET_SPEED;
+        } else if (player.getVerticalDirection() == VerticalDirection.UP) {
+            bulletPosY -= player.getHeight();
+            bulletDy -= BULLET_SPEED;
+        }
+
+        bullets.add(new Bullet(bulletPosX, bulletPosY, 5, 5, bulletDx, bulletDy, 50));
     }
 
     public Player getPlayer() {
