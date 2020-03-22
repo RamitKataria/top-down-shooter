@@ -208,7 +208,7 @@ public class GraphicalUI {
             game.fireBullet();
         } else if (event.getCode().equals(KeyCode.BACK_SPACE)) {
             game.getBullets().clear();
-        } else if (event.getCode().equals(KeyCode.P)) {
+        } else if (event.getCode().equals(KeyCode.ESCAPE)) {
             pauseGame();
         }
     }

@@ -45,3 +45,23 @@ to file.
 from file when the program starts.
 
 - As a user, I want to be able to delete the saved game.
+
+## Instructions for Grader
+
+Start the game by clicking on new game
+
+- You can generate the first required event by pressing space 
+bar. This will shoot (add to game) a bullet.  
+
+- You can generate the second required event by pressing
+backspace. This will remove all the bullets from the game.  
+
+- The entire canvas in which the game is being run a the
+visual component.  
+
+- You can save the state of my application by pressing escape
+to pause the game and then clicking on save game.  
+
+- You can reload the state of my application by clicking resume
+when the game launches. If you click resume after you already
+started the game, then it will unpause the current game.   
