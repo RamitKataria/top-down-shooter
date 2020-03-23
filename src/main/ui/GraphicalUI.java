@@ -102,7 +102,7 @@ public class GraphicalUI {
             savedGame = null;
         }
         if (savedGame == null) {
-            deleteGameButton = null;
+            deleteGameButton.setVisible(false);
             if (game == null || game.isOver()) {
                 resumeButton.setVisible(false);
             }
@@ -126,6 +126,7 @@ public class GraphicalUI {
     // EFFECTS: if a game is already running, unpause it, otherwise load game from saved game. If a saved game doesn't
     //          exist, start a new game
     public void handleResumeButton() {
+        System.out.println(2);
         if (game != null && game.isPaused()) {
             game.setPaused(false);
             dialog.setVisible(false);
@@ -133,6 +134,7 @@ public class GraphicalUI {
         } else {
             try {
                 game = Reader.readGame(GAME_SAVE_FILE);
+                System.out.println(1);
                 if (game == null) {
                     throw new Exception();
                 }
@@ -197,9 +199,9 @@ public class GraphicalUI {
     // EFFECTS: call appropriate handlers whenever a key is pressed
     private void handleKeyDown(KeyEvent event) {
         if (event.getCode().equals(KeyCode.DOWN) || event.getCode().equals(KeyCode.S)) {
-            player.updateVerticalMovingDirection(VerticalDirection.DOWN);
+            player.setVerticalMovingDirection(VerticalDirection.DOWN);
         } else if (event.getCode().equals(KeyCode.UP) || event.getCode().equals(KeyCode.W)) {
-            player.updateVerticalMovingDirection(VerticalDirection.UP);
+            player.setVerticalMovingDirection(VerticalDirection.UP);
         } else if (event.getCode().equals(KeyCode.RIGHT) || event.getCode().equals(KeyCode.D)) {
             player.setHorizontalMovingDirection(HorizontalDirection.RIGHT);
         } else if (event.getCode().equals(KeyCode.LEFT) || event.getCode().equals(KeyCode.A)) {
@@ -218,7 +220,7 @@ public class GraphicalUI {
     private void handleKeyUp(KeyEvent event) {
         if (event.getCode().equals(KeyCode.DOWN) || event.getCode().equals(KeyCode.S)
                 || event.getCode().equals(KeyCode.UP) || event.getCode().equals(KeyCode.W)) {
-            player.updateVerticalMovingDirection(null);
+            player.setVerticalMovingDirection(null);
         } else if (event.getCode().equals(KeyCode.RIGHT) || event.getCode().equals(KeyCode.D)
                 || event.getCode().equals(KeyCode.LEFT) || event.getCode().equals(KeyCode.A)) {
             player.setHorizontalMovingDirection(null);
@@ -263,6 +265,6 @@ public class GraphicalUI {
     // EFFECTS: draw the game on gc
     private void drawGame() {
         gc.clearRect(0, 0, 1080, 680);
-        game.draw(gc);
+        game.render(gc);
     }
 }

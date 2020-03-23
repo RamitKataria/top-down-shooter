@@ -36,6 +36,11 @@ public abstract class GameObject {
         return height;
     }
 
+    // only used for testing
+    public double getHp() {
+        return hp;
+    }
+
     // MODIFIES: this
     // EFFECTS: subtract the other's hp from this' hp
     public void hit(GameObject other) {

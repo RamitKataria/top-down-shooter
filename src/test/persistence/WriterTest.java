@@ -1,7 +1,18 @@
 package persistence;
 
+import model.*;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.io.File;
+import java.io.IOException;
+import java.util.List;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+
 public class WriterTest {
-    /*private static final File TEST_FILE = new File("./data/testing/testWriteFile.json");
+    private static final File TEST_FILE = new File("./data/testing/testWriteFile.json");
     private Writer writer;
     Game game;
     private List<Enemy> enemies;
@@ -16,25 +27,27 @@ public class WriterTest {
 
     @Test
     public void testWriteNewGame() {
+        game = new Game();
+        game.newGame();
         try {
-            writer.write(Reader.readGame(NEW_GAME_FILE));
+            writer.write(game);
             game = Reader.readGame(TEST_FILE);
 
             enemies = game.getEnemies();
             bullets = game.getBullets();
             walls = game.getWalls();
             player = game.getPlayer();
-            assertEquals(2, enemies.size());
+            assertEquals(3, enemies.size());
             assertEquals(0, bullets.size());
             assertEquals(1, walls.size());
 
-            assertEquals(250, player.getPosX());
-            assertEquals(250, player.getPosY());
-            assertEquals(1, player.getDx());
+            assertEquals(540, player.getPosX());
+            assertEquals(340, player.getPosY());
+            assertEquals(0, player.getDx());
             assertEquals(0, player.getDy());
 
             assertEquals(200, enemies.get(0).getPosX());
-            assertEquals(-180, enemies.get(0).getPosY());
+            assertEquals(180, enemies.get(0).getPosY());
             assertEquals(1, enemies.get(0).getDx());
             assertEquals(-1, enemies.get(0).getDy());
             assertEquals(270, enemies.get(1).getPosX());
@@ -78,5 +91,5 @@ public class WriterTest {
         } catch (IOException e) {
             fail("IOException should not have been thrown");
         }
-    }*/
+    }
 }

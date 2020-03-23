@@ -73,7 +73,7 @@ public class Player extends MovingObject {
 
     // MODIFIES: this
     // EFFECTS: sets the vertical moving direction and accordingly sets the facing direction
-    public void updateVerticalMovingDirection(VerticalDirection verticalMovingDirection) {
+    public void setVerticalMovingDirection(VerticalDirection verticalMovingDirection) {
         this.verticalMovingDirection = verticalMovingDirection;
 
         if (verticalMovingDirection != null && horizontalMovingDirection == null) {

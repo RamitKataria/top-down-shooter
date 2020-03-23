@@ -1,7 +1,15 @@
 package model;
 
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+
+import java.util.List;
+
+import static model.Game.*;
+import static org.junit.jupiter.api.Assertions.*;
+
 class GameTest {
-    /*private Game game;
+    private Game game;
     private List<Enemy> enemies;
     private List<Bullet> bullets;
     private List<Wall> walls;
@@ -9,11 +17,8 @@ class GameTest {
 
     @BeforeEach
     public void runBeforeEach() {
-        try {
-            game = Reader.readGame(NEW_GAME_FILE);
-        } catch (FileNotFoundException e) {
-            e.printStackTrace();
-        }
+        game = new Game();
+        game.newGame();
         player = game.getPlayer();
         enemies = game.getEnemies();
         walls = game.getWalls();
@@ -23,48 +28,42 @@ class GameTest {
     @Test
     public void testConstructors() {
         game = new Game();
-        assertEquals(Game.WIDTH / 2, player.getPosX());
-        assertEquals(Game.HEIGHT / 2, player.getPosY());
+        assertEquals(WIDTH / 2.0, player.getPosX());
+        assertEquals(HEIGHT / 2.0, player.getPosY());
         assertEquals(0, game.getEnemies().size());
         assertEquals(0, game.getBullets().size());
         assertEquals(0, game.getWalls().size());
-
-        Enemy testEnemy = new Enemy(10, 20, -2, 5);
-        assertEquals(10, testEnemy.getPosX());
-        assertEquals(20, testEnemy.getPosY());
-        assertEquals(-2, testEnemy.getDx());
-        assertEquals(5, testEnemy.getDy());
-
-        Wall testWall = new Wall(25, 53, 10, 20);
-        assertEquals(25, testWall.getPosX());
-        assertEquals(53, testWall.getPosY());
     }
 
     @Test
     public void testUpdate() {
+        game.setPaused(true);
+        assertFalse(game.update(10000000));
+
+        game.setPaused(false);
         game.fireBullet();
-        game.update();
-        assertEquals(Game.WIDTH / 2 + game.getPlayerVel(), player.getPosX());
-        assertEquals(Game.HEIGHT / 2, player.getPosY());
+        game.update(10000000);
+        assertEquals(WIDTH / 2 + game.getPlayer().getDx(), player.getPosX());
+        assertEquals(HEIGHT / 2, player.getPosY());
 
-        assertEquals(Game.WIDTH / 2 + player.getDx() * BULLET_SPEED, bullets.get(0).getPosX());
-        assertEquals(Game.HEIGHT / 2 + player.getDy() * BULLET_SPEED, bullets.get(0).getPosY());
+        assertEquals(550, bullets.get(0).getPosX());
+        assertEquals(326 + player.getDy() * BULLET_SPEED, bullets.get(0).getPosY());
 
-        assertEquals(201, enemies.get(0).getPosX());
-        assertEquals(-181, enemies.get(0).getPosY());
-        assertEquals(269, enemies.get(1).getPosX());
-        assertEquals(101, enemies.get(1).getPosY());
+        assertEquals(202, enemies.get(0).getPosX());
+        assertEquals(178, enemies.get(0).getPosY());
+        assertEquals(268, enemies.get(1).getPosX());
+        assertEquals(102, enemies.get(1).getPosY());
 
-        assertEquals(Game.WIDTH / 2 - 2, game.getWalls().get(0).getPosX());
-        assertEquals(Game.WIDTH / 2 + 2, game.getWalls().get(0).getPosY());
+        assertEquals(248, game.getWalls().get(0).getPosX());
+        assertEquals(252, game.getWalls().get(0).getPosY());
     }
 
     @Test
     public void testFireBullet() {
         game.fireBullet();
         assertEquals(1, bullets.size());
-        assertEquals(Game.WIDTH / 2, bullets.get(0).getPosX());
-        assertEquals(Game.HEIGHT / 2, bullets.get(0).getPosY());
+        assertEquals(550, bullets.get(0).getPosX());
+        assertEquals(330, bullets.get(0).getPosY());
     }
 
     @Test
@@ -73,5 +72,41 @@ class GameTest {
         player.setDy(-4);
         assertEquals(5, player.getDx());
         assertEquals(-4, player.getDy());
-    }*/
+    }
+
+    @Test
+    public void testGameOver() {
+        player.hit(new Bullet(10, 20, 50, 25, 2, -2, 100));
+        assertTrue(game.update(1));
+        assertTrue(game.isOver());
+    }
+
+    @Test
+    public void testGamePaused() {
+        game.setPaused(true);
+        assertTrue(game.isPaused());
+        game.setPaused(false);
+        assertFalse(game.isPaused());
+    }
+
+    @Test
+    public void testMultipleCycles() {
+        for (int i = 0; i < 100; i++) {
+            game.fireBullet();
+            game.update(10);
+        }
+        assertEquals(WIDTH / 2 + game.getPlayer().getDx(), player.getPosX());
+        assertEquals(HEIGHT / 2, player.getPosY());
+
+        assertEquals(550, bullets.get(0).getPosX());
+        assertEquals(2, bullets.get(0).getPosY());
+
+        assertEquals(400, enemies.get(0).getPosX());
+        assertEquals(660, enemies.get(0).getPosY());
+        assertEquals(70, enemies.get(1).getPosX());
+        assertEquals(300, enemies.get(1).getPosY());
+
+        assertEquals(248, game.getWalls().get(0).getPosX());
+        assertEquals(252, game.getWalls().get(0).getPosY());
+    }
 }

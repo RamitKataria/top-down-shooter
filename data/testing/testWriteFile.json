@@ -1,30 +1,55 @@
 {
+  "walls": [
+    {
+      "posX": 248.0,
+      "posY": 252.0,
+      "width": 100.0,
+      "height": 200.0,
+      "hp": 1000.0
+    }
+  ],
   "enemies": [
     {
-      "dx": 1,
-      "dy": -1,
-      "posX": 200,
-      "posY": -180
+      "dx": 1.0,
+      "dy": -1.0,
+      "posX": 200.0,
+      "posY": 180.0,
+      "width": 20.0,
+      "height": 20.0,
+      "hp": 50.0
     },
     {
-      "dx": -1,
-      "dy": 1,
-      "posX": 270,
-      "posY": 100
+      "dx": -1.0,
+      "dy": 1.0,
+      "posX": 270.0,
+      "posY": 100.0,
+      "width": 20.0,
+      "height": 20.0,
+      "hp": 50.0
+    },
+    {
+      "dx": 0.0,
+      "dy": 1.0,
+      "posX": 500.0,
+      "posY": 50.0,
+      "width": 20.0,
+      "height": 20.0,
+      "hp": 50.0
     }
   ],
   "bullets": [],
-  "walls": [
-    {
-      "posX": 248,
-      "posY": 252
-    }
-  ],
   "player": {
-    "dx": 1,
-    "dy": 0,
-    "posX": 250,
-    "posY": 250
+    "speed": 3.0,
+    "verticalFacingDirection": "UP",
+    "dx": 0.0,
+    "dy": 0.0,
+    "posX": 540.0,
+    "posY": 340.0,
+    "width": 20.0,
+    "height": 20.0,
+    "hp": 100.0
   },
-  "playerSpeed": 1
+  "timeElapsed": 0,
+  "isOver": false,
+  "isPaused": false
 }

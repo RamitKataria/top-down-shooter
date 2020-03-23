@@ -184,6 +184,14 @@ public class Game {
         return bullets;
     }
 
+    public List<Wall> getWalls() {
+        return walls;
+    }
+
+    public List<Enemy> getEnemies() {
+        return enemies;
+    }
+
     public boolean isOver() {
         return isOver;
     }
@@ -202,7 +210,7 @@ public class Game {
     }
 
     // EFFECTS: draw all the objects on gc
-    public void draw(GraphicsContext gc) {
+    public void render(GraphicsContext gc) {
         bullets.forEach(gameObject -> gameObject.render(gc));
         enemies.forEach(gameObject -> gameObject.render(gc));
         walls.forEach(gameObject -> gameObject.render(gc));
