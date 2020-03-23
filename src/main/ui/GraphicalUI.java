@@ -136,6 +136,14 @@ public class GraphicalUI {
                 if (game == null) {
                     throw new Exception();
                 }
+                dialog.setVisible(false);
+                game.setPaused(false);
+                dialog.setVisible(false);
+                canvas.setEffect(null);
+                player = game.getPlayer();
+                if (timer == null) {
+                    addTimer();
+                }
             } catch (Exception e) {
                 handleNewGameButton();
             }

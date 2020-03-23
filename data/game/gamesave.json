@@ -12,8 +12,8 @@
     {
       "dx": 1.0,
       "dy": -1.0,
-      "posX": 490.0,
-      "posY": 570.0,
+      "posX": 824.0,
+      "posY": 236.0,
       "width": 20.0,
       "height": 20.0,
       "hp": 50.0
@@ -21,17 +21,8 @@
     {
       "dx": -1.0,
       "dy": 1.0,
-      "posX": 1060.0,
-      "posY": 390.0,
-      "width": 20.0,
-      "height": 20.0,
-      "hp": 50.0
-    },
-    {
-      "dx": 0.0,
-      "dy": 1.0,
-      "posX": 500.0,
-      "posY": 340.0,
+      "posX": 726.0,
+      "posY": 44.0,
       "width": 20.0,
       "height": 20.0,
       "hp": 50.0
@@ -40,16 +31,16 @@
   "bullets": [],
   "player": {
     "speed": 3.0,
-    "verticalFacingDirection": "UP",
+    "horizontalFacingDirection": "RIGHT",
     "dx": 0.0,
     "dy": 0.0,
-    "posX": 540.0,
-    "posY": 340.0,
+    "posX": 726.0,
+    "posY": 280.0,
     "width": 20.0,
     "height": 20.0,
     "hp": 100.0
   },
-  "timeElapsed": 1910040600,
+  "timeElapsed": 4127493700,
   "isOver": false,
   "isPaused": true
 }
