@@ -126,7 +126,6 @@ public class GraphicalUI {
     // EFFECTS: if a game is already running, unpause it, otherwise load game from saved game. If a saved game doesn't
     //          exist, start a new game
     public void handleResumeButton() {
-        System.out.println(2);
         if (game != null && game.isPaused()) {
             game.setPaused(false);
             dialog.setVisible(false);
@@ -134,7 +133,6 @@ public class GraphicalUI {
         } else {
             try {
                 game = Reader.readGame(GAME_SAVE_FILE);
-                System.out.println(1);
                 if (game == null) {
                     throw new Exception();
                 }
