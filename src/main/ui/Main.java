@@ -37,7 +37,7 @@ public class Main extends Application {
         primaryStage.setTitle("Game");
         primaryStage.setScene(new Scene(root, 1080, 720));
         GraphicalUI controller = loader.getController();
-        controller.setUp(primaryStage);
+        controller.setUpUI(primaryStage);
         primaryStage.show();
     }
 }

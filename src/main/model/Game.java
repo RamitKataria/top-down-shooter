@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import javafx.geometry.HorizontalDirection;
 import javafx.geometry.VerticalDirection;
 import javafx.scene.canvas.GraphicsContext;
+import model.exceptions.GameOverException;
 import persistence.Saveable;
 
 import java.io.FileWriter;
@@ -23,7 +24,6 @@ public class Game implements Saveable {
     private List<Bullet> bullets;
     private Player player;
     private long timeElapsed;
-    private boolean isPaused;
 
     // EFFECTS: constructs a new game with only the player
     public Game() {
@@ -31,7 +31,6 @@ public class Game implements Saveable {
         walls = new ArrayList<>();
         enemies = new ArrayList<>();
         bullets = new ArrayList<>();
-        isPaused = false;
         timeElapsed = 0;
     }
 
@@ -46,7 +45,6 @@ public class Game implements Saveable {
         enemies.add(new Enemy(270, 100, 20, 20, -1, 1, 50));
         enemies.add(new Enemy(500, 50, 20, 20, 0, 1, 50));
         walls.add(new Wall(248, 252, 100, 200, 1000));
-
     }
 
     public void start() {
@@ -55,15 +53,15 @@ public class Game implements Saveable {
 
     // MODIFIES: this
     // EFFECTS: updates all the moving objects and returns true if game is over, otherwise false
-    public void update() {
-        /*if (player.isDead()) {
+    public void update(long deltaTime) throws GameOverException {
+        if (player.isDead()) {
             throw new GameOverException();
-        }*/
+        }
         updateMovingObjects(enemies);
         updateMovingObjects(bullets);
         player.update();
         manageCollisions();
-        //timeElapsed += deltaTime;
+        timeElapsed += deltaTime;
     }
 
     // MODIFIES: this
@@ -91,7 +89,7 @@ public class Game implements Saveable {
     private void bulletCollisions() {
         List<Bullet> toRemove = new ArrayList<>();
         for (Bullet bullet : bullets) {
-            boolean hit = isHitEnemies(bullet, false);
+            boolean hit = isHitEnemies(bullet);
             hit = isHitWalls(bullet, hit);
 
             if (!hit && player.intersects(bullet)) {
@@ -121,7 +119,8 @@ public class Game implements Saveable {
 
     // MODIFIES: this, bullet
     // EFFECTS: hit the enemies that intersect the bullet and return true if the bullet hit something
-    private boolean isHitEnemies(Bullet bullet, boolean hit) {
+    private boolean isHitEnemies(Bullet bullet) {
+        boolean hit = false;
         for (Enemy enemy : enemies) {
             if (bullet.intersects(enemy)) {
                 enemy.hit(bullet);
@@ -188,14 +187,6 @@ public class Game implements Saveable {
 
     public List<Enemy> getEnemies() {
         return enemies;
-    }
-
-    public boolean isPaused() {
-        return isPaused;
-    }
-
-    public void setPaused(boolean isPaused) {
-        this.isPaused = isPaused;
     }
 
     public void save(FileWriter fileWriter) {

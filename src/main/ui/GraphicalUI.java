@@ -19,6 +19,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Game;
 import model.Player;
+import model.exceptions.GameOverException;
+import model.exceptions.SavedGameNotFoundException;
 import persistence.Reader;
 import persistence.Writer;
 
@@ -31,8 +33,7 @@ import java.util.Observable;
 public class GraphicalUI extends Observable {
     public static final File GAME_SAVE_FILE = new File("./data/GameSave.json");
     private Game game;
-    private boolean gameIsOver;
-    private Player player;
+    private boolean isGamePaused;
     private long prevTime;
     private GameRenderer gameRenderer;
 
@@ -61,7 +62,7 @@ public class GraphicalUI extends Observable {
 
     // this method is required by FXML
     // MODIFIES: this
-    // EFFECTS: set gc from graphics context of canvas
+    // EFFECTS: TODO
     @FXML
     private void initialize() {
         gameRenderer = new GameRenderer(canvas.getGraphicsContext2D(), game);
@@ -70,7 +71,7 @@ public class GraphicalUI extends Observable {
 
     // MODIFIES: this
     // EFFECTS: initial set up of windows and event handlers
-    public void setUp(Stage primaryStage) throws IOException {
+    public void setUpUI(Stage primaryStage) throws IOException {
         this.primaryStage = primaryStage;
         Scene scene = primaryStage.getScene();
         primaryStage.setOnCloseRequest(event -> {
@@ -79,7 +80,6 @@ public class GraphicalUI extends Observable {
         });
         scene.setOnKeyPressed(this::handleKeyDown);
         scene.setOnKeyReleased(this::handleKeyUp);
-
         setUpConfirmBox();
     }
 
@@ -97,7 +97,7 @@ public class GraphicalUI extends Observable {
     }
 
     // MODIFIES: this
-    // EFFECTS: change the visibility of the resume and delete game based on current situation
+    // EFFECTS: change the visibility of buttons based on current state
     private void checkSaveGame() {
         Game savedGame;
         try {
@@ -119,11 +119,21 @@ public class GraphicalUI extends Observable {
     // MODIFIES: this
     // EFFECTS: pause the game the set the UI accordingly
     private void pauseGame() {
-        dialog.setVisible(true);
-        game.setPaused(true);
-        canvas.setEffect(new GaussianBlur(50));
+        changeUIForStoppedGame();
         statusLabel.setText("Game Paused");
+    }
+
+    private void changeUIForStoppedGame() {
+        isGamePaused = true;
+        dialog.setVisible(true);
+        canvas.setEffect(new GaussianBlur(50));
         checkSaveGame();
+    }
+
+    private void changeUIForRunningGame() {
+        dialog.setVisible(false);
+        canvas.setEffect(null);
+        isGamePaused = false;
     }
 
     // MODIFIES: this
@@ -134,21 +144,24 @@ public class GraphicalUI extends Observable {
             try {
                 game = Reader.readGame(GAME_SAVE_FILE);
                 if (game == null) {
-                    throw new Exception();
+                    throw new SavedGameNotFoundException();
                 }
-                player = game.getPlayer();
-                if (timer == null) {
-                    addTimer();
-                }
-                setChanged();
-                notifyObservers(game);
-            } catch (Exception e) {
-                handleNewGameButton();
+                runGame();
+            } catch (SavedGameNotFoundException e) {
+                // TODO 1
+            } catch (FileNotFoundException e) {
+                // TODO 2
             }
+        } else {
+            runGame();
         }
-        dialog.setVisible(false);
-        canvas.setEffect(null);
-        game.setPaused(false);
+        changeUIForRunningGame();
+    }
+
+    private void runGame() {
+        startTimer();
+        setChanged();
+        notifyObservers(game);
     }
 
     // MODIFIES: this
@@ -156,15 +169,8 @@ public class GraphicalUI extends Observable {
     public void handleNewGameButton() {
         game = new Game();
         game.newGame();
-        game.setPaused(false);
-        dialog.setVisible(false);
-        canvas.setEffect(null);
-        player = game.getPlayer();
-        setChanged();
-        notifyObservers(game);
-        if (timer == null) {
-            addTimer();
-        }
+        changeUIForRunningGame();
+        runGame();
     }
 
     // MODIFIES: this
@@ -174,11 +180,9 @@ public class GraphicalUI extends Observable {
             new Writer(GAME_SAVE_FILE).write(game);
             statusLabel.setText("Game Saved");
         } catch (IOException e) {
-            e.printStackTrace();
             statusLabel.setText("Game save failed!");
-        } finally {
-            checkSaveGame();
         }
+        checkSaveGame();
     }
 
     // MODIFIES: this
@@ -187,25 +191,16 @@ public class GraphicalUI extends Observable {
         boolean success = false;
         try {
             success = new Writer(GAME_SAVE_FILE).deleteSaveFile();
+            if (!success) {
+                throw new IOException();
+            }
         } catch (IOException e) {
-            updateUIForDeleteFailed();
+            statusLabel.setText("Deletion failed!");
         }
         if (success) {
             statusLabel.setText("Game deleted");
-            deleteGameButton.setVisible(false);
-            resumeButton.setVisible(false);
-        } else {
-            updateUIForDeleteFailed();
         }
         checkSaveGame();
-    }
-
-    public Game getGame() {
-        return game;
-    }
-
-    private void updateUIForDeleteFailed() {
-        statusLabel.setText("Deletion failed!");
     }
 
     // MODIFIES: this
@@ -219,6 +214,7 @@ public class GraphicalUI extends Observable {
     // MODIFIES: this
     // EFFECTS: call appropriate handlers whenever a key is pressed
     private void handleKeyDown(KeyEvent event) {
+        Player player = game.getPlayer();
         if (event.getCode().equals(KeyCode.DOWN) || event.getCode().equals(KeyCode.S)) {
             player.setVerticalMovingDirection(VerticalDirection.DOWN);
         } else if (event.getCode().equals(KeyCode.UP) || event.getCode().equals(KeyCode.W)) {
@@ -239,6 +235,7 @@ public class GraphicalUI extends Observable {
     // MODIFIES: this
     // EFFECTS: call appropriate methods whenever a key is unpressed
     private void handleKeyUp(KeyEvent event) {
+        Player player = game.getPlayer();
         if (event.getCode().equals(KeyCode.DOWN) || event.getCode().equals(KeyCode.S)
                 || event.getCode().equals(KeyCode.UP) || event.getCode().equals(KeyCode.W)) {
             player.setVerticalMovingDirection(null);
@@ -251,26 +248,32 @@ public class GraphicalUI extends Observable {
     // MODIFIES: this
     // EFFECTS: change UI after game is over
     private void handleGameOver() {
-        dialog.setVisible(true);
-        resumeButton.setVisible(false);
-        game.setPaused(true);
-        canvas.setEffect(new GaussianBlur(50));
+        timer.stop();
+        changeUIForStoppedGame();
         statusLabel.setText("Game Over");
         checkSaveGame();
     }
 
     // MODIFIES: this
     // EFFECTS: add the animation timer
-    private void addTimer() {
-        //prevTime = System.nanoTime();
-        timer = new AnimationTimer() {
-            public void handle(long currentNanoTime) {
-                //prevTime = currentNanoTime;
-                gameRenderer.drawGame();
-                updateTimeLabel();
-                game.update();
-            }
-        };
+    private void startTimer() {
+        if (timer == null) {
+            prevTime = System.nanoTime();
+            timer = new AnimationTimer() {
+                public void handle(long currentNanoTime) {
+                    if (!isGamePaused) {
+                        try {
+                            game.update(currentNanoTime - prevTime);
+                        } catch (GameOverException e) {
+                            handleGameOver();
+                        }
+                        prevTime = currentNanoTime;
+                        gameRenderer.drawGame();
+                        updateTimeLabel();
+                    }
+                }
+            };
+        }
         timer.start();
     }
 
@@ -279,6 +282,4 @@ public class GraphicalUI extends Observable {
     private void updateTimeLabel() {
         timeLabel.setText("Time Elapsed: " + (game.getTimeElapsed() / 1000000000) + "s");
     }
-
-
 }
