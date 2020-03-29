@@ -22,16 +22,19 @@ import model.Player;
 import persistence.Reader;
 import persistence.Writer;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-
-import static model.Game.GAME_SAVE_FILE;
+import java.util.Observable;
 
 // represents controller for GameLayout
-public class GraphicalUI {
+public class GraphicalUI extends Observable {
+    public static final File GAME_SAVE_FILE = new File("./data/GameSave.json");
     private Game game;
+    private boolean gameIsOver;
     private Player player;
     private long prevTime;
+    private GameRenderer gameRenderer;
 
     private GraphicsContext gc;
     private Stage primaryStage;
@@ -61,7 +64,8 @@ public class GraphicalUI {
     // EFFECTS: set gc from graphics context of canvas
     @FXML
     private void initialize() {
-        gc = canvas.getGraphicsContext2D();
+        gameRenderer = new GameRenderer(canvas.getGraphicsContext2D(), game);
+        addObserver(gameRenderer);
     }
 
     // MODIFIES: this
@@ -103,7 +107,7 @@ public class GraphicalUI {
         }
         if (savedGame == null) {
             deleteGameButton.setVisible(false);
-            if (game == null || game.isOver()) {
+            if (game == null) {
                 resumeButton.setVisible(false);
             }
         } else {
@@ -126,28 +130,25 @@ public class GraphicalUI {
     // EFFECTS: if a game is already running, unpause it, otherwise load game from saved game. If a saved game doesn't
     //          exist, start a new game
     public void handleResumeButton() {
-        if (game != null && game.isPaused()) {
-            game.setPaused(false);
-            dialog.setVisible(false);
-            canvas.setEffect(null);
-        } else {
+        if (game == null) {
             try {
                 game = Reader.readGame(GAME_SAVE_FILE);
                 if (game == null) {
                     throw new Exception();
                 }
-                dialog.setVisible(false);
-                game.setPaused(false);
-                dialog.setVisible(false);
-                canvas.setEffect(null);
                 player = game.getPlayer();
                 if (timer == null) {
                     addTimer();
                 }
+                setChanged();
+                notifyObservers(game);
             } catch (Exception e) {
                 handleNewGameButton();
             }
         }
+        dialog.setVisible(false);
+        canvas.setEffect(null);
+        game.setPaused(false);
     }
 
     // MODIFIES: this
@@ -155,11 +156,12 @@ public class GraphicalUI {
     public void handleNewGameButton() {
         game = new Game();
         game.newGame();
-        dialog.setVisible(false);
         game.setPaused(false);
         dialog.setVisible(false);
         canvas.setEffect(null);
         player = game.getPlayer();
+        setChanged();
+        notifyObservers(game);
         if (timer == null) {
             addTimer();
         }
@@ -182,15 +184,28 @@ public class GraphicalUI {
     // MODIFIES: this
     // EFFECTS: delete saved game and update UI accordingly
     public void handleDeleteGameButton() {
-        boolean success = GAME_SAVE_FILE.delete();
+        boolean success = false;
+        try {
+            success = new Writer(GAME_SAVE_FILE).deleteSaveFile();
+        } catch (IOException e) {
+            updateUIForDeleteFailed();
+        }
         if (success) {
             statusLabel.setText("Game deleted");
             deleteGameButton.setVisible(false);
             resumeButton.setVisible(false);
         } else {
-            statusLabel.setText("Deletion failed!");
+            updateUIForDeleteFailed();
         }
         checkSaveGame();
+    }
+
+    public Game getGame() {
+        return game;
+    }
+
+    private void updateUIForDeleteFailed() {
+        statusLabel.setText("Deletion failed!");
     }
 
     // MODIFIES: this
@@ -247,15 +262,13 @@ public class GraphicalUI {
     // MODIFIES: this
     // EFFECTS: add the animation timer
     private void addTimer() {
-        prevTime = System.nanoTime();
+        //prevTime = System.nanoTime();
         timer = new AnimationTimer() {
             public void handle(long currentNanoTime) {
-                if (game.update(currentNanoTime - prevTime)) {
-                    handleGameOver();
-                }
-                prevTime = currentNanoTime;
-                drawGame();
+                //prevTime = currentNanoTime;
+                gameRenderer.drawGame();
                 updateTimeLabel();
+                game.update();
             }
         };
         timer.start();
@@ -267,10 +280,5 @@ public class GraphicalUI {
         timeLabel.setText("Time Elapsed: " + (game.getTimeElapsed() / 1000000000) + "s");
     }
 
-    // MODIFIES: this
-    // EFFECTS: draw the game on gc
-    private void drawGame() {
-        gc.clearRect(0, 0, 1080, 680);
-        game.render(gc);
-    }
+
 }

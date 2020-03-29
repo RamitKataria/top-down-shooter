@@ -4,8 +4,8 @@ import com.google.gson.Gson;
 import javafx.geometry.HorizontalDirection;
 import javafx.geometry.VerticalDirection;
 import javafx.scene.canvas.GraphicsContext;
+import persistence.Saveable;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.util.ArrayList;
 import java.util.List;
@@ -13,27 +13,24 @@ import java.util.List;
 /*
  * Represents the game
  */
-public class Game {
-    public static final File GAME_SAVE_FILE = new File("./data/game/gamesave.json");
+public class Game implements Saveable {
     public static final int WIDTH = 1080;
     public static final int HEIGHT = 680;
-    public static int BULLET_SPEED = 4;
+    public static int BULLET_SPEED = 7;
 
     private List<Wall> walls;
     private List<Enemy> enemies;
     private List<Bullet> bullets;
     private Player player;
     private long timeElapsed;
-    private boolean isOver;
     private boolean isPaused;
 
     // EFFECTS: constructs a new game with only the player
     public Game() {
-        player = new Player(WIDTH / 2.0, HEIGHT / 2.0, 20, 20, 3);
+        player = new Player(WIDTH / 2.0, HEIGHT / 2.0, 20, 20, 0);
         walls = new ArrayList<>();
         enemies = new ArrayList<>();
         bullets = new ArrayList<>();
-        isOver = false;
         isPaused = false;
         timeElapsed = 0;
     }
@@ -44,28 +41,29 @@ public class Game {
         enemies.clear();
         walls.clear();
         bullets.clear();
-        player = new Player(WIDTH / 2.0, HEIGHT / 2.0, 20, 20, 3);
+        player = new Player(WIDTH / 2.0, HEIGHT / 2.0, 20, 20, 2);
         enemies.add(new Enemy(200, 180, 20, 20, 1, -1, 50));
         enemies.add(new Enemy(270, 100, 20, 20, -1, 1, 50));
         enemies.add(new Enemy(500, 50, 20, 20, 0, 1, 50));
         walls.add(new Wall(248, 252, 100, 200, 1000));
+
+    }
+
+    public void start() {
+
     }
 
     // MODIFIES: this
     // EFFECTS: updates all the moving objects and returns true if game is over, otherwise false
-    public boolean update(long deltaTime) {
-        if (!isPaused) {
-            updateMovingObjects(enemies);
-            updateMovingObjects(bullets);
-            player.update();
-            manageCollisions();
-            timeElapsed += deltaTime;
-            if (player.isDead()) {
-                isOver = true;
-                return true;
-            }
-        }
-        return false;
+    public void update() {
+        /*if (player.isDead()) {
+            throw new GameOverException();
+        }*/
+        updateMovingObjects(enemies);
+        updateMovingObjects(bullets);
+        player.update();
+        manageCollisions();
+        //timeElapsed += deltaTime;
     }
 
     // MODIFIES: this
@@ -192,10 +190,6 @@ public class Game {
         return enemies;
     }
 
-    public boolean isOver() {
-        return isOver;
-    }
-
     public boolean isPaused() {
         return isPaused;
     }
@@ -204,7 +198,6 @@ public class Game {
         this.isPaused = isPaused;
     }
 
-    // EFFECTS: Send the current game data to fileWriter
     public void save(FileWriter fileWriter) {
         new Gson().toJson(this, fileWriter);
     }

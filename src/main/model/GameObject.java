@@ -12,12 +12,12 @@ public abstract class GameObject {
     protected double hp;
 
     // EFFECTS: constructs a game object
-    public GameObject(double posX, double posY, double width, double height, double hp) {
+    public GameObject(double posX, double posY, double width, double height, double maxHp) {
         this.posX = posX;
         this.posY = posY;
         this.width = width;
         this.height = height;
-        this.hp = hp;
+        this.hp = maxHp;
     }
 
     public double getPosX() {

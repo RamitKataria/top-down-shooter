@@ -1,4 +1,4 @@
-package model;
+/*package model;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -109,4 +109,4 @@ class GameTest {
         assertEquals(248, game.getWalls().get(0).getPosX());
         assertEquals(252, game.getWalls().get(0).getPosY());
     }
-}
+}*/

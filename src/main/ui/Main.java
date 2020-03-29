@@ -14,6 +14,7 @@ public class Main extends Application {
         //new ConsoleUI();
     }
 
+    // EFFECTS: Load the layout and set up the stage, scene and controller
     /**
      * The main entry point for all JavaFX applications.
      * The start method is called after the init method has returned,
