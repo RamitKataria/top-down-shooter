@@ -10,7 +10,7 @@ import java.util.List;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.fail;
 
-public class ReaderTest {
+public class GameReaderTest {
     private Game game;
     private List<Enemy> enemies;
     private List<Bullet> bullets;
@@ -20,7 +20,7 @@ public class ReaderTest {
     @Test
     public void testParseSampleFile() {
         try {
-            game = Reader.readGame(new File("./data/testing/sampleGame.json"));
+            game = GameReader.read(new File("./data/testing/sampleGame.json"));
             enemies = game.getEnemies();
             bullets = game.getBullets();
             walls = game.getWalls();
@@ -48,7 +48,7 @@ public class ReaderTest {
     @Test
     public void testFileNotFound() {
         try {
-            game = Reader.readGame(new File("./data/dne/testFile.json"));
+            game = GameReader.read(new File("./data/dne/testFile.json"));
             fail("FileNotFoundException should have been thrown");
         } catch (FileNotFoundException e) {
             // nothing
@@ -57,6 +57,6 @@ public class ReaderTest {
 
     @Test
     public void testToCoverReaderClassName() {
-        new Reader();
+        new GameReader();
     }
 }

@@ -25,7 +25,7 @@
         <Canvas fx:id="canvas" height="680" width="1080" VBox.vgrow="NEVER"/>
     </VBox>
 
-    <VBox fx:id="dialog" alignment="CENTER" prefHeight="73.0" prefWidth="278.0" spacing="50.0">
+    <VBox fx:id="dialog" alignment="CENTER" prefHeight="73.0" prefWidth="278.0" spacing="50.0" visible="false">
 
         <fx:define>
             <Font size="36.0" fx:id="pButtonsFont"/>
@@ -34,16 +34,16 @@
         <Label alignment="CENTER" fx:id="statusLabel" font="$pButtonsFont"/>
 
         <Button alignment="CENTER" text="Resume" font="$pButtonsFont" fx:id="resumeButton"
-                onAction="#handleResumeButton"/>
+                onAction="#handleResumeButton" visible="false" prefWidth="500"/>
 
-        <Button alignment="CENTER" text="New Game" font="$pButtonsFont" fx:id="newGameButton"
-                onAction="#handleNewGameButton"/>
+        <Button alignment="CENTER" text="New Game" font="$pButtonsFont"
+                onAction="#handleNewGameButton" prefWidth="500"/>
 
-        <Button alignment="CENTER" text="Save Game" font="$pButtonsFont" fx:id="saveGameButton"
-                onAction="#handleSaveGameButton"/>
+        <Button alignment="CENTER" text="Save Game" font="$pButtonsFont"
+                onAction="#handleSaveGameButton" prefWidth="500"/>
 
-        <Button alignment="CENTER" text="Delete Saved Game" font="$pButtonsFont" fx:id="deleteGameButton"
-                onAction="#handleDeleteGameButton" visible="false"/>
+        <Button alignment="CENTER" text="Load Saved Game" font="$pButtonsFont" fx:id="loadGameButton"
+                onAction="#handleLoadGameButton" visible="false" prefWidth="500"/>
 
     </VBox>
 

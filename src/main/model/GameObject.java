@@ -1,7 +1,6 @@
 package model;
 
 import javafx.geometry.Rectangle2D;
-import javafx.scene.canvas.GraphicsContext;
 
 // represents a generic game object
 public abstract class GameObject {
@@ -9,6 +8,7 @@ public abstract class GameObject {
     protected double posY;
     protected double width;
     protected double height;
+    protected final double maxHp;
     protected double hp;
 
     // EFFECTS: constructs a game object
@@ -17,6 +17,7 @@ public abstract class GameObject {
         this.posY = posY;
         this.width = width;
         this.height = height;
+        this.maxHp = maxHp;
         this.hp = maxHp;
     }
 
@@ -36,15 +37,21 @@ public abstract class GameObject {
         return height;
     }
 
-    // only used for testing
+    // only for testing
     public double getHp() {
         return hp;
+    }
+
+    public double getHpFraction() {
+        return hp / maxHp;
     }
 
     // MODIFIES: this
     // EFFECTS: subtract the other's hp from this' hp
     public void hit(GameObject other) {
-        hp -= other.hp;
+        if (!other.equals(this)) {
+            hp -= other.hp;
+        }
     }
 
     // EFFECTS: returns the x value of the centre of object as opposed to the leftmost x value
@@ -73,8 +80,4 @@ public abstract class GameObject {
     protected Rectangle2D getBounds() {
         return new Rectangle2D(posX, posY, width, height);
     }
-
-    // MODIFIES: gc
-    // EFFECTS: fill the Graphics Context with appropriate shape and color
-    protected abstract void render(GraphicsContext gc);
 }

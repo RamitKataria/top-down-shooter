@@ -2,8 +2,6 @@ package model;
 
 import javafx.geometry.HorizontalDirection;
 import javafx.geometry.VerticalDirection;
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
 
 // Represents the player of the game
 public class Player extends MovingObject {
@@ -94,13 +92,5 @@ public class Player extends MovingObject {
         } else {
             dy = 0;
         }
-    }
-
-    // MODIFIES: gc
-    // EFFECTS: fill the Graphics Context with a cyan square at the player position
-    @Override
-    protected void render(GraphicsContext gc) {
-        gc.setFill(new Color(92 / 255.0, 237 / 255.0, 237 / 255.0, 1));
-        gc.fillRect(posX, posY, width, height);
     }
 }

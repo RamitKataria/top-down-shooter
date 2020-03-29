@@ -20,9 +20,9 @@ import javafx.stage.Stage;
 import model.Game;
 import model.Player;
 import model.exceptions.GameOverException;
-import model.exceptions.SavedGameNotFoundException;
-import persistence.Reader;
+import persistence.GameReader;
 import persistence.Writer;
+import ui.confirmbox.ConfirmBox;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -33,6 +33,7 @@ import java.util.Observable;
 public class GraphicalUI extends Observable {
     public static final File GAME_SAVE_FILE = new File("./data/GameSave.json");
     private Game game;
+    private Game savedGame;
     private boolean isGamePaused;
     private long prevTime;
     private GameRenderer gameRenderer;
@@ -50,7 +51,7 @@ public class GraphicalUI extends Observable {
     @FXML
     private Button resumeButton;
     @FXML
-    private Button deleteGameButton;
+    private Button loadGameButton;
     @FXML
     private Label timeLabel;
     @FXML
@@ -81,12 +82,14 @@ public class GraphicalUI extends Observable {
         scene.setOnKeyPressed(this::handleKeyDown);
         scene.setOnKeyReleased(this::handleKeyUp);
         setUpConfirmBox();
+
+        showDialog();
     }
 
     // MODIFIES: this
     // EFFECTS: initial set up of confirm box
     private void setUpConfirmBox() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("ConfirmBox.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getResource("confirmbox/ConfirmBox.fxml"));
         Parent root = loader.load();
         confirmStage = new Stage();
         confirmStage.initModality(Modality.APPLICATION_MODAL);
@@ -97,43 +100,52 @@ public class GraphicalUI extends Observable {
     }
 
     // MODIFIES: this
-    // EFFECTS: change the visibility of buttons based on current state
-    private void checkSaveGame() {
-        Game savedGame;
-        try {
-            savedGame = Reader.readGame(GAME_SAVE_FILE);
-        } catch (FileNotFoundException e) {
-            savedGame = null;
-        }
-        if (savedGame == null) {
-            deleteGameButton.setVisible(false);
-            if (game == null) {
-                resumeButton.setVisible(false);
-            }
+    // EFFECTS: pause the game the set the UI accordingly
+    private void managePauseGame() {
+        if (isGamePaused) {
+            handleResumeButton();
         } else {
-            deleteGameButton.setVisible(true);
+            isGamePaused = true;
+            showDialog();
+            statusLabel.setText("Game Paused");
+        }
+    }
+
+    private void showDialog() {
+        savedGame = getSavedGame();
+        manageLoadGameButtonVisibility();
+        manageResumeButtonVisibility();
+        dialog.setVisible(true);
+        canvas.setEffect(new GaussianBlur(50));
+    }
+
+    private void manageResumeButtonVisibility() {
+        if (game == null) {
+            resumeButton.setVisible(false);
+        } else {
             resumeButton.setVisible(true);
         }
     }
 
-    // MODIFIES: this
-    // EFFECTS: pause the game the set the UI accordingly
-    private void pauseGame() {
-        changeUIForStoppedGame();
-        statusLabel.setText("Game Paused");
+    private void manageLoadGameButtonVisibility() {
+        if (savedGame == null) {
+            loadGameButton.setVisible(false);
+        } else {
+            loadGameButton.setVisible(true);
+        }
     }
 
-    private void changeUIForStoppedGame() {
-        isGamePaused = true;
-        dialog.setVisible(true);
-        canvas.setEffect(new GaussianBlur(50));
-        checkSaveGame();
-    }
-
-    private void changeUIForRunningGame() {
+    private void hideDialog() {
         dialog.setVisible(false);
         canvas.setEffect(null);
-        isGamePaused = false;
+    }
+
+    private Game getSavedGame() {
+        try {
+            return GameReader.read(GAME_SAVE_FILE);
+        } catch (FileNotFoundException e) {
+            return null;
+        }
     }
 
     // MODIFIES: this
@@ -141,35 +153,35 @@ public class GraphicalUI extends Observable {
     //          exist, start a new game
     public void handleResumeButton() {
         if (game == null) {
-            try {
-                game = Reader.readGame(GAME_SAVE_FILE);
-                if (game == null) {
-                    throw new SavedGameNotFoundException();
-                }
-                runGame();
-            } catch (SavedGameNotFoundException e) {
-                // TODO 1
-            } catch (FileNotFoundException e) {
-                // TODO 2
-            }
+            resumeButton.setVisible(false);
+            statusLabel.setText("Error: No game currently running");
+            return;
         } else {
             runGame();
         }
-        changeUIForRunningGame();
+        hideDialog();
+    }
+
+    public void handleLoadGameButton() {
+        game = savedGame;
+        savedGame = null;
+        hideDialog();
+        runGame();
     }
 
     private void runGame() {
-        startTimer();
+        isGamePaused = false;
         setChanged();
         notifyObservers(game);
+        startTimer();
     }
 
     // MODIFIES: this
     // EFFECTS: make a new game and set the UI accordingly
     public void handleNewGameButton() {
         game = new Game();
-        game.newGame();
-        changeUIForRunningGame();
+        game.initializeObjects();
+        hideDialog();
         runGame();
     }
 
@@ -182,25 +194,6 @@ public class GraphicalUI extends Observable {
         } catch (IOException e) {
             statusLabel.setText("Game save failed!");
         }
-        checkSaveGame();
-    }
-
-    // MODIFIES: this
-    // EFFECTS: delete saved game and update UI accordingly
-    public void handleDeleteGameButton() {
-        boolean success = false;
-        try {
-            success = new Writer(GAME_SAVE_FILE).deleteSaveFile();
-            if (!success) {
-                throw new IOException();
-            }
-        } catch (IOException e) {
-            statusLabel.setText("Deletion failed!");
-        }
-        if (success) {
-            statusLabel.setText("Game deleted");
-        }
-        checkSaveGame();
     }
 
     // MODIFIES: this
@@ -228,7 +221,7 @@ public class GraphicalUI extends Observable {
         } else if (event.getCode().equals(KeyCode.BACK_SPACE)) {
             game.getBullets().clear();
         } else if (event.getCode().equals(KeyCode.ESCAPE)) {
-            pauseGame();
+            managePauseGame();
         }
     }
 
@@ -249,9 +242,11 @@ public class GraphicalUI extends Observable {
     // EFFECTS: change UI after game is over
     private void handleGameOver() {
         timer.stop();
-        changeUIForStoppedGame();
+        game = null;
+        setChanged();
+        notifyObservers();
         statusLabel.setText("Game Over");
-        checkSaveGame();
+        showDialog();
     }
 
     // MODIFIES: this
@@ -262,14 +257,14 @@ public class GraphicalUI extends Observable {
             timer = new AnimationTimer() {
                 public void handle(long currentNanoTime) {
                     if (!isGamePaused) {
+                        updateTimeLabel();
                         try {
                             game.update(currentNanoTime - prevTime);
+                            gameRenderer.renderGame();
                         } catch (GameOverException e) {
                             handleGameOver();
                         }
                         prevTime = currentNanoTime;
-                        gameRenderer.drawGame();
-                        updateTimeLabel();
                     }
                 }
             };

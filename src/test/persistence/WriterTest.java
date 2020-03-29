@@ -28,10 +28,10 @@ public class WriterTest {
     @Test
     public void testWriteNewGame() {
         game = new Game();
-        game.newGame();
+        game.initializeObjects();
         try {
             writer.write(game);
-            game = Reader.readGame(TEST_FILE);
+            game = GameReader.read(TEST_FILE);
 
             enemies = game.getEnemies();
             bullets = game.getBullets();
@@ -67,8 +67,8 @@ public class WriterTest {
     @Test
     public void testWriteSampleFile() {
         try {
-            writer.write(Reader.readGame(new File("./data/testing/sampleGame.json")));
-            game = Reader.readGame(TEST_FILE);
+            writer.write(GameReader.read(new File("./data/testing/sampleGame.json")));
+            game = GameReader.read(TEST_FILE);
 
             enemies = game.getEnemies();
             bullets = game.getBullets();

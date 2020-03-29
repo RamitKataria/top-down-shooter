@@ -1,8 +1,5 @@
 package model;
 
-import javafx.scene.canvas.GraphicsContext;
-import javafx.scene.paint.Color;
-
 import static model.Game.HEIGHT;
 import static model.Game.WIDTH;
 
@@ -32,14 +29,6 @@ public class Bullet extends MovingObject {
     public void bounce() {
         dx *= -1;
         dy *= -1;
-    }
-
-    // MODIFIES: gc
-    // EFFECTS: fill gc with a small dot at position of this
-    @Override
-    protected void render(GraphicsContext gc) {
-        gc.setFill(new Color(2 / 255.0, 44 / 255.0, 250 / 255.0, 1));
-        gc.fillOval(posX, posY, width, width);
     }
 
     // EFFECTS: return true if this is out of bounds, otherwise false

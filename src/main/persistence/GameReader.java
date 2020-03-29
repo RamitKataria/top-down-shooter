@@ -7,14 +7,14 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 
-public class Reader {
+public class GameReader {
 
     // EFFECTS: dummy constructor for autobot to fo through the class name
-    public Reader() {
+    public GameReader() {
     }
 
     // EFFECTS: read saved game from file and return it
-    public static Game readGame(File file) throws FileNotFoundException {
+    public static Game read(File file) throws FileNotFoundException {
         return new Gson().fromJson(new FileReader(file), Game.class);
     }
 }

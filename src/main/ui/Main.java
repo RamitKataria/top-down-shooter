@@ -10,8 +10,6 @@ public class Main extends Application {
 
     public static void main(String[] args) {
         launch(args);
-        // uncomment the next line and comment the previous to use Command Line Interface
-        //new ConsoleUI();
     }
 
     // EFFECTS: Load the layout and set up the stage, scene and controller

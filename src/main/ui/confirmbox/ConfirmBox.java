@@ -1,4 +1,4 @@
-package ui;
+package ui.confirmbox;
 
 import javafx.event.Event;
 import javafx.fxml.FXML;

@@ -1,9 +1,9 @@
 package model;
 
 import com.google.gson.Gson;
+import com.google.gson.annotations.Expose;
 import javafx.geometry.HorizontalDirection;
 import javafx.geometry.VerticalDirection;
-import javafx.scene.canvas.GraphicsContext;
 import model.exceptions.GameOverException;
 import persistence.Saveable;
 
@@ -24,6 +24,8 @@ public class Game implements Saveable {
     private List<Bullet> bullets;
     private Player player;
     private long timeElapsed;
+    @Expose(serialize = false, deserialize = false)
+    List<CollisionPair> collisionCheckedPairs;
 
     // EFFECTS: constructs a new game with only the player
     public Game() {
@@ -32,14 +34,12 @@ public class Game implements Saveable {
         enemies = new ArrayList<>();
         bullets = new ArrayList<>();
         timeElapsed = 0;
+        collisionCheckedPairs = new ArrayList<>();
     }
 
     // MODIFIES: this
     // EFFECTS: remove all previous game objects and add the new default ones
-    public void newGame() {
-        enemies.clear();
-        walls.clear();
-        bullets.clear();
+    public void initializeObjects() {
         player = new Player(WIDTH / 2.0, HEIGHT / 2.0, 20, 20, 2);
         enemies.add(new Enemy(200, 180, 20, 20, 1, -1, 50));
         enemies.add(new Enemy(270, 100, 20, 20, -1, 1, 50));
@@ -47,101 +47,71 @@ public class Game implements Saveable {
         walls.add(new Wall(248, 252, 100, 200, 1000));
     }
 
-    public void start() {
-
-    }
-
     // MODIFIES: this
     // EFFECTS: updates all the moving objects and returns true if game is over, otherwise false
     public void update(long deltaTime) throws GameOverException {
+        updateMovingObjects(enemies);
+        updateMovingObjects(bullets);
+        checkCollisions();
+        collisionCheckedPairs.forEach(CollisionPair::executeCollision);
+        player.update();
+        timeElapsed += deltaTime;
         if (player.isDead()) {
             throw new GameOverException();
         }
-        updateMovingObjects(enemies);
-        updateMovingObjects(bullets);
-        player.update();
-        manageCollisions();
-        timeElapsed += deltaTime;
     }
 
-    // MODIFIES: this
-    // EFFECTS: manage collisions between bullets and between player and enemies
-    private void manageCollisions() {
-        bulletCollisions();
-        enemyPlayerCollisions();
-    }
-
-    // MODIFIES: this
-    // EFFECTS: hit the player with all the enemies that intersect it and remove them
-    private void enemyPlayerCollisions() {
-        List<Enemy> toRemove = new ArrayList<>();
-        for (Enemy enemy : enemies) {
-            if (player.intersects(enemy)) {
-                toRemove.add(enemy);
-                player.hit(enemy);
-            }
+    private void checkCollision(GameObject first, GameObject second, CollisionType type) {
+        CollisionPair collisionPair = new CollisionPair(first, second, type);
+        if (first.intersects(second) && !collisionCheckedPairs.contains(collisionPair)) {
+            collisionCheckedPairs.add(collisionPair);
         }
-        enemies.removeAll(toRemove);
     }
 
-    // MODIFIES: this
-    // EFFECTS: hit all the objects with all the bullets that intersect them and remove those bullets
-    private void bulletCollisions() {
-        List<Bullet> toRemove = new ArrayList<>();
+    private void checkCollisions() {
         for (Bullet bullet : bullets) {
-            boolean hit = isHitEnemies(bullet);
-            hit = isHitWalls(bullet, hit);
-
-            if (!hit && player.intersects(bullet)) {
-                player.hit(bullet);
-                hit = true;
-            }
-            if (hit) {
-                toRemove.add(bullet);
-            }
+            checkCollisionsWithEnemies(bullet);
+            checkCollisionsWithWalls(bullet);
+            checkCollisionWithPlayer(bullet);
         }
-        bullets.removeAll(toRemove);
+
+        for (Enemy enemy : enemies) {
+            checkCollisionWithPlayer(enemy);
+        }
     }
 
-    // MODIFIES: this, bullet
-    // EFFECTS: hit the walls that intersect the bullet and return true if the bullet hit something
-    private boolean isHitWalls(Bullet bullet, boolean hit) {
-        if (!hit) {
-            for (Wall wall : walls) {
-                if (bullet.intersects(wall)) {
-                    wall.hit(bullet);
-                    break;
-                }
-            }
+    private void checkCollisionWithPlayer(GameObject gameObject) {
+        CollisionType type;
+        if (gameObject.getClass() == Enemy.class) {
+            type = CollisionType.PLAYER_ENEMY;
+        } else {
+            type = CollisionType.PLAYER_BULLET;
         }
-        return hit;
+        checkCollision(player, gameObject, type);
     }
 
     // MODIFIES: this, bullet
     // EFFECTS: hit the enemies that intersect the bullet and return true if the bullet hit something
-    private boolean isHitEnemies(Bullet bullet) {
-        boolean hit = false;
+    private void checkCollisionsWithEnemies(GameObject gameObject) {
+        CollisionType type = CollisionType.ENEMY_BULLET;
         for (Enemy enemy : enemies) {
-            if (bullet.intersects(enemy)) {
-                enemy.hit(bullet);
-                hit = true;
-                break;
-            }
+            checkCollision(enemy, gameObject, type);
         }
-        return hit;
+    }
+
+    private void checkCollisionsWithWalls(GameObject gameObject) {
+        CollisionType type = CollisionType.WALL_BULLET;
+        for (Wall wall : walls) {
+            checkCollision(wall, gameObject, type);
+        }
     }
 
     // MODIFIES: this
     // EFFECTS: update all the moving objects and remove the dead ones
     private void updateMovingObjects(List<? extends MovingObject> movingObjects) {
-        List<MovingObject> toRemove = new ArrayList<>();
         for (MovingObject movingObject : movingObjects) {
             movingObject.update();
-            if (movingObject.isDead()) {
-                toRemove.add(movingObject);
-            }
         }
-        movingObjects.removeAll(toRemove);
     }
 
     // MODIFIES: this
@@ -189,15 +159,8 @@ public class Game implements Saveable {
         return enemies;
     }
 
+    @Override
     public void save(FileWriter fileWriter) {
         new Gson().toJson(this, fileWriter);
-    }
-
-    // EFFECTS: draw all the objects on gc
-    public void render(GraphicsContext gc) {
-        bullets.forEach(gameObject -> gameObject.render(gc));
-        enemies.forEach(gameObject -> gameObject.render(gc));
-        walls.forEach(gameObject -> gameObject.render(gc));
-        player.render(gc);
     }
 }
