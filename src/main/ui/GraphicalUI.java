@@ -18,8 +18,8 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Game;
-import model.Player;
 import model.exceptions.GameOverException;
+import model.gameobjects.Player;
 import persistence.GameReader;
 import persistence.Writer;
 import ui.confirmbox.ConfirmBox;
@@ -52,6 +52,8 @@ public class GraphicalUI extends Observable {
     private Button resumeButton;
     @FXML
     private Button loadGameButton;
+    @FXML
+    private Button saveGameButton;
     @FXML
     private Label timeLabel;
     @FXML
@@ -115,8 +117,17 @@ public class GraphicalUI extends Observable {
         savedGame = getSavedGame();
         manageLoadGameButtonVisibility();
         manageResumeButtonVisibility();
+        manageSaveGameButtonVisibility();
         dialog.setVisible(true);
         canvas.setEffect(new GaussianBlur(50));
+    }
+
+    private void manageSaveGameButtonVisibility() {
+        if (game == null) {
+            saveGameButton.setVisible(false);
+        } else {
+            saveGameButton.setVisible(true);
+        }
     }
 
     private void manageResumeButtonVisibility() {
@@ -207,34 +218,38 @@ public class GraphicalUI extends Observable {
     // MODIFIES: this
     // EFFECTS: call appropriate handlers whenever a key is pressed
     private void handleKeyDown(KeyEvent event) {
-        Player player = game.getPlayer();
-        if (event.getCode().equals(KeyCode.DOWN) || event.getCode().equals(KeyCode.S)) {
-            player.setVerticalMovingDirection(VerticalDirection.DOWN);
-        } else if (event.getCode().equals(KeyCode.UP) || event.getCode().equals(KeyCode.W)) {
-            player.setVerticalMovingDirection(VerticalDirection.UP);
-        } else if (event.getCode().equals(KeyCode.RIGHT) || event.getCode().equals(KeyCode.D)) {
-            player.setHorizontalMovingDirection(HorizontalDirection.RIGHT);
-        } else if (event.getCode().equals(KeyCode.LEFT) || event.getCode().equals(KeyCode.A)) {
-            player.setHorizontalMovingDirection(HorizontalDirection.LEFT);
-        } else if (event.getCode().equals(KeyCode.SPACE)) {
-            game.fireBullet();
-        } else if (event.getCode().equals(KeyCode.BACK_SPACE)) {
-            game.getBullets().clear();
-        } else if (event.getCode().equals(KeyCode.ESCAPE)) {
-            managePauseGame();
+        if (game != null) {
+            Player player = game.getPlayer();
+            if (event.getCode().equals(KeyCode.DOWN) || event.getCode().equals(KeyCode.S)) {
+                player.setVerticalMovingDirection(VerticalDirection.DOWN);
+            } else if (event.getCode().equals(KeyCode.UP) || event.getCode().equals(KeyCode.W)) {
+                player.setVerticalMovingDirection(VerticalDirection.UP);
+            } else if (event.getCode().equals(KeyCode.RIGHT) || event.getCode().equals(KeyCode.D)) {
+                player.setHorizontalMovingDirection(HorizontalDirection.RIGHT);
+            } else if (event.getCode().equals(KeyCode.LEFT) || event.getCode().equals(KeyCode.A)) {
+                player.setHorizontalMovingDirection(HorizontalDirection.LEFT);
+            } else if (event.getCode().equals(KeyCode.SPACE)) {
+                game.fireBullet();
+            } else if (event.getCode().equals(KeyCode.BACK_SPACE)) {
+                game.getBullets().clear();
+            } else if (event.getCode().equals(KeyCode.ESCAPE)) {
+                managePauseGame();
+            }
         }
     }
 
     // MODIFIES: this
     // EFFECTS: call appropriate methods whenever a key is unpressed
     private void handleKeyUp(KeyEvent event) {
-        Player player = game.getPlayer();
-        if (event.getCode().equals(KeyCode.DOWN) || event.getCode().equals(KeyCode.S)
-                || event.getCode().equals(KeyCode.UP) || event.getCode().equals(KeyCode.W)) {
-            player.setVerticalMovingDirection(null);
-        } else if (event.getCode().equals(KeyCode.RIGHT) || event.getCode().equals(KeyCode.D)
-                || event.getCode().equals(KeyCode.LEFT) || event.getCode().equals(KeyCode.A)) {
-            player.setHorizontalMovingDirection(null);
+        if (game != null) {
+            Player player = game.getPlayer();
+            if (event.getCode().equals(KeyCode.DOWN) || event.getCode().equals(KeyCode.S)
+                    || event.getCode().equals(KeyCode.UP) || event.getCode().equals(KeyCode.W)) {
+                player.setVerticalMovingDirection(null);
+            } else if (event.getCode().equals(KeyCode.RIGHT) || event.getCode().equals(KeyCode.D)
+                    || event.getCode().equals(KeyCode.LEFT) || event.getCode().equals(KeyCode.A)) {
+                player.setHorizontalMovingDirection(null);
+            }
         }
     }
 

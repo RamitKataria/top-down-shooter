@@ -1,6 +1,10 @@
 package persistence;
 
-import model.*;
+import model.Game;
+import model.gameobjects.Bullet;
+import model.gameobjects.Enemy;
+import model.gameobjects.Player;
+import model.gameobjects.Wall;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

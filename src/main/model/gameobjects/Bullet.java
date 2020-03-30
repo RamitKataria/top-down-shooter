@@ -1,4 +1,4 @@
-package model;
+package model.gameobjects;
 
 import static model.Game.HEIGHT;
 import static model.Game.WIDTH;
@@ -9,8 +9,8 @@ import static model.Game.WIDTH;
 public class Bullet extends MovingObject {
 
     // EFFECTS: constructs a bullet
-    public Bullet(double posX, double posY, double width, double height, double dx, double dy, double hp) {
-        super(posX, posY, width, height, dx, dy, hp);
+    public Bullet(double posX, double posY, double radius, double dx, double dy, double hp) {
+        super(posX, posY, radius, radius, dx, dy, hp);
     }
 
     // MODIFIES: this
@@ -21,6 +21,15 @@ public class Bullet extends MovingObject {
         posY += dy;
         if (isOutOfBound()) {
             hp = 0;
+        }
+    }
+
+    public void hit(GameObject other) {
+        if (other instanceof Wall) {
+            other.hit(hp);
+            bounce();
+        } else {
+            super.hit(other);
         }
     }
 

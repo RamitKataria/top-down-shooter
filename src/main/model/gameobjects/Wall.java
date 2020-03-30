@@ -1,4 +1,4 @@
-package model;
+package model.gameobjects;
 
 /*
  * Represents a wall (blocks some of the game objects)
@@ -10,14 +10,12 @@ public class Wall extends GameObject {
         super(posX, posY, width, height, hp);
     }
 
-    // MODIFIES: this
-    // EFFECTS: In addition to normal damage done, bounce the other object if it is a bullet
     public void hit(GameObject other) {
-        super.hit(other);
         if (other instanceof Bullet) {
+            hp -= other.getHp();
             ((Bullet) other).bounce();
+        } else {
+            super.hit(other);
         }
     }
-
-
 }

@@ -1,5 +1,6 @@
 package model;
 
+import model.gameobjects.Bullet;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -8,7 +9,7 @@ public class BulletTest {
 
     @Test
     public void testConstructor() {
-        Bullet b = new Bullet(10, 20, 50, 25, 2, -2, 15);
+        Bullet b = new Bullet(10, 20, 25, 2, -2, 15);
         assertEquals(10, b.getPosX());
         assertEquals(20, b.getPosY());
         assertEquals(50, b.getWidth());

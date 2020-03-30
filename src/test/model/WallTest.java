@@ -1,5 +1,7 @@
 package model;
 
+import model.gameobjects.Bullet;
+import model.gameobjects.Wall;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -24,7 +26,7 @@ public class WallTest {
 
     @Test
     public void testHit() {
-        Bullet b = new Bullet(10, 20, 50, 25, 2, -2, 15);
+        Bullet b = new Bullet(10, 20, 50, 2, -2, 15);
         testWall.hit(b);
         assertEquals(5000 - 15, testWall.getHp());
         assertEquals(-2, b.getDx());

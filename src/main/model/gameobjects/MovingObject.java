@@ -1,4 +1,4 @@
-package model;
+package model.gameobjects;
 
 import static model.Game.HEIGHT;
 import static model.Game.WIDTH;

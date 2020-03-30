@@ -1,4 +1,4 @@
-package model;
+package model.gameobjects;
 
 import javafx.geometry.Rectangle2D;
 
@@ -43,15 +43,22 @@ public abstract class GameObject {
     }
 
     public double getHpFraction() {
+        if (isDead()) {
+            return 0;
+        }
         return hp / maxHp;
     }
 
     // MODIFIES: this
     // EFFECTS: subtract the other's hp from this' hp
     public void hit(GameObject other) {
-        if (!other.equals(this)) {
-            hp -= other.hp;
-        }
+        double damageToOther = hp;
+        hp -= other.getHp();
+        other.hit(damageToOther);
+    }
+
+    public void hit(double damage) {
+        hp -= damage;
     }
 
     // EFFECTS: returns the x value of the centre of object as opposed to the leftmost x value
@@ -71,7 +78,7 @@ public abstract class GameObject {
 
     // EFFECTS: returns true if this object intersects the other object
     // source: https://github.com/tutsplus/Introduction-to-JavaFX-for-Game-Development/blob/master/Sprite.java
-    protected boolean intersects(GameObject other) {
+    public boolean intersects(GameObject other) {
         return this.getBounds().intersects(other.getBounds());
     }
 

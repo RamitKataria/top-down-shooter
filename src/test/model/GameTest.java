@@ -1,12 +1,18 @@
-/*package model;
+package model;
 
+import model.exceptions.GameOverException;
+import model.gameobjects.Bullet;
+import model.gameobjects.Enemy;
+import model.gameobjects.Player;
+import model.gameobjects.Wall;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import java.util.List;
 
 import static model.Game.*;
-import static org.junit.jupiter.api.Assertions.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
 
 class GameTest {
     private Game game;
@@ -18,7 +24,7 @@ class GameTest {
     @BeforeEach
     public void runBeforeEach() {
         game = new Game();
-        game.newGame();
+        game.initializeObjects();
         player = game.getPlayer();
         enemies = game.getEnemies();
         walls = game.getWalls();
@@ -36,15 +42,24 @@ class GameTest {
     }
 
     @Test
-    public void testUpdate() {
-        game.setPaused(true);
-        assertFalse(game.update(10000000));
+    public void testCheckCollision() {
+        Bullet b1 = new Bullet(1, 1, 1, 1, 1, 1);
+        Bullet b2 = new Bullet(1, 1, 2, 2, 2, 2);
+        game.checkCollision(b1, b2);
+        game.checkCollision(b2, b1);
+        assertEquals(1, game.getCollisionCheckedPairs().size());
+    }
 
-        game.setPaused(false);
+    @Test
+    public void testUpdate() {
         game.fireBullet();
-        game.update(10000000);
-        assertEquals(WIDTH / 2 + game.getPlayer().getDx(), player.getPosX());
-        assertEquals(HEIGHT / 2, player.getPosY());
+        try {
+            game.update(10000000);
+        } catch (GameOverException e) {
+            fail();
+        }
+        assertEquals(WIDTH / 2.0 + game.getPlayer().getDx(), player.getPosX());
+        assertEquals(HEIGHT / 2.0, player.getPosY());
 
         assertEquals(550, bullets.get(0).getPosX());
         assertEquals(326 + player.getDy() * BULLET_SPEED, bullets.get(0).getPosY());
@@ -76,27 +91,27 @@ class GameTest {
 
     @Test
     public void testGameOver() {
-        player.hit(new Bullet(10, 20, 50, 25, 2, -2, 100));
-        assertTrue(game.update(1));
-        assertTrue(game.isOver());
-    }
-
-    @Test
-    public void testGamePaused() {
-        game.setPaused(true);
-        assertTrue(game.isPaused());
-        game.setPaused(false);
-        assertFalse(game.isPaused());
+        player.hit(new Bullet(10, 20, 25, 2, -2, 100));
+        try {
+            game.update(1);
+            fail();
+        } catch (GameOverException e) {
+            // supposed to happen
+        }
     }
 
     @Test
     public void testMultipleCycles() {
         for (int i = 0; i < 100; i++) {
             game.fireBullet();
-            game.update(10);
+            try {
+                game.update(10);
+            } catch (GameOverException e) {
+                fail();
+            }
         }
-        assertEquals(WIDTH / 2 + game.getPlayer().getDx(), player.getPosX());
-        assertEquals(HEIGHT / 2, player.getPosY());
+        assertEquals(WIDTH / 2.0 + game.getPlayer().getDx(), player.getPosX());
+        assertEquals(HEIGHT / 2.0, player.getPosY());
 
         assertEquals(550, bullets.get(0).getPosX());
         assertEquals(2, bullets.get(0).getPosY());
@@ -109,4 +124,4 @@ class GameTest {
         assertEquals(248, game.getWalls().get(0).getPosX());
         assertEquals(252, game.getWalls().get(0).getPosY());
     }
-}*/
+}

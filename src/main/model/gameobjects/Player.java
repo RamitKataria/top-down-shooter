@@ -1,4 +1,4 @@
-package model;
+package model.gameobjects;
 
 import javafx.geometry.HorizontalDirection;
 import javafx.geometry.VerticalDirection;

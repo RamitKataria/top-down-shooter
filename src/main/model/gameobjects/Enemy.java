@@ -1,4 +1,4 @@
-package model;
+package model.gameobjects;
 
 /*
  * Represents an enemy of the player

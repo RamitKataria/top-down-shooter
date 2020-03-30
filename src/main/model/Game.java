@@ -5,6 +5,7 @@ import com.google.gson.annotations.Expose;
 import javafx.geometry.HorizontalDirection;
 import javafx.geometry.VerticalDirection;
 import model.exceptions.GameOverException;
+import model.gameobjects.*;
 import persistence.Saveable;
 
 import java.io.FileWriter;
@@ -25,7 +26,7 @@ public class Game implements Saveable {
     private Player player;
     private long timeElapsed;
     @Expose(serialize = false, deserialize = false)
-    List<CollisionPair> collisionCheckedPairs;
+    private List<CollisionPair> collisionCheckedPairs;
 
     // EFFECTS: constructs a new game with only the player
     public Game() {
@@ -52,66 +53,46 @@ public class Game implements Saveable {
     public void update(long deltaTime) throws GameOverException {
         updateMovingObjects(enemies);
         updateMovingObjects(bullets);
+        player.update();
         checkCollisions();
         collisionCheckedPairs.forEach(CollisionPair::executeCollision);
-        player.update();
         timeElapsed += deltaTime;
         if (player.isDead()) {
             throw new GameOverException();
         }
     }
 
-    private void checkCollision(GameObject first, GameObject second, CollisionType type) {
-        CollisionPair collisionPair = new CollisionPair(first, second, type);
+    public void checkCollision(GameObject first, GameObject second) {
+        CollisionPair collisionPair = new CollisionPair(first, second);
         if (first.intersects(second) && !collisionCheckedPairs.contains(collisionPair)) {
             collisionCheckedPairs.add(collisionPair);
         }
     }
 
     private void checkCollisions() {
+        collisionCheckedPairs.clear();
         for (Bullet bullet : bullets) {
-            checkCollisionsWithEnemies(bullet);
-            checkCollisionsWithWalls(bullet);
-            checkCollisionWithPlayer(bullet);
+            enemies.forEach(enemy -> checkCollision(enemy, bullet));
+            walls.forEach(wall -> checkCollision(wall, bullet));
+            checkCollision(player, bullet);
         }
 
         for (Enemy enemy : enemies) {
-            checkCollisionWithPlayer(enemy);
-        }
-    }
-
-    private void checkCollisionWithPlayer(GameObject gameObject) {
-        CollisionType type;
-        if (gameObject.getClass() == Enemy.class) {
-            type = CollisionType.PLAYER_ENEMY;
-        } else {
-            type = CollisionType.PLAYER_BULLET;
-        }
-        checkCollision(player, gameObject, type);
-    }
-
-    // MODIFIES: this, bullet
-    // EFFECTS: hit the enemies that intersect the bullet and return true if the bullet hit something
-    private void checkCollisionsWithEnemies(GameObject gameObject) {
-        CollisionType type = CollisionType.ENEMY_BULLET;
-        for (Enemy enemy : enemies) {
-            checkCollision(enemy, gameObject, type);
-        }
-    }
-
-    private void checkCollisionsWithWalls(GameObject gameObject) {
-        CollisionType type = CollisionType.WALL_BULLET;
-        for (Wall wall : walls) {
-            checkCollision(wall, gameObject, type);
+            checkCollision(player, enemy);
         }
     }
 
     // MODIFIES: this
     // EFFECTS: update all the moving objects and remove the dead ones
     private void updateMovingObjects(List<? extends MovingObject> movingObjects) {
+        List<MovingObject> toRemove = new ArrayList<>();
         for (MovingObject movingObject : movingObjects) {
             movingObject.update();
+            if (movingObject.isDead()) {
+                toRemove.add(movingObject);
+            }
         }
+        movingObjects.removeAll(toRemove);
     }
 
     // MODIFIES: this
@@ -136,7 +117,7 @@ public class Game implements Saveable {
             bulletDy -= BULLET_SPEED;
         }
 
-        bullets.add(new Bullet(bulletPosX, bulletPosY, 5, 5, bulletDx, bulletDy, 60));
+        bullets.add(new Bullet(bulletPosX, bulletPosY, 5, bulletDx, bulletDy, 60));
     }
 
     public Player getPlayer() {
@@ -157,6 +138,10 @@ public class Game implements Saveable {
 
     public List<Enemy> getEnemies() {
         return enemies;
+    }
+
+    public List<CollisionPair> getCollisionCheckedPairs() {
+        return collisionCheckedPairs;
     }
 
     @Override

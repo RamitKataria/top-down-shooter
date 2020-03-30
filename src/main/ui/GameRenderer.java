@@ -3,7 +3,11 @@ package ui;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import model.*;
+import model.Game;
+import model.gameobjects.Bullet;
+import model.gameobjects.Enemy;
+import model.gameobjects.Player;
+import model.gameobjects.Wall;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -33,18 +37,12 @@ public class GameRenderer extends Canvas implements Observer {
     }
 
     private void renderPlayer(Player objectToRender) {
-        if (objectToRender.getHpFraction() <= 0) {
-            System.out.println(objectToRender.getHpFraction());
-        }
         gc.setFill(new Color(92 / 255.0, 237 / 255.0, 237 / 255.0, objectToRender.getHpFraction()));
         gc.fillRect(objectToRender.getPosX(), objectToRender.getPosY(),
                 objectToRender.getWidth(), objectToRender.getHeight());
     }
 
     private void renderEnemy(Enemy objectToRender) {
-        if (objectToRender.getHpFraction() <= 0) {
-            System.out.println(objectToRender.getHpFraction());
-        }
         gc.setFill(new Color(196 / 255.0, 14 / 255.0, 14 / 255.0, objectToRender.getHpFraction()));
         gc.fillRect(objectToRender.getPosX(), objectToRender.getPosY(),
                 objectToRender.getWidth(), objectToRender.getHeight());

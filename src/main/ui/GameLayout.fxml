@@ -33,17 +33,17 @@
 
         <Label alignment="CENTER" fx:id="statusLabel" font="$pButtonsFont"/>
 
-        <Button alignment="CENTER" text="Resume" font="$pButtonsFont" fx:id="resumeButton"
-                onAction="#handleResumeButton" visible="false" prefWidth="500"/>
-
         <Button alignment="CENTER" text="New Game" font="$pButtonsFont"
                 onAction="#handleNewGameButton" prefWidth="500"/>
 
-        <Button alignment="CENTER" text="Save Game" font="$pButtonsFont"
-                onAction="#handleSaveGameButton" prefWidth="500"/>
+        <Button alignment="CENTER" text="Resume" font="$pButtonsFont" fx:id="resumeButton"
+                onAction="#handleResumeButton" visible="false" prefWidth="500"/>
 
         <Button alignment="CENTER" text="Load Saved Game" font="$pButtonsFont" fx:id="loadGameButton"
                 onAction="#handleLoadGameButton" visible="false" prefWidth="500"/>
+
+        <Button alignment="CENTER" text="Save Game" font="$pButtonsFont"
+                onAction="#handleSaveGameButton" prefWidth="500" fx:id="saveGameButton"/>
 
     </VBox>
 
