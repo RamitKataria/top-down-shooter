@@ -2,48 +2,46 @@ package ui;
 
 import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.HorizontalDirection;
 import javafx.geometry.Point2D;
 import javafx.geometry.VerticalDirection;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.canvas.Canvas;
-import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.KeyCode;
-import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
-import javafx.stage.Modality;
 import javafx.stage.Stage;
 import model.Game;
 import model.exceptions.GameOverException;
 import model.gameobjects.Player;
 import persistence.GameReader;
 import persistence.Writer;
-import ui.confirmbox.ConfirmBox;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.util.HashSet;
 import java.util.Observable;
+import java.util.Optional;
+import java.util.Set;
+
+import static javafx.scene.input.KeyCode.*;
 
 // represents controller for GameLayout
 public class GraphicalUI extends Observable {
     public static final File GAME_SAVE_FILE = new File("./data/GameSave.json");
+    private Set<KeyCode> downKeys;
     private Game game;
     private Game savedGame;
     private boolean isGamePaused;
     private long prevTime;
     private GameRenderer gameRenderer;
-
-    private GraphicsContext gc;
     private Stage primaryStage;
-    private Stage confirmStage;
-    private ConfirmBox confirmBox;
     private AnimationTimer timer;
 
     @FXML
@@ -72,22 +70,27 @@ public class GraphicalUI extends Observable {
     private void initialize() {
         gameRenderer = new GameRenderer(canvas.getGraphicsContext2D(), game);
         addObserver(gameRenderer);
+        downKeys = new HashSet<>();
     }
 
     // MODIFIES: this
     // EFFECTS: initial set up of windows and event handlers
-    public void setUpUI(Stage primaryStage) throws IOException {
+    public void setUpUI(Stage primaryStage) {
         this.primaryStage = primaryStage;
         Scene scene = primaryStage.getScene();
         primaryStage.setOnCloseRequest(event -> {
             event.consume();
             handleClose();
         });
-        scene.setOnKeyPressed(this::handleKeyDown);
-        scene.setOnKeyReleased(this::handleKeyUp);
+        scene.setOnKeyPressed(e -> {
+            downKeys.add(e.getCode());
+            handleKey();
+        });
+        scene.setOnKeyReleased(e -> {
+            downKeys.remove(e.getCode());
+            handleKey();
+        });
         scene.setOnMouseClicked(this::handlePointer);
-        setUpConfirmBox();
-
         showDialog();
     }
 
@@ -99,31 +102,18 @@ public class GraphicalUI extends Observable {
     }
 
     // MODIFIES: this
-    // EFFECTS: initial set up of confirm box
-    private void setUpConfirmBox() throws IOException {
-        FXMLLoader loader = new FXMLLoader(getClass().getResource("confirmbox/ConfirmBox.fxml"));
-        Parent root = loader.load();
-        confirmStage = new Stage();
-        confirmStage.initModality(Modality.APPLICATION_MODAL);
-        confirmStage.setMinWidth(250);
-        confirmStage.setTitle("Sure?");
-        confirmStage.setScene(new Scene(root));
-        confirmBox = loader.getController();
-    }
-
-    // MODIFIES: this
     // EFFECTS: pause the game the set the UI accordingly
     private void managePauseGame() {
         if (isGamePaused) {
             handleResumeButton();
         } else {
-            isGamePaused = true;
             showDialog();
             statusLabel.setText("Game Paused");
         }
     }
 
     private void showDialog() {
+        isGamePaused = true;
         savedGame = getSavedGame();
         manageLoadGameButtonVisibility();
         manageResumeButtonVisibility();
@@ -159,6 +149,8 @@ public class GraphicalUI extends Observable {
     private void hideDialog() {
         dialog.setVisible(false);
         canvas.setEffect(null);
+        isGamePaused = false;
+        prevTime = System.nanoTime();
     }
 
     private Game getSavedGame() {
@@ -191,7 +183,6 @@ public class GraphicalUI extends Observable {
     }
 
     private void runGame() {
-        isGamePaused = false;
         setChanged();
         notifyObservers(game);
         startTimer();
@@ -219,43 +210,56 @@ public class GraphicalUI extends Observable {
 
     // MODIFIES: this
     // EFFECTS: close the main window
+    // source: https://code.makery.ch/blog/javafx-dialogs-official/
     private void handleClose() {
-        if (confirmBox.display(confirmStage)) {
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Confirmation");
+        alert.setHeaderText("Confirm Exit");
+        alert.setContentText("Are you sure you want to exit?");
+        Optional<ButtonType> result = alert.showAndWait();
+        if (result.isPresent() && result.get() == ButtonType.OK) {
             primaryStage.close();
         }
     }
 
     // MODIFIES: this
     // EFFECTS: call appropriate handlers whenever a key is pressed
-    private void handleKeyDown(KeyEvent event) {
+    private void handleKey() {
         if (game != null) {
             Player player = game.getPlayer();
-            if (event.getCode().equals(KeyCode.DOWN) || event.getCode().equals(KeyCode.S)) {
-                player.setVerticalMovingDirection(VerticalDirection.DOWN);
-            } else if (event.getCode().equals(KeyCode.UP) || event.getCode().equals(KeyCode.W)) {
-                player.setVerticalMovingDirection(VerticalDirection.UP);
-            } else if (event.getCode().equals(KeyCode.RIGHT) || event.getCode().equals(KeyCode.D)) {
-                player.setHorizontalMovingDirection(HorizontalDirection.RIGHT);
-            } else if (event.getCode().equals(KeyCode.LEFT) || event.getCode().equals(KeyCode.A)) {
-                player.setHorizontalMovingDirection(HorizontalDirection.LEFT);
-            } else if (event.getCode().equals(KeyCode.ESCAPE)) {
-                managePauseGame();
-            }
+            manageVerticalMovement(player);
+            manageHorizontalMovement(player);
+        }
+        if (downKeys.contains(ESCAPE)) {
+            managePauseGame();
         }
     }
 
-    // MODIFIES: this
-    // EFFECTS: call appropriate methods whenever a key is unpressed
-    private void handleKeyUp(KeyEvent event) {
-        if (game != null) {
-            Player player = game.getPlayer();
-            if (event.getCode().equals(KeyCode.DOWN) || event.getCode().equals(KeyCode.S)
-                    || event.getCode().equals(KeyCode.UP) || event.getCode().equals(KeyCode.W)) {
-                player.setVerticalMovingDirection(null);
-            } else if (event.getCode().equals(KeyCode.RIGHT) || event.getCode().equals(KeyCode.D)
-                    || event.getCode().equals(KeyCode.LEFT) || event.getCode().equals(KeyCode.A)) {
+    private void manageHorizontalMovement(Player player) {
+        if (downKeys.contains(D)) {
+            if (downKeys.contains(A)) {
                 player.setHorizontalMovingDirection(null);
+            } else {
+                player.setHorizontalMovingDirection(HorizontalDirection.RIGHT);
             }
+        } else if (downKeys.contains(A)) {
+            player.setHorizontalMovingDirection(HorizontalDirection.LEFT);
+        } else {
+            player.setHorizontalMovingDirection(null);
+        }
+    }
+
+    private void manageVerticalMovement(Player player) {
+        if (downKeys.contains(S)) {
+            if (downKeys.contains(W)) {
+                player.setVerticalMovingDirection(null);
+            } else {
+                player.setVerticalMovingDirection(VerticalDirection.DOWN);
+            }
+        } else if (downKeys.contains(W)) {
+            player.setVerticalMovingDirection(VerticalDirection.UP);
+        } else {
+            player.setVerticalMovingDirection(null);
         }
     }
 
@@ -274,7 +278,6 @@ public class GraphicalUI extends Observable {
     // EFFECTS: add the animation timer
     private void startTimer() {
         if (timer == null) {
-            prevTime = System.nanoTime();
             timer = new AnimationTimer() {
                 public void handle(long currentNanoTime) {
                     if (!isGamePaused) {

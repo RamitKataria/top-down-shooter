@@ -3,6 +3,7 @@ package model;
 import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import model.exceptions.GameOverException;
+import model.exceptions.OutOfDomainException;
 import model.gameobjects.*;
 import persistence.Saveable;
 
@@ -33,7 +34,7 @@ public class Game implements Saveable {
     public static final double REGULAR_ENEMY_HP = 30;
     public static final double BULLET_HP = 20;
     public static final int MAX_WALLS = 10;
-    public static final double PLAYER_HEALTH_REGENERATION_RATE = 0.001;
+    public static final double PLAYER_HEALTH_REGENERATION_RATE = 0.003;
     public static final int ENEMY_FREQUENCY = 60; // in FRAMES
     public static final Random RND = new Random();
 
@@ -43,6 +44,7 @@ public class Game implements Saveable {
     private Player player;
     private long milliTimeElapsed;
     private double regularEnemySpeed;
+
     @Expose(serialize = false, deserialize = false)
     private List<CollisionPair> collisionCheckedPairs;
 
@@ -68,28 +70,49 @@ public class Game implements Saveable {
 
     private void generateEnemies() {
         int randomNumber = RND.nextInt(ENEMY_FREQUENCY * 40);
-        if (randomNumber < 4) {
-            double posX;
-            double posY;
-            if (randomNumber == 0) {
-                posX = 0;
-                posY = 0;
-            } else if (randomNumber == 1) {
-                posX = WIDTH;
-                posY = 0;
-            } else if (randomNumber == 2) {
-                posX = WIDTH;
-                posY = HEIGHT;
-            } else {
-                posX = 0;
-                posY = HEIGHT;
+        try {
+            if (randomNumber < 4) {
+                addAutoEnemy(randomNumber);
+            } else if (randomNumber < 40) {
+                addRegularEnemy(randomNumber);
             }
-            addEnemyIfSpaceAvailable(new AutoEnemy(posX, posY, AUTO_ENEMY_SPEED, AUTO_ENEMY_HP, player));
-        } else if (randomNumber < 40) {
-            double ds = round((randomNumber - 20) / 20.0) * regularEnemySpeed;
-            addEnemyIfSpaceAvailable(new Enemy(27 * randomNumber, 27 * 40, PLAYER_LENGTH, ds, -ds, REGULAR_ENEMY_HP));
-            regularEnemySpeed += 0.02;
+        } catch (OutOfDomainException e) {
+            e.printStackTrace();
         }
+    }
+
+    private void addRegularEnemy(int randomNumber) throws OutOfDomainException {
+        if (randomNumber >= 40) {
+            throw new OutOfDomainException();
+        }
+
+        double ds = round((randomNumber - 20) / 20.0) * regularEnemySpeed;
+        addEnemyIfSpaceAvailable(new Enemy(27 * randomNumber, 18 * randomNumber,
+                PLAYER_LENGTH, ds, -ds, REGULAR_ENEMY_HP));
+
+        regularEnemySpeed += 0.02;
+    }
+
+    private void addAutoEnemy(int randomNumber) throws OutOfDomainException {
+        if (randomNumber > 40) {
+            throw new OutOfDomainException();
+        }
+        double posX;
+        double posY;
+        if (randomNumber == 0) {
+            posX = 0;
+            posY = 0;
+        } else if (randomNumber == 1) {
+            posX = WIDTH;
+            posY = 0;
+        } else if (randomNumber == 2) {
+            posX = WIDTH;
+            posY = HEIGHT;
+        } else {
+            posX = 0;
+            posY = HEIGHT;
+        }
+        addEnemyIfSpaceAvailable(new AutoEnemy(posX, posY, AUTO_ENEMY_SPEED, AUTO_ENEMY_HP, player));
     }
 
     private void addEnemyIfSpaceAvailable(Enemy e) {
@@ -115,7 +138,6 @@ public class Game implements Saveable {
         checkCollisions();
         collisionCheckedPairs.forEach(CollisionPair::executeCollision);
         generateEnemies();
-        generateWalls();
         player.regenerateHP(PLAYER_HEALTH_REGENERATION_RATE);
         milliTimeElapsed += milliDeltaTime;
         if (player.isDead()) {

@@ -15,7 +15,6 @@ public class Wall extends GameObject {
             hp -= other.getHp();
             ((Bullet) other).bounce();
         } else if (other instanceof Player) {
-            hp -= other.getHp();
             other.setPosX(posX + width);
             other.setPosY(posY + height);
         }
