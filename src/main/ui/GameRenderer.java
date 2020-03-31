@@ -4,10 +4,7 @@ import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
 import model.Game;
-import model.gameobjects.Bullet;
-import model.gameobjects.Enemy;
-import model.gameobjects.Player;
-import model.gameobjects.Wall;
+import model.gameobjects.*;
 
 import java.util.Observable;
 import java.util.Observer;
@@ -25,9 +22,9 @@ public class GameRenderer extends Canvas implements Observer {
     // EFFECTS: draw the game on gc
     public void renderGame() {
         gc.clearRect(0, 0, 1080, 680);
-        game.getBullets().forEach(this::renderBullet);
-        game.getEnemies().forEach(this::renderEnemy);
         game.getWalls().forEach(this::renderWall);
+        game.getEnemies().forEach(this::renderEnemy);
+        game.getBullets().forEach(this::renderBullet);
         renderPlayer(game.getPlayer());
     }
 
@@ -43,7 +40,11 @@ public class GameRenderer extends Canvas implements Observer {
     }
 
     private void renderEnemy(Enemy objectToRender) {
-        gc.setFill(new Color(196 / 255.0, 14 / 255.0, 14 / 255.0, objectToRender.getHpFraction()));
+        if (objectToRender instanceof AutoEnemy) {
+            gc.setFill(new Color(0, 0, 0, objectToRender.getHpFraction()));
+        } else {
+            gc.setFill(new Color(196 / 255.0, 14 / 255.0, 14 / 255.0, objectToRender.getHpFraction()));
+        }
         gc.fillRect(objectToRender.getPosX(), objectToRender.getPosY(),
                 objectToRender.getWidth(), objectToRender.getHeight());
     }

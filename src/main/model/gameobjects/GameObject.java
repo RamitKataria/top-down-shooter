@@ -21,6 +21,14 @@ public abstract class GameObject {
         this.hp = maxHp;
     }
 
+    public void setPosX(double posX) {
+        this.posX = posX;
+    }
+
+    public void setPosY(double posY) {
+        this.posY = posY;
+    }
+
     public double getPosX() {
         return posX;
     }

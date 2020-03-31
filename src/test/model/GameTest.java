@@ -24,7 +24,7 @@ class GameTest {
     @BeforeEach
     public void runBeforeEach() {
         game = new Game();
-        game.initializeObjects();
+        game.initializeWalls();
         player = game.getPlayer();
         enemies = game.getEnemies();
         walls = game.getWalls();
@@ -52,7 +52,7 @@ class GameTest {
 
     @Test
     public void testUpdate() {
-        game.fireBullet();
+        game.fireBullet(0, 0);
         try {
             game.update(10000000);
         } catch (GameOverException e) {
@@ -75,7 +75,7 @@ class GameTest {
 
     @Test
     public void testFireBullet() {
-        game.fireBullet();
+        game.fireBullet(0, 0);
         assertEquals(1, bullets.size());
         assertEquals(550, bullets.get(0).getPosX());
         assertEquals(330, bullets.get(0).getPosY());
@@ -103,7 +103,7 @@ class GameTest {
     @Test
     public void testMultipleCycles() {
         for (int i = 0; i < 100; i++) {
-            game.fireBullet();
+            game.fireBullet(0, 0);
             try {
                 game.update(10);
             } catch (GameOverException e) {

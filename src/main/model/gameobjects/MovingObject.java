@@ -9,8 +9,8 @@ public abstract class MovingObject extends GameObject {
     protected double dy;
 
     // EFFECTS: constructs a moving object
-    public MovingObject(double posX, double posY, double width, double height, double dx, double dy, double hp) {
-        super(posX, posY, width, height, hp);
+    public MovingObject(double posX, double posY, double length, double dx, double dy, double hp) {
+        super(posX, posY, length, length, hp);
         this.dx = dx;
         this.dy = dy;
     }
@@ -34,17 +34,18 @@ public abstract class MovingObject extends GameObject {
     // MODIFIES: this
     // EFFECTS: adds velocity to position
     public void update() {
+        move();
+        handleBoundary();
+    }
+
+    protected void move() {
         posX += dx;
         posY += dy;
-        handleBoundary();
-
-        posX = (posX + dx) % WIDTH;
-        posY = (posY + dy) % HEIGHT;
     }
 
     // MODIFIES: this
     // EFFECTS: if this goes beyond the bounds, then set the position to come out of the opposite side
-    private void handleBoundary() {
+    protected void handleBoundary() {
         if (posX < 0) {
             posX = WIDTH + posX;
         }

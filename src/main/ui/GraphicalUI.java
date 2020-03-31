@@ -4,6 +4,7 @@ import javafx.animation.AnimationTimer;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.HorizontalDirection;
+import javafx.geometry.Point2D;
 import javafx.geometry.VerticalDirection;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -14,6 +15,7 @@ import javafx.scene.control.Label;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -83,9 +85,17 @@ public class GraphicalUI extends Observable {
         });
         scene.setOnKeyPressed(this::handleKeyDown);
         scene.setOnKeyReleased(this::handleKeyUp);
+        scene.setOnMouseClicked(this::handlePointer);
         setUpConfirmBox();
 
         showDialog();
+    }
+
+    private void handlePointer(MouseEvent mouseEvent) {
+        if (game != null) {
+            Point2D posInCanvas = canvas.sceneToLocal(mouseEvent.getX(), mouseEvent.getY());
+            game.fireBullet(posInCanvas.getX(), posInCanvas.getY());
+        }
     }
 
     // MODIFIES: this
@@ -191,7 +201,7 @@ public class GraphicalUI extends Observable {
     // EFFECTS: make a new game and set the UI accordingly
     public void handleNewGameButton() {
         game = new Game();
-        game.initializeObjects();
+        game.initializeWalls();
         hideDialog();
         runGame();
     }
@@ -228,10 +238,6 @@ public class GraphicalUI extends Observable {
                 player.setHorizontalMovingDirection(HorizontalDirection.RIGHT);
             } else if (event.getCode().equals(KeyCode.LEFT) || event.getCode().equals(KeyCode.A)) {
                 player.setHorizontalMovingDirection(HorizontalDirection.LEFT);
-            } else if (event.getCode().equals(KeyCode.SPACE)) {
-                game.fireBullet();
-            } else if (event.getCode().equals(KeyCode.BACK_SPACE)) {
-                game.getBullets().clear();
             } else if (event.getCode().equals(KeyCode.ESCAPE)) {
                 managePauseGame();
             }
@@ -274,7 +280,7 @@ public class GraphicalUI extends Observable {
                     if (!isGamePaused) {
                         updateTimeLabel();
                         try {
-                            game.update(currentNanoTime - prevTime);
+                            game.update((int) ((currentNanoTime - prevTime) / 1000000));
                             gameRenderer.renderGame();
                         } catch (GameOverException e) {
                             handleGameOver();
@@ -290,6 +296,6 @@ public class GraphicalUI extends Observable {
     // MODIFIES: this
     // EFFECTS: update the time label to reflect current time elapsed
     private void updateTimeLabel() {
-        timeLabel.setText("Time Elapsed: " + (game.getTimeElapsed() / 1000000000) + "s");
+        timeLabel.setText("Time Elapsed: " + game.getTimeElapsed() + "s");
     }
 }

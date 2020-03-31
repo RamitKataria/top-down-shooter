@@ -3,94 +3,84 @@ package model.gameobjects;
 import javafx.geometry.HorizontalDirection;
 import javafx.geometry.VerticalDirection;
 
+import static java.lang.Math.sqrt;
+import static javafx.geometry.HorizontalDirection.LEFT;
+import static javafx.geometry.HorizontalDirection.RIGHT;
+import static javafx.geometry.VerticalDirection.DOWN;
+import static javafx.geometry.VerticalDirection.UP;
+
 // Represents the player of the game
 public class Player extends MovingObject {
-    public static final double maxHP = 100;
+    private HorizontalDirection horizontalDirection;
+    private VerticalDirection verticalDirection;
 
     private double speed;
-    HorizontalDirection horizontalFacingDirection;
-    VerticalDirection verticalFacingDirection;
-    HorizontalDirection horizontalMovingDirection;
-    VerticalDirection verticalMovingDirection;
 
     // EFFECTS: constructs a player facing UP
-    public Player(double posX, double posY, double width, double height, double speed) {
-        super(posX, posY, width, height, 0, 0, maxHP);
+    public Player(double posX, double posY, double length, double speed, double maxHp) {
+        super(posX, posY, length, 0, 0, maxHp);
         this.speed = speed;
-        verticalFacingDirection = VerticalDirection.UP;
+        horizontalDirection = null;
+        verticalDirection = null;
     }
 
     // MODIFIES: this
-    // EFFECTS: in addition to moving, sets the appropriate facing direction
-    public void update() {
-        super.update();
-        if (dx > 0) {
-            horizontalFacingDirection = HorizontalDirection.RIGHT;
-        } else if (dx < 0) {
-            horizontalFacingDirection = HorizontalDirection.LEFT;
-        }
-        if (dy > 0) {
-            verticalFacingDirection = VerticalDirection.DOWN;
-        } else if (dy < 0) {
-            verticalFacingDirection = VerticalDirection.UP;
-        }
-    }
-
-    public HorizontalDirection getHorizontalFacingDirection() {
-        return horizontalFacingDirection;
-    }
-
-    public VerticalDirection getVerticalFacingDirection() {
-        return verticalFacingDirection;
+    // EFFECTS:
+    public void setHorizontalMovingDirection(HorizontalDirection horizontalDirection) {
+        this.horizontalDirection = horizontalDirection;
+        updateVelocity();
     }
 
     // MODIFIES: this
-    // EFFECTS: sets the horizontal moving direction and accordingly sets the facing direction
-    public void setHorizontalMovingDirection(HorizontalDirection horizontalMovingDirection) {
-        this.horizontalMovingDirection = horizontalMovingDirection;
-
-        if (horizontalMovingDirection != null && verticalMovingDirection == null) {
-            verticalFacingDirection = null;
-            horizontalFacingDirection = horizontalMovingDirection;
-        }
-
-        updateHorizontalVelocity();
+    // EFFECTS:
+    public void setVerticalMovingDirection(VerticalDirection verticalDirection) {
+        this.verticalDirection = verticalDirection;
+        updateVelocity();
     }
 
-    // MODIFIES: this
-    // EFFECTS: updates the horizontal velocity based on moving direction
-    private void updateHorizontalVelocity() {
-        if (horizontalMovingDirection == HorizontalDirection.RIGHT) {
-            dx = speed;
-        } else if (horizontalMovingDirection == HorizontalDirection.LEFT) {
-            dx = -speed;
+    public void regenerateHP(double rate) {
+        if (hp < 99) {
+            hp += (maxHp - hp) * rate;
+        }
+    }
+
+    private void updateVelocity() {
+        double dimensionalSpeed;
+        if (!(horizontalDirection == null || verticalDirection == null)) {
+            dimensionalSpeed = speed / sqrt(2);
+        } else {
+            dimensionalSpeed = speed;
+        }
+
+        setHorizontalVelocity(dimensionalSpeed);
+        setVerticalVelocity(dimensionalSpeed);
+    }
+
+    private void setVerticalVelocity(double dimensionalSpeed) {
+        if (verticalDirection == DOWN) {
+            dy = dimensionalSpeed;
+        } else if (verticalDirection == UP) {
+            dy = -dimensionalSpeed;
+        } else {
+            dy = 0;
+        }
+    }
+
+    private void setHorizontalVelocity(double dimensionalSpeed) {
+        if (horizontalDirection == RIGHT) {
+            dx = dimensionalSpeed;
+        } else if (horizontalDirection == LEFT) {
+            dx = -dimensionalSpeed;
         } else {
             dx = 0;
         }
     }
 
-    // MODIFIES: this
-    // EFFECTS: sets the vertical moving direction and accordingly sets the facing direction
-    public void setVerticalMovingDirection(VerticalDirection verticalMovingDirection) {
-        this.verticalMovingDirection = verticalMovingDirection;
-
-        if (verticalMovingDirection != null && horizontalMovingDirection == null) {
-            horizontalFacingDirection = null;
-            verticalFacingDirection = verticalMovingDirection;
-        }
-
-        setVerticalVelocity();
-    }
-
-    // MODIFIES: this
-    // EFFECTS: updates the vertical velocity based on moving direction
-    private void setVerticalVelocity() {
-        if (verticalMovingDirection == VerticalDirection.DOWN) {
-            dy = speed;
-        } else if (verticalMovingDirection == VerticalDirection.UP) {
-            dy = -speed;
+    public void hit(GameObject other) {
+        if (other instanceof Wall) {
+            other.hit(this);
         } else {
-            dy = 0;
+            super.hit(other);
         }
     }
 }
