@@ -29,14 +29,6 @@ public class Player extends MovingObject {
     public void setHorizontalMovingDirection(HorizontalDirection horizontalDirection) {
         this.horizontalDirection = horizontalDirection;
         updateVelocity();
-
-        /*if (horizontalDirection == RIGHT) {
-            dx = speed;
-        } else if (horizontalDirection == LEFT) {
-            dx = -speed;
-        } else {
-            dx = 0;
-        }*/
     }
 
     // MODIFIES: this
@@ -44,14 +36,6 @@ public class Player extends MovingObject {
     public void setVerticalMovingDirection(VerticalDirection verticalDirection) {
         this.verticalDirection = verticalDirection;
         updateVelocity();
-
-        /*if (verticalDirection == DOWN) {
-            dy = speed;
-        } else if (verticalDirection == UP) {
-            dy = -speed;
-        } else {
-            dy = 0;
-        }*/
     }
 
     public void regenerateHP(double rate) {

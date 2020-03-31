@@ -13,7 +13,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
-import static java.lang.Math.round;
 import static java.lang.Math.sqrt;
 
 /*
@@ -30,12 +29,14 @@ public class Game implements Saveable {
     public static final double WALL_DIM_1 = 200;
     public static final double WALL_DIM_2 = 25;
     public static final double PLAYER_MAX_HP = 100;
-    public static final double AUTO_ENEMY_HP = 70;
-    public static final double REGULAR_ENEMY_HP = 30;
+    public static final double WALL_HP = 200;
+    public static final double AUTO_ENEMY_HP = 90;
+    public static final double REGULAR_ENEMY_HP = 25;
     public static final double BULLET_HP = 20;
     public static final int MAX_WALLS = 10;
-    public static final double PLAYER_HEALTH_REGENERATION_RATE = 0.003;
-    public static final int ENEMY_FREQUENCY = 60; // in FRAMES
+    public static final int MAX_ENEMIES = 20;
+    public static final double PLAYER_HEALTH_REGENERATION_RATE = 0.002;
+    public static final int ENEMY_FREQUENCY = 120;
     public static final Random RND = new Random();
 
     private List<Wall> walls;
@@ -63,17 +64,17 @@ public class Game implements Saveable {
     // EFFECTS: remove all previous game objects and add the new default ones
     public void initializeWalls() {
         for (int i = 0; i < MAX_WALLS / 2; i++) {
-            walls.add(new Wall(RND.nextInt(WIDTH), RND.nextInt(HEIGHT), WALL_DIM_2, WALL_DIM_1, 1000));
-            walls.add(new Wall(RND.nextInt(WIDTH), RND.nextInt(HEIGHT), WALL_DIM_1, WALL_DIM_2, 1000));
+            walls.add(new Wall(RND.nextInt(WIDTH), RND.nextInt(HEIGHT), WALL_DIM_2, WALL_DIM_1, WALL_HP));
+            walls.add(new Wall(RND.nextInt(WIDTH), RND.nextInt(HEIGHT), WALL_DIM_1, WALL_DIM_2, WALL_HP));
         }
     }
 
     private void generateEnemies() {
-        int randomNumber = RND.nextInt(ENEMY_FREQUENCY * 40);
+        int randomNumber = RND.nextInt(ENEMY_FREQUENCY * 20);
         try {
             if (randomNumber < 4) {
                 addAutoEnemy(randomNumber);
-            } else if (randomNumber < 40) {
+            } else if (randomNumber < 20) {
                 addRegularEnemy(randomNumber);
             }
         } catch (OutOfDomainException e) {
@@ -82,13 +83,14 @@ public class Game implements Saveable {
     }
 
     private void addRegularEnemy(int randomNumber) throws OutOfDomainException {
-        if (randomNumber >= 40) {
+        if (randomNumber >= 20) {
             throw new OutOfDomainException();
         }
 
-        double ds = round((randomNumber - 20) / 20.0) * regularEnemySpeed;
-        addEnemyIfSpaceAvailable(new Enemy(27 * randomNumber, 18 * randomNumber,
-                PLAYER_LENGTH, ds, -ds, REGULAR_ENEMY_HP));
+        int random2 = RND.nextInt(3) - 1;
+        int random3 = RND.nextInt(3) - 1;
+        addEnemyIfSpaceAvailableAndRemoveOld(new Enemy(27 * randomNumber, 18 * (20 - randomNumber),
+                PLAYER_LENGTH, random2 * regularEnemySpeed, -(random3) * regularEnemySpeed, REGULAR_ENEMY_HP));
 
         regularEnemySpeed += 0.02;
     }
@@ -112,19 +114,22 @@ public class Game implements Saveable {
             posX = 0;
             posY = HEIGHT;
         }
-        addEnemyIfSpaceAvailable(new AutoEnemy(posX, posY, AUTO_ENEMY_SPEED, AUTO_ENEMY_HP, player));
+        addEnemyIfSpaceAvailableAndRemoveOld(new AutoEnemy(posX, posY, AUTO_ENEMY_SPEED, AUTO_ENEMY_HP, player));
     }
 
-    private void addEnemyIfSpaceAvailable(Enemy e) {
+    private void addEnemyIfSpaceAvailableAndRemoveOld(Enemy e) {
         if (!e.intersects(player)) {
             enemies.add(e);
+            if (enemies.size() > MAX_ENEMIES) {
+                enemies.remove(0);
+            }
         }
     }
 
     private void generateWalls() {
         while (walls.size() < MAX_WALLS - 1) {
-            walls.add(new Wall(RND.nextInt(WIDTH), RND.nextInt(HEIGHT), WALL_DIM_2, WALL_DIM_1, 1000));
-            walls.add(new Wall(RND.nextInt(WIDTH), RND.nextInt(HEIGHT), WALL_DIM_1, WALL_DIM_2, 1000));
+            walls.add(new Wall(RND.nextInt(WIDTH), RND.nextInt(HEIGHT), WALL_DIM_2, WALL_DIM_1, WALL_HP));
+            walls.add(new Wall(RND.nextInt(WIDTH), RND.nextInt(HEIGHT), WALL_DIM_1, WALL_DIM_2, WALL_HP));
         }
     }
 
