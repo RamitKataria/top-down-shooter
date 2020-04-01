@@ -30,13 +30,15 @@ public class Game implements Saveable {
     public static final double WALL_DIM_2 = 25;
     public static final double PLAYER_MAX_HP = 100;
     public static final double WALL_HP = 200;
-    public static final double AUTO_ENEMY_HP = 90;
+    public static final double AUTO_ENEMY_HP = 70;
     public static final double REGULAR_ENEMY_HP = 25;
     public static final double BULLET_HP = 20;
     public static final int MAX_WALLS = 10;
-    public static final int MAX_ENEMIES = 20;
-    public static final double PLAYER_HEALTH_REGENERATION_RATE = 0.002;
-    public static final int ENEMY_FREQUENCY = 120;
+    public static final int MAX_ENEMIES = 25;
+    public static final double PLAYER_HEALTH_REGENERATION_RATE = 0.001;
+    public static final int ENEMY_GENERATION_PERIOD = 240;
+    public static final double REGULAR_ENEMY_FACTOR = 8;
+    public static final int[] ARRAY_FOR_RANDOM_SIGN = {-1, 0, 1};
     public static final Random RND = new Random();
 
     private List<Wall> walls;
@@ -49,7 +51,7 @@ public class Game implements Saveable {
     @Expose(serialize = false, deserialize = false)
     private List<CollisionPair> collisionCheckedPairs;
 
-    // EFFECTS: constructs a new game with only the player
+    // EFFECTS: constructs a new game with a player and MAX_WALLS walls
     public Game() {
         player = new Player(WIDTH / 2.0, HEIGHT / 2.0, PLAYER_LENGTH, PLAYER_SPEED, PLAYER_MAX_HP);
         walls = new ArrayList<>();
@@ -58,23 +60,17 @@ public class Game implements Saveable {
         milliTimeElapsed = 0;
         regularEnemySpeed = 1;
         collisionCheckedPairs = new ArrayList<>();
+        generateWalls();
     }
 
     // MODIFIES: this
-    // EFFECTS: remove all previous game objects and add the new default ones
-    public void initializeWalls() {
-        for (int i = 0; i < MAX_WALLS / 2; i++) {
-            walls.add(new Wall(RND.nextInt(WIDTH), RND.nextInt(HEIGHT), WALL_DIM_2, WALL_DIM_1, WALL_HP));
-            walls.add(new Wall(RND.nextInt(WIDTH), RND.nextInt(HEIGHT), WALL_DIM_1, WALL_DIM_2, WALL_HP));
-        }
-    }
-
+    // EFFECTS: generates regular and auto-enemies randomly based on ENEMY_GENERATION_PERIOD and REGULAR_ENEMY_FACTOR
     private void generateEnemies() {
-        int randomNumber = RND.nextInt(ENEMY_FREQUENCY * 20);
+        int randomNumber = RND.nextInt(ENEMY_GENERATION_PERIOD);
         try {
-            if (randomNumber < 4) {
+            if (randomNumber < 1) {
                 addAutoEnemy(randomNumber);
-            } else if (randomNumber < 20) {
+            } else if (randomNumber < REGULAR_ENEMY_FACTOR) {
                 addRegularEnemy(randomNumber);
             }
         } catch (OutOfDomainException e) {
@@ -82,42 +78,40 @@ public class Game implements Saveable {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: add a regular enemy based on the given random number
     private void addRegularEnemy(int randomNumber) throws OutOfDomainException {
-        if (randomNumber >= 20) {
+        if (randomNumber >= REGULAR_ENEMY_FACTOR) {
             throw new OutOfDomainException();
         }
 
-        int random2 = RND.nextInt(3) - 1;
-        int random3 = RND.nextInt(3) - 1;
-        addEnemyIfSpaceAvailableAndRemoveOld(new Enemy(27 * randomNumber, 18 * (20 - randomNumber),
-                PLAYER_LENGTH, random2 * regularEnemySpeed, -(random3) * regularEnemySpeed, REGULAR_ENEMY_HP));
+        addEnemyAndRemoveOld(new Enemy((WIDTH / REGULAR_ENEMY_FACTOR) * randomNumber,
+                (HEIGHT / REGULAR_ENEMY_FACTOR) * (REGULAR_ENEMY_FACTOR - randomNumber),
+                PLAYER_LENGTH, giveRandomSign(regularEnemySpeed),
+                giveRandomSign(regularEnemySpeed), REGULAR_ENEMY_HP));
 
-        regularEnemySpeed += 0.02;
+        regularEnemySpeed += 0.03;
     }
 
+    // EFFECTS: return one of -magnitude, 0, or magnitude randomly
+    private double giveRandomSign(double magnitude) {
+        return ARRAY_FOR_RANDOM_SIGN[RND.nextInt(3)] * magnitude;
+    }
+
+    // MODIFIES: this
+    // EFFECTS: add a new auto-enemy based on the given number
     private void addAutoEnemy(int randomNumber) throws OutOfDomainException {
-        if (randomNumber > 40) {
+        if (randomNumber >= 4) {
             throw new OutOfDomainException();
         }
-        double posX;
-        double posY;
-        if (randomNumber == 0) {
-            posX = 0;
-            posY = 0;
-        } else if (randomNumber == 1) {
-            posX = WIDTH;
-            posY = 0;
-        } else if (randomNumber == 2) {
-            posX = WIDTH;
-            posY = HEIGHT;
-        } else {
-            posX = 0;
-            posY = HEIGHT;
-        }
-        addEnemyIfSpaceAvailableAndRemoveOld(new AutoEnemy(posX, posY, AUTO_ENEMY_SPEED, AUTO_ENEMY_HP, player));
+        addEnemyAndRemoveOld(new AutoEnemy(WIDTH * RND.nextInt(2), HEIGHT * RND.nextInt(2),
+                AUTO_ENEMY_SPEED, AUTO_ENEMY_HP, player));
     }
 
-    private void addEnemyIfSpaceAvailableAndRemoveOld(Enemy e) {
+    // MODIFIES: this
+    // EFFECTS: if the given enemy doesn't intersect the player, add it to the game; and if this results in more than
+    //          MAX_ENEMIES enemies, then remove the oldest one
+    private void addEnemyAndRemoveOld(Enemy e) {
         if (!e.intersects(player)) {
             enemies.add(e);
             if (enemies.size() > MAX_ENEMIES) {
@@ -126,6 +120,8 @@ public class Game implements Saveable {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: if there is more than 1 wall missing (with max = MAX_WALLS), randomly add 2 walls
     private void generateWalls() {
         while (walls.size() < MAX_WALLS - 1) {
             walls.add(new Wall(RND.nextInt(WIDTH), RND.nextInt(HEIGHT), WALL_DIM_2, WALL_DIM_1, WALL_HP));
@@ -134,7 +130,9 @@ public class Game implements Saveable {
     }
 
     // MODIFIES: this
-    // EFFECTS: updates all the moving objects and returns true if game is over, otherwise false
+    // EFFECTS: update the game which includes updating the objects, removing the dead ones, checking for collisions,
+    //          generating new enemies, adding delta time
+    //          throw GameOverException if the player is dead
     public void update(int milliDeltaTime) throws GameOverException {
         updateMovingObjects(enemies);
         updateMovingObjects(bullets);
@@ -150,6 +148,8 @@ public class Game implements Saveable {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: remove all the walls that are dead and add 2 new walls if there is more than 1 wall missing
     private void removeDeadWalls() {
         boolean removed = false;
         Iterator<Wall> wallIterator = walls.iterator();
@@ -164,6 +164,8 @@ public class Game implements Saveable {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: if not already there, add a collision pair of the two objects if they intersect
     public void checkCollision(GameObject first, GameObject second) {
         CollisionPair collisionPair = new CollisionPair(first, second);
         if (first.intersects(second) && !collisionCheckedPairs.contains(collisionPair)) {
@@ -171,6 +173,8 @@ public class Game implements Saveable {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: check for all relevant collisions
     private void checkCollisions() {
         collisionCheckedPairs.clear();
         for (Bullet bullet : bullets) {
@@ -202,7 +206,7 @@ public class Game implements Saveable {
     }
 
     // MODIFIES: this
-    // EFFECTS: adds a bullet to the game with appropriate position and speed
+    // EFFECTS: adds a bullet to the game that goes in the direction of the given point coords
     public void fireBullet(double pointX, double pointY) {
         double deltaX = (pointX - player.getCentrePosX());
         double deltaY = (pointY - player.getCentrePosY());
@@ -216,6 +220,7 @@ public class Game implements Saveable {
         bullets.add(new Bullet(bulletPosX, bulletPosY, BULLET_RADIUS, dx, dy, BULLET_HP));
     }
 
+    // EFFECTS: return the time elapsed in milliseconds
     public int getTimeElapsed() {
         return (int) (milliTimeElapsed / 1000);
     }
@@ -240,6 +245,7 @@ public class Game implements Saveable {
         return collisionCheckedPairs;
     }
 
+    // EFFECTS: send this to the fileWriter to save
     @Override
     public void save(FileWriter fileWriter) {
         new Gson().toJson(this, fileWriter);

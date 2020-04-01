@@ -21,10 +21,12 @@ public abstract class GameObject {
         this.hp = maxHp;
     }
 
+    // EFFECTS: return the leftmost x value of the object
     public void setPosX(double posX) {
         this.posX = posX;
     }
 
+    // EFFECTS: return the bottommost y value of the object
     public void setPosY(double posY) {
         this.posY = posY;
     }
@@ -45,11 +47,11 @@ public abstract class GameObject {
         return height;
     }
 
-    // only for testing
     public double getHp() {
         return hp;
     }
 
+    // EFFECTS: return the result of current hitpoints / max hitpoints
     public double getHpFraction() {
         if (isDead()) {
             return 0;
@@ -58,23 +60,25 @@ public abstract class GameObject {
     }
 
     // MODIFIES: this
-    // EFFECTS: subtract the other's hp from this' hp
+    // EFFECTS: subtract the other's hp from this' hp and call this function on the other object
     public void hit(GameObject other) {
         double damageToOther = hp;
         hp -= other.getHp();
         other.hit(damageToOther);
     }
 
+    // MODIFIES: this
+    // EFFECTS: subtract damage from this' hp
     public void hit(double damage) {
         hp -= damage;
     }
 
-    // EFFECTS: returns the x value of the centre of object as opposed to the leftmost x value
+    // EFFECTS: returns the x value of the centre of object
     public double getCentrePosX() {
         return posX + width / 2.0;
     }
 
-    // EFFECTS: returns the y value of the centre of object as opposed to the leftmost y value
+    // EFFECTS: returns the y value of the centre of object
     public double getCentrePosY() {
         return posY + height / 2.0;
     }

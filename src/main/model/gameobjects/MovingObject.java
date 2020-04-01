@@ -3,7 +3,7 @@ package model.gameobjects;
 import static model.Game.HEIGHT;
 import static model.Game.WIDTH;
 
-//  Represents a generic game object
+//  Represents a generic moving object
 public abstract class MovingObject extends GameObject {
     protected double dx;
     protected double dy;
@@ -32,12 +32,14 @@ public abstract class MovingObject extends GameObject {
     }
 
     // MODIFIES: this
-    // EFFECTS: adds velocity to position
+    // EFFECTS: adds velocity to position and handles boundary
     public void update() {
         move();
         handleBoundary();
     }
 
+    // MODIFIES: this
+    // EFFECTS: move the object by its velocity
     protected void move() {
         posX += dx;
         posY += dy;

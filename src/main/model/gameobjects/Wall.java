@@ -1,7 +1,7 @@
 package model.gameobjects;
 
 /*
- * Represents a wall (blocks some of the game objects)
+ * Represents a magical wall
  */
 public class Wall extends GameObject {
 
@@ -10,6 +10,7 @@ public class Wall extends GameObject {
         super(posX, posY, width, height, hp);
     }
 
+    // EFFECTS: if other is a Bullet, reverse its direction; if it is a Player, then move it to base
     public void hit(GameObject other) {
         if (other instanceof Bullet) {
             hp -= other.getHp();

@@ -13,10 +13,9 @@ import static javafx.geometry.VerticalDirection.UP;
 public class Player extends MovingObject {
     private HorizontalDirection horizontalDirection;
     private VerticalDirection verticalDirection;
-
     private double speed;
 
-    // EFFECTS: constructs a player facing UP
+    // EFFECTS: constructs a player
     public Player(double posX, double posY, double length, double speed, double maxHp) {
         super(posX, posY, length, 0, 0, maxHp);
         this.speed = speed;
@@ -25,25 +24,29 @@ public class Player extends MovingObject {
     }
 
     // MODIFIES: this
-    // EFFECTS:
-    public void setHorizontalMovingDirection(HorizontalDirection horizontalDirection) {
+    // EFFECTS: set the horizontal direction and update the velocity accordingly
+    public void setHorizontalDirection(HorizontalDirection horizontalDirection) {
         this.horizontalDirection = horizontalDirection;
         updateVelocity();
     }
 
     // MODIFIES: this
-    // EFFECTS:
-    public void setVerticalMovingDirection(VerticalDirection verticalDirection) {
+    // EFFECTS: set the vertical direction and update the velocity accordingly
+    public void setVerticalDirection(VerticalDirection verticalDirection) {
         this.verticalDirection = verticalDirection;
         updateVelocity();
     }
 
+    // MODIFIES: this
+    // EFFECTS: increase hp proportional to the loss from maxHp
     public void regenerateHP(double rate) {
         if (hp < 99) {
             hp += (maxHp - hp) * rate;
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: set the horizontal velocity according to the way the player is currently facing
     private void updateVelocity() {
         double dimensionalSpeed;
         if (!(horizontalDirection == null || verticalDirection == null)) {
@@ -56,6 +59,8 @@ public class Player extends MovingObject {
         setVerticalVelocity(dimensionalSpeed);
     }
 
+    // MODIFIES: this
+    // EFFECTS: set the vertical velocity according to the way the player is currently facing
     private void setVerticalVelocity(double dimensionalSpeed) {
         if (verticalDirection == DOWN) {
             dy = dimensionalSpeed;
@@ -66,6 +71,8 @@ public class Player extends MovingObject {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: set the horizontal velocity according to the way the player is currently facing
     private void setHorizontalVelocity(double dimensionalSpeed) {
         if (horizontalDirection == RIGHT) {
             dx = dimensionalSpeed;
@@ -76,6 +83,8 @@ public class Player extends MovingObject {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: if the other is a wall, then move to its base, otherwise the regular hit method
     public void hit(GameObject other) {
         if (other instanceof Wall) {
             other.hit(this);

@@ -13,6 +13,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.effect.GaussianBlur;
 import javafx.scene.input.KeyCode;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -95,7 +96,7 @@ public class GraphicalUI extends Observable {
     }
 
     private void handlePointer(MouseEvent mouseEvent) {
-        if (game != null) {
+        if (mouseEvent.getButton().equals(MouseButton.PRIMARY) && game != null) {
             Point2D posInCanvas = canvas.sceneToLocal(mouseEvent.getX(), mouseEvent.getY());
             game.fireBullet(posInCanvas.getX(), posInCanvas.getY());
         }
@@ -192,7 +193,6 @@ public class GraphicalUI extends Observable {
     // EFFECTS: make a new game and set the UI accordingly
     public void handleNewGameButton() {
         game = new Game();
-        game.initializeWalls();
         hideDialog();
         runGame();
     }
@@ -238,28 +238,28 @@ public class GraphicalUI extends Observable {
     private void manageHorizontalMovement(Player player) {
         if (downKeys.contains(D)) {
             if (downKeys.contains(A)) {
-                player.setHorizontalMovingDirection(null);
+                player.setHorizontalDirection(null);
             } else {
-                player.setHorizontalMovingDirection(HorizontalDirection.RIGHT);
+                player.setHorizontalDirection(HorizontalDirection.RIGHT);
             }
         } else if (downKeys.contains(A)) {
-            player.setHorizontalMovingDirection(HorizontalDirection.LEFT);
+            player.setHorizontalDirection(HorizontalDirection.LEFT);
         } else {
-            player.setHorizontalMovingDirection(null);
+            player.setHorizontalDirection(null);
         }
     }
 
     private void manageVerticalMovement(Player player) {
         if (downKeys.contains(S)) {
             if (downKeys.contains(W)) {
-                player.setVerticalMovingDirection(null);
+                player.setVerticalDirection(null);
             } else {
-                player.setVerticalMovingDirection(VerticalDirection.DOWN);
+                player.setVerticalDirection(VerticalDirection.DOWN);
             }
         } else if (downKeys.contains(W)) {
-            player.setVerticalMovingDirection(VerticalDirection.UP);
+            player.setVerticalDirection(VerticalDirection.UP);
         } else {
-            player.setVerticalMovingDirection(null);
+            player.setVerticalDirection(null);
         }
     }
 

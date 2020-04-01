@@ -32,7 +32,6 @@ public class WriterTest {
     @Test
     public void testWriteNewGame() {
         game = new Game();
-        game.initializeWalls();
         try {
             writer.write(game);
             game = GameReader.read(TEST_FILE);

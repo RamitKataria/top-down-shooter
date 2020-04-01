@@ -24,7 +24,6 @@ class GameTest {
     @BeforeEach
     public void runBeforeEach() {
         game = new Game();
-        game.initializeWalls();
         player = game.getPlayer();
         enemies = game.getEnemies();
         walls = game.getWalls();
