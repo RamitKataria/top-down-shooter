@@ -1,6 +1,5 @@
 package model;
 
-import model.gameobjects.Player;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

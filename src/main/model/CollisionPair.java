@@ -1,7 +1,5 @@
 package model;
 
-import model.gameobjects.GameObject;
-
 // represents a pair of 2 objects that collided in the current frame
 public class CollisionPair {
     private final GameObject first;

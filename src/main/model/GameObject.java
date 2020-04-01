@@ -1,4 +1,4 @@
-package model.gameobjects;
+package model;
 
 import javafx.geometry.Rectangle2D;
 

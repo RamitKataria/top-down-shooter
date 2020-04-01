@@ -1,6 +1,5 @@
 package model;
 
-import model.gameobjects.Bullet;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;

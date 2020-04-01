@@ -4,7 +4,6 @@ import com.google.gson.Gson;
 import com.google.gson.annotations.Expose;
 import model.exceptions.GameOverException;
 import model.exceptions.OutOfDomainException;
-import model.gameobjects.*;
 import persistence.Saveable;
 
 import java.io.FileWriter;

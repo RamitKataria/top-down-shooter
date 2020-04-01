@@ -1,4 +1,4 @@
-package model.gameobjects;
+package model;
 
 import com.google.gson.annotations.Expose;
 

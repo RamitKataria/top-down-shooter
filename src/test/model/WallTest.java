@@ -1,7 +1,5 @@
 package model;
 
-import model.gameobjects.Bullet;
-import model.gameobjects.Wall;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 

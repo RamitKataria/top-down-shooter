@@ -18,8 +18,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import model.Game;
+import model.Player;
 import model.exceptions.GameOverException;
-import model.gameobjects.Player;
 import persistence.GameReader;
 import persistence.Writer;
 

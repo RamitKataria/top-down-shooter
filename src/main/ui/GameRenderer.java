@@ -3,11 +3,7 @@ package ui;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.paint.Color;
-import model.Game;
-import model.gameobjects.Bullet;
-import model.gameobjects.Enemy;
-import model.gameobjects.Player;
-import model.gameobjects.Wall;
+import model.*;
 
 import java.util.Observable;
 import java.util.Observer;

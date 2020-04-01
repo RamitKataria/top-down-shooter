@@ -12,6 +12,7 @@ public class Main extends Application {
         launch(args);
     }
 
+
     // EFFECTS: Load the layout and set up the stage, scene and controller
     /**
      * The main entry point for all JavaFX applications.

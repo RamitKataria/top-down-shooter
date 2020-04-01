@@ -1,80 +1,80 @@
 {
   "walls": [
     {
-      "posX": 675.0,
-      "posY": 52.0,
+      "posX": 536.0,
+      "posY": 582.0,
       "width": 25.0,
       "height": 200.0,
       "maxHp": 200.0,
       "hp": 200.0
     },
     {
-      "posX": 746.0,
-      "posY": 447.0,
+      "posX": 371.0,
+      "posY": 112.0,
       "width": 200.0,
       "height": 25.0,
       "maxHp": 200.0,
       "hp": 200.0
     },
     {
-      "posX": 348.0,
-      "posY": 494.0,
+      "posX": 1063.0,
+      "posY": 226.0,
       "width": 25.0,
       "height": 200.0,
       "maxHp": 200.0,
       "hp": 200.0
     },
     {
-      "posX": 515.0,
-      "posY": 407.0,
+      "posX": 165.0,
+      "posY": 43.0,
       "width": 200.0,
       "height": 25.0,
       "maxHp": 200.0,
       "hp": 200.0
     },
     {
-      "posX": 194.0,
-      "posY": 512.0,
+      "posX": 172.0,
+      "posY": 5.0,
       "width": 25.0,
       "height": 200.0,
       "maxHp": 200.0,
       "hp": 200.0
     },
     {
-      "posX": 334.0,
-      "posY": 450.0,
+      "posX": 1038.0,
+      "posY": 44.0,
       "width": 200.0,
       "height": 25.0,
       "maxHp": 200.0,
       "hp": 200.0
     },
     {
-      "posX": 322.0,
-      "posY": 155.0,
+      "posX": 246.0,
+      "posY": 22.0,
       "width": 25.0,
       "height": 200.0,
       "maxHp": 200.0,
       "hp": 200.0
     },
     {
-      "posX": 381.0,
-      "posY": 39.0,
+      "posX": 632.0,
+      "posY": 215.0,
       "width": 200.0,
       "height": 25.0,
       "maxHp": 200.0,
       "hp": 200.0
     },
     {
-      "posX": 937.0,
-      "posY": 615.0,
+      "posX": 944.0,
+      "posY": 505.0,
       "width": 25.0,
       "height": 200.0,
       "maxHp": 200.0,
       "hp": 200.0
     },
     {
-      "posX": 1051.0,
-      "posY": 127.0,
+      "posX": 451.0,
+      "posY": 548.0,
       "width": 200.0,
       "height": 25.0,
       "maxHp": 200.0,

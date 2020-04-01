@@ -1,10 +1,6 @@
 package persistence;
 
-import model.Game;
-import model.gameobjects.Bullet;
-import model.gameobjects.Enemy;
-import model.gameobjects.Player;
-import model.gameobjects.Wall;
+import model.*;
 import org.junit.jupiter.api.Test;
 
 import java.io.File;
