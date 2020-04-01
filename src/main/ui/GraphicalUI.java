@@ -236,12 +236,15 @@ public class GraphicalUI extends Observable {
 
     // MODIFIES: this
     // EFFECTS: change player movement whenever a movement key is pressed or released; pause the game whenever ESCAPE is
-    //          pressed
+    //          pressed and remove all the bullets whenever backspace is pressed
     private void handleKey() {
         if (game != null) {
             Player player = game.getPlayer();
             manageVerticalMovement(player);
             manageHorizontalMovement(player);
+            if (downKeys.contains(BACK_SPACE)) {
+                game.getBullets().clear();
+            }
         }
         if (downKeys.contains(ESCAPE)) {
             managePauseGame();

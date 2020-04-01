@@ -49,6 +49,9 @@ enemies, one of which should be smart enough to follow me.
 - As a user, I want my bullets to reverse their direction
 when they hit a wall.
 
+- As a user, I want all the bullets to disappear when I 
+hit backspace on my keyboard.
+
 - As a user, I want the game to have several walls that
 teleport me to their base (brown dot)
 

@@ -1,55 +1,112 @@
 {
   "walls": [
     {
-      "posX": 248.0,
-      "posY": 252.0,
-      "width": 100.0,
+      "posX": 675.0,
+      "posY": 52.0,
+      "width": 25.0,
       "height": 200.0,
-      "hp": 1000.0
+      "maxHp": 200.0,
+      "hp": 200.0
+    },
+    {
+      "posX": 746.0,
+      "posY": 447.0,
+      "width": 200.0,
+      "height": 25.0,
+      "maxHp": 200.0,
+      "hp": 200.0
+    },
+    {
+      "posX": 348.0,
+      "posY": 494.0,
+      "width": 25.0,
+      "height": 200.0,
+      "maxHp": 200.0,
+      "hp": 200.0
+    },
+    {
+      "posX": 515.0,
+      "posY": 407.0,
+      "width": 200.0,
+      "height": 25.0,
+      "maxHp": 200.0,
+      "hp": 200.0
+    },
+    {
+      "posX": 194.0,
+      "posY": 512.0,
+      "width": 25.0,
+      "height": 200.0,
+      "maxHp": 200.0,
+      "hp": 200.0
+    },
+    {
+      "posX": 334.0,
+      "posY": 450.0,
+      "width": 200.0,
+      "height": 25.0,
+      "maxHp": 200.0,
+      "hp": 200.0
+    },
+    {
+      "posX": 322.0,
+      "posY": 155.0,
+      "width": 25.0,
+      "height": 200.0,
+      "maxHp": 200.0,
+      "hp": 200.0
+    },
+    {
+      "posX": 381.0,
+      "posY": 39.0,
+      "width": 200.0,
+      "height": 25.0,
+      "maxHp": 200.0,
+      "hp": 200.0
+    },
+    {
+      "posX": 937.0,
+      "posY": 615.0,
+      "width": 25.0,
+      "height": 200.0,
+      "maxHp": 200.0,
+      "hp": 200.0
+    },
+    {
+      "posX": 1051.0,
+      "posY": 127.0,
+      "width": 200.0,
+      "height": 25.0,
+      "maxHp": 200.0,
+      "hp": 200.0
     }
   ],
   "enemies": [
     {
+      "isAuto": false,
+      "speed": 0.0,
       "dx": 1.0,
-      "dy": -1.0,
-      "posX": 200.0,
-      "posY": 180.0,
-      "width": 20.0,
-      "height": 20.0,
-      "hp": 50.0
-    },
-    {
-      "dx": -1.0,
       "dy": 1.0,
-      "posX": 270.0,
-      "posY": 100.0,
-      "width": 20.0,
-      "height": 20.0,
-      "hp": 50.0
-    },
-    {
-      "dx": 0.0,
-      "dy": 1.0,
-      "posX": 500.0,
-      "posY": 50.0,
-      "width": 20.0,
-      "height": 20.0,
-      "hp": 50.0
+      "posX": 1.0,
+      "posY": 1.0,
+      "width": 1.0,
+      "height": 1.0,
+      "maxHp": 1.0,
+      "hp": 1.0
     }
   ],
   "bullets": [],
   "player": {
-    "speed": 3.0,
-    "verticalFacingDirection": "UP",
+    "speed": 5.0,
     "dx": 0.0,
     "dy": 0.0,
     "posX": 540.0,
     "posY": 340.0,
     "width": 20.0,
     "height": 20.0,
+    "maxHp": 100.0,
     "hp": 100.0
   },
-  "timeElapsed": 0,
-  "isOver": false,
-  "isPaused": false
+  "milliTimeElapsed": 0,
+  "collisionCheckedPairs": []
 }

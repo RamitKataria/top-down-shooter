@@ -32,6 +32,7 @@ public class WriterTest {
     @Test
     public void testWriteNewGame() {
         game = new Game();
+        game.getEnemies().add(new Enemy(1, 1, 1, 1, 1, 1));
         try {
             writer.write(game);
             game = GameReader.read(TEST_FILE);
@@ -40,26 +41,16 @@ public class WriterTest {
             bullets = game.getBullets();
             walls = game.getWalls();
             player = game.getPlayer();
-            assertEquals(3, enemies.size());
+            assertEquals(1, enemies.size());
             assertEquals(0, bullets.size());
-            assertEquals(1, walls.size());
+            assertEquals(10, walls.size());
 
             assertEquals(540, player.getPosX());
             assertEquals(340, player.getPosY());
             assertEquals(0, player.getDx());
             assertEquals(0, player.getDy());
 
-            assertEquals(200, enemies.get(0).getPosX());
-            assertEquals(180, enemies.get(0).getPosY());
-            assertEquals(1, enemies.get(0).getDx());
-            assertEquals(-1, enemies.get(0).getDy());
-            assertEquals(270, enemies.get(1).getPosX());
-            assertEquals(100, enemies.get(1).getPosY());
-            assertEquals(-1, enemies.get(1).getDx());
-            assertEquals(1, enemies.get(1).getDy());
-
-            assertEquals(248, game.getWalls().get(0).getPosX());
-            assertEquals(252, game.getWalls().get(0).getPosY());
+            assertEquals(10, walls.size());
 
         } catch (IOException e) {
             e.printStackTrace();
