@@ -4,6 +4,7 @@ import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
+// represents a writer that saves a saveable to a file
 public class Writer {
     private FileWriter fileWriter;
 
@@ -13,7 +14,7 @@ public class Writer {
     }
 
     // MODIFIES: this
-    // EFFECTS: writes object to file
+    // EFFECTS: writes saveable to file
     public void write(Saveable saveable) throws IOException {
         saveable.save(fileWriter);
         fileWriter.close();

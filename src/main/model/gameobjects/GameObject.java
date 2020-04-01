@@ -2,6 +2,9 @@ package model.gameobjects;
 
 import javafx.geometry.Rectangle2D;
 
+import static model.Game.HEIGHT;
+import static model.Game.WIDTH;
+
 // represents a generic game object
 public abstract class GameObject {
     protected double posX;
@@ -72,6 +75,12 @@ public abstract class GameObject {
     public void hit(double damage) {
         hp -= damage;
     }
+
+    // EFFECTS: return true if this is out of bounds, otherwise false
+    public boolean isOutOfBound() {
+        return posX < 0 || posX > WIDTH || posY < 0 || posY > HEIGHT;
+    }
+
 
     // EFFECTS: returns the x value of the centre of object
     public double getCentrePosX() {

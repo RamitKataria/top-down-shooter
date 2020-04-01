@@ -24,7 +24,9 @@ public class Game implements Saveable {
     public static final double BULLET_SPEED = 10;
     public static final double PLAYER_SPEED = 5;
     public static final double AUTO_ENEMY_SPEED = 4;
+    public static final double AUTO_ENEMY_LENGTH = 30;
     public static final double BULLET_RADIUS = 5;
+    private static final double REGULAR_ENEMY_SPEED = 2;
     public static final double PLAYER_LENGTH = 20;
     public static final double WALL_DIM_1 = 200;
     public static final double WALL_DIM_2 = 25;
@@ -46,7 +48,6 @@ public class Game implements Saveable {
     private List<Bullet> bullets;
     private Player player;
     private long milliTimeElapsed;
-    private double regularEnemySpeed;
 
     @Expose(serialize = false, deserialize = false)
     private List<CollisionPair> collisionCheckedPairs;
@@ -58,7 +59,6 @@ public class Game implements Saveable {
         enemies = new ArrayList<>();
         bullets = new ArrayList<>();
         milliTimeElapsed = 0;
-        regularEnemySpeed = 1;
         collisionCheckedPairs = new ArrayList<>();
         generateWalls();
     }
@@ -87,15 +87,13 @@ public class Game implements Saveable {
 
         addEnemyAndRemoveOld(new Enemy((WIDTH / REGULAR_ENEMY_FACTOR) * randomNumber,
                 (HEIGHT / REGULAR_ENEMY_FACTOR) * (REGULAR_ENEMY_FACTOR - randomNumber),
-                PLAYER_LENGTH, giveRandomSign(regularEnemySpeed),
-                giveRandomSign(regularEnemySpeed), REGULAR_ENEMY_HP));
-
-        regularEnemySpeed += 0.03;
+                PLAYER_LENGTH, randomVelocityForRegularEnemies(),
+                randomVelocityForRegularEnemies(), REGULAR_ENEMY_HP));
     }
 
-    // EFFECTS: return one of -magnitude, 0, or magnitude randomly
-    private double giveRandomSign(double magnitude) {
-        return ARRAY_FOR_RANDOM_SIGN[RND.nextInt(3)] * magnitude;
+    // EFFECTS: return one of -REGULAR_ENEMY_SPEED, 0, or REGULAR_ENEMY_SPEED randomly
+    private double randomVelocityForRegularEnemies() {
+        return ARRAY_FOR_RANDOM_SIGN[RND.nextInt(3)] * REGULAR_ENEMY_SPEED;
     }
 
     // MODIFIES: this
@@ -104,8 +102,8 @@ public class Game implements Saveable {
         if (randomNumber >= 4) {
             throw new OutOfDomainException();
         }
-        addEnemyAndRemoveOld(new AutoEnemy(WIDTH * RND.nextInt(2), HEIGHT * RND.nextInt(2),
-                AUTO_ENEMY_SPEED, AUTO_ENEMY_HP, player));
+        addEnemyAndRemoveOld(new Enemy(WIDTH * RND.nextInt(2), HEIGHT * RND.nextInt(2),
+                AUTO_ENEMY_SPEED, AUTO_ENEMY_LENGTH, AUTO_ENEMY_HP, player));
     }
 
     // MODIFIES: this

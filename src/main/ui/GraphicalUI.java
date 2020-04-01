@@ -64,9 +64,9 @@ public class GraphicalUI extends Observable {
     public GraphicalUI() {
     }
 
-    // this method is required by FXML
+    // this method is called by JavaFX after the @FXML fields are populated
     // MODIFIES: this
-    // EFFECTS: TODO
+    // EFFECTS: create a game renderer for the game and initialize
     @FXML
     private void initialize() {
         gameRenderer = new GameRenderer(canvas.getGraphicsContext2D(), game);
@@ -79,22 +79,29 @@ public class GraphicalUI extends Observable {
     public void setUpUI(Stage primaryStage) {
         this.primaryStage = primaryStage;
         Scene scene = primaryStage.getScene();
+
         primaryStage.setOnCloseRequest(event -> {
             event.consume();
             handleClose();
         });
+
         scene.setOnKeyPressed(e -> {
             downKeys.add(e.getCode());
             handleKey();
         });
+
         scene.setOnKeyReleased(e -> {
             downKeys.remove(e.getCode());
             handleKey();
         });
+
         scene.setOnMouseClicked(this::handlePointer);
+
         showDialog();
     }
 
+    // MODIFIES: this
+    // EFFECTS: fire a bullet in the direction of mouse click
     private void handlePointer(MouseEvent mouseEvent) {
         if (mouseEvent.getButton().equals(MouseButton.PRIMARY) && game != null) {
             Point2D posInCanvas = canvas.sceneToLocal(mouseEvent.getX(), mouseEvent.getY());
@@ -103,7 +110,7 @@ public class GraphicalUI extends Observable {
     }
 
     // MODIFIES: this
-    // EFFECTS: pause the game the set the UI accordingly
+    // EFFECTS: (un)pause the game the set the UI accordingly
     private void managePauseGame() {
         if (isGamePaused) {
             handleResumeButton();
@@ -113,32 +120,33 @@ public class GraphicalUI extends Observable {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: pause the game and show the game stopped dialog
     private void showDialog() {
         isGamePaused = true;
         savedGame = getSavedGame();
         manageLoadGameButtonVisibility();
-        manageResumeButtonVisibility();
-        manageSaveGameButtonVisibility();
+        manageSaveAndResumeGameButtonVisibility();
         dialog.setVisible(true);
         canvas.setEffect(new GaussianBlur(50));
     }
 
-    private void manageSaveGameButtonVisibility() {
+    // MODIFIES: this
+    // EFFECTS: manage the visibility of the save game button and resume game button so that they appear if and only if
+    //          there exists a running game
+    private void manageSaveAndResumeGameButtonVisibility() {
         if (game == null) {
             saveGameButton.setVisible(false);
-        } else {
-            saveGameButton.setVisible(true);
-        }
-    }
-
-    private void manageResumeButtonVisibility() {
-        if (game == null) {
             resumeButton.setVisible(false);
         } else {
+            saveGameButton.setVisible(true);
             resumeButton.setVisible(true);
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: manage the visibility of the load game button so that it appears if and only if there exists a running
+    //          game
     private void manageLoadGameButtonVisibility() {
         if (savedGame == null) {
             loadGameButton.setVisible(false);
@@ -147,6 +155,8 @@ public class GraphicalUI extends Observable {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: hide the stopped game dialog and unpause the game
     private void hideDialog() {
         dialog.setVisible(false);
         canvas.setEffect(null);
@@ -154,6 +164,8 @@ public class GraphicalUI extends Observable {
         prevTime = System.nanoTime();
     }
 
+    // MODIFIES: this
+    // EFFECTS: return game saved in the save file; if it doesn't exist, then return null
     private Game getSavedGame() {
         try {
             return GameReader.read(GAME_SAVE_FILE);
@@ -163,27 +175,27 @@ public class GraphicalUI extends Observable {
     }
 
     // MODIFIES: this
-    // EFFECTS: if a game is already running, unpause it, otherwise load game from saved game. If a saved game doesn't
-    //          exist, start a new game
+    // EFFECTS: if game is over, show the close game confirmation; otherwise hide the dialog and unpause the game
     public void handleResumeButton() {
         if (game == null) {
-            resumeButton.setVisible(false);
-            statusLabel.setText("Error: No game currently running");
-            return;
+            handleClose();
         } else {
-            runGame();
+            hideDialog();
         }
-        hideDialog();
     }
 
+    // MODIFIES: this
+    // EFFECTS: start the saved game
     public void handleLoadGameButton() {
         game = savedGame;
         savedGame = null;
         hideDialog();
-        runGame();
+        startRunningGame();
     }
 
-    private void runGame() {
+    // MODIFIES: this
+    // EFFECTS: start rendering and updating the current game
+    private void startRunningGame() {
         setChanged();
         notifyObservers(game);
         startTimer();
@@ -194,7 +206,7 @@ public class GraphicalUI extends Observable {
     public void handleNewGameButton() {
         game = new Game();
         hideDialog();
-        runGame();
+        startRunningGame();
     }
 
     // MODIFIES: this
@@ -209,7 +221,7 @@ public class GraphicalUI extends Observable {
     }
 
     // MODIFIES: this
-    // EFFECTS: close the main window
+    // EFFECTS: close the main window with a confirmation
     // source: https://code.makery.ch/blog/javafx-dialogs-official/
     private void handleClose() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
@@ -223,7 +235,8 @@ public class GraphicalUI extends Observable {
     }
 
     // MODIFIES: this
-    // EFFECTS: call appropriate handlers whenever a key is pressed
+    // EFFECTS: change player movement whenever a movement key is pressed or released; pause the game whenever ESCAPE is
+    //          pressed
     private void handleKey() {
         if (game != null) {
             Player player = game.getPlayer();
@@ -235,6 +248,8 @@ public class GraphicalUI extends Observable {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: manage the horizontal movement of player
     private void manageHorizontalMovement(Player player) {
         if (downKeys.contains(D)) {
             if (downKeys.contains(A)) {
@@ -249,6 +264,8 @@ public class GraphicalUI extends Observable {
         }
     }
 
+    // MODIFIES: this
+    // EFFECTS: manage the vertical movement of player
     private void manageVerticalMovement(Player player) {
         if (downKeys.contains(S)) {
             if (downKeys.contains(W)) {
@@ -275,7 +292,7 @@ public class GraphicalUI extends Observable {
     }
 
     // MODIFIES: this
-    // EFFECTS: add the animation timer
+    // EFFECTS: add the animation and update timer if it doesn't already exist; start it regardless
     private void startTimer() {
         if (timer == null) {
             timer = new AnimationTimer() {

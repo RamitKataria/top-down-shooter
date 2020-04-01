@@ -1,8 +1,5 @@
 package model.gameobjects;
 
-import static model.Game.HEIGHT;
-import static model.Game.WIDTH;
-
 /*
  * Represents a bullet
  */
@@ -36,10 +33,5 @@ public class Bullet extends MovingObject {
     public void bounce() {
         dx *= -1;
         dy *= -1;
-    }
-
-    // EFFECTS: return true if this is out of bounds, otherwise false
-    public boolean isOutOfBound() {
-        return posX < 0 || posX > WIDTH || posY < 0 || posY > HEIGHT;
     }
 }
