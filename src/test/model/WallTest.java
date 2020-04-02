@@ -29,5 +29,15 @@ public class WallTest {
         assertEquals(5000 - 15, testWall.getHp());
         assertEquals(-2, b.getDx());
         assertEquals(2, b.getDy());
+
+        Player p = new Player(1, 1, 1, 1, 1);
+        testWall.hit(p);
+        assertEquals(35, p.getPosX());
+        assertEquals(73, p.getPosY());
+
+        p = new Player(1, 1, 1, 1, 1);
+        p.hit(testWall);
+        assertEquals(35, p.getPosX());
+        assertEquals(73, p.getPosY());
     }
 }

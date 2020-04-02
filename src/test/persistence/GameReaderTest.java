@@ -7,8 +7,7 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class GameReaderTest {
     private Game game;
@@ -26,7 +25,7 @@ public class GameReaderTest {
             walls = game.getWalls();
             player = game.getPlayer();
 
-            assertEquals(0, enemies.size());
+            assertEquals(1, enemies.size());
             assertEquals(1, bullets.size());
             assertEquals(0, walls.size());
 
@@ -39,6 +38,8 @@ public class GameReaderTest {
             assertEquals(210, bullets.get(0).getPosY());
             assertEquals(100, bullets.get(0).getDx());
             assertEquals(0, bullets.get(0).getDy());
+
+            assertTrue(enemies.get(0).isAuto());
         } catch (FileNotFoundException e) {
             e.printStackTrace();
             fail("IOException should not have been thrown");

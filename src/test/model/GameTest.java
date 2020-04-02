@@ -8,8 +8,7 @@ import java.util.List;
 
 import static model.Game.HEIGHT;
 import static model.Game.WIDTH;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.fail;
+import static org.junit.jupiter.api.Assertions.*;
 
 class GameTest {
     private Game game;
@@ -34,7 +33,7 @@ class GameTest {
         assertEquals(HEIGHT / 2.0, player.getPosY());
         assertEquals(0, game.getEnemies().size());
         assertEquals(0, game.getBullets().size());
-        assertEquals(10, game.getWalls().size());
+        assertTrue(game.getWalls().size() <= 10 && game.getWalls().size() >= 9);
     }
 
     @Test
@@ -59,7 +58,7 @@ class GameTest {
 
         assertEquals(1, bullets.size());
 
-        assertEquals(10, walls.size());
+        assertTrue(game.getWalls().size() <= 10 && game.getWalls().size() >= 9);
     }
 
     @Test
@@ -89,17 +88,17 @@ class GameTest {
 
     @Test
     public void testMultipleCycles() {
-        for (int i = 0; i < 3; i++) {
+        for (int i = 0; i < 10000; i++) {
             game.fireBullet(0, 0);
             try {
                 game.update(10);
             } catch (GameOverException e) {
-                fail();
+                // could happen (not certain because of RND)
             }
         }
-        assertEquals(WIDTH / 2.0 + game.getPlayer().getDx(), player.getPosX());
-        assertEquals(HEIGHT / 2.0, player.getPosY());
 
-        assertEquals(3, bullets.size());
+        assertEquals(100, game.getTimeElapsed());
+        assertTrue(game.getWalls().size() <= 10 && game.getWalls().size() >= 9);
+        assertTrue(game.getEnemies().size() <= 25);
     }
 }

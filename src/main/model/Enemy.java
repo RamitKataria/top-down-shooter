@@ -53,4 +53,8 @@ public class Enemy extends MovingObject {
     public void setPlayer(Player player) {
         this.player = player;
     }
+
+    public Player getPlayer() {
+        return player;
+    }
 }

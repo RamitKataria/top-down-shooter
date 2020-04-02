@@ -7,15 +7,15 @@ import static model.Game.WIDTH;
 
 // represents a generic game object
 public abstract class GameObject {
-    protected double posX;
-    protected double posY;
-    protected double width;
-    protected double height;
-    protected final double maxHp;
-    protected double hp;
+    double posX;
+    double posY;
+    double width;
+    double height;
+    final double maxHp;
+    double hp;
 
     // EFFECTS: constructs a game object
-    public GameObject(double posX, double posY, double width, double height, double maxHp) {
+    GameObject(double posX, double posY, double width, double height, double maxHp) {
         this.posX = posX;
         this.posY = posY;
         this.width = width;
@@ -25,12 +25,12 @@ public abstract class GameObject {
     }
 
     // EFFECTS: return the leftmost x value of the object
-    public void setPosX(double posX) {
+    void setPosX(double posX) {
         this.posX = posX;
     }
 
     // EFFECTS: return the bottommost y value of the object
-    public void setPosY(double posY) {
+    void setPosY(double posY) {
         this.posY = posY;
     }
 
@@ -72,12 +72,12 @@ public abstract class GameObject {
 
     // MODIFIES: this
     // EFFECTS: subtract damage from this' hp
-    public void hit(double damage) {
+    private void hit(double damage) {
         hp -= damage;
     }
 
     // EFFECTS: return true if this is out of bounds, otherwise false
-    public boolean isOutOfBound() {
+    boolean isOutOfBound() {
         return posX < 0 || posX > WIDTH || posY < 0 || posY > HEIGHT;
     }
 
@@ -105,7 +105,7 @@ public abstract class GameObject {
 
     // EFFECTS: returns the rectangle bounds of the object
     // source: https://github.com/tutsplus/Introduction-to-JavaFX-for-Game-Development/blob/master/Sprite.java
-    protected Rectangle2D getBounds() {
+    private Rectangle2D getBounds() {
         return new Rectangle2D(posX, posY, width, height);
     }
 }

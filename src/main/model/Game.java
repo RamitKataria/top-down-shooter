@@ -19,27 +19,27 @@ import static java.lang.Math.sqrt;
 public class Game implements Saveable {
     public static final int WIDTH = 1080;
     public static final int HEIGHT = 680;
-    public static final double BULLET_SPEED = 10;
+    private static final double BULLET_SPEED = 10;
     public static final double PLAYER_SPEED = 5;
-    public static final double AUTO_ENEMY_SPEED = 4;
-    public static final double AUTO_ENEMY_LENGTH = 30;
-    public static final double BULLET_RADIUS = 5;
+    private static final double AUTO_ENEMY_SPEED = 4;
+    private static final double AUTO_ENEMY_LENGTH = 30;
+    private static final double BULLET_RADIUS = 5;
     private static final double REGULAR_ENEMY_SPEED = 2;
-    public static final double PLAYER_LENGTH = 20;
-    public static final double WALL_DIM_1 = 200;
-    public static final double WALL_DIM_2 = 25;
-    public static final double PLAYER_MAX_HP = 100;
-    public static final double WALL_HP = 200;
-    public static final double AUTO_ENEMY_HP = 70;
-    public static final double REGULAR_ENEMY_HP = 25;
-    public static final double BULLET_HP = 20;
-    public static final int MAX_WALLS = 10;
-    public static final int MAX_ENEMIES = 25;
-    public static final double PLAYER_HEALTH_REGENERATION_RATE = 0.001;
-    public static final int ENEMY_GENERATION_PERIOD = 240;
-    public static final double REGULAR_ENEMY_FACTOR = 8;
-    public static final int[] ARRAY_FOR_RANDOM_SIGN = {-1, 0, 1};
-    public static final Random RND = new Random();
+    private static final double PLAYER_LENGTH = 20;
+    private static final double WALL_DIM_1 = 200;
+    private static final double WALL_DIM_2 = 25;
+    private static final double PLAYER_MAX_HP = 100;
+    private static final double WALL_HP = 200;
+    private static final double AUTO_ENEMY_HP = 70;
+    private static final double REGULAR_ENEMY_HP = 25;
+    private static final double BULLET_HP = 20;
+    private static final int MAX_WALLS = 10;
+    private static final int MAX_ENEMIES = 25;
+    private static final double PLAYER_HEALTH_REGENERATION_RATE = 0.001;
+    private static final int ENEMY_GENERATION_PERIOD = 240;
+    private static final double REGULAR_ENEMY_FACTOR = 8;
+    private static final int[] ARRAY_FOR_RANDOM_SIGN = {-1, 0, 1};
+    private static final Random RND = new Random();
 
     private List<Wall> walls;
     private List<Enemy> enemies;
@@ -118,8 +118,14 @@ public class Game implements Saveable {
     // EFFECTS: if there is more than 1 wall missing (with max = MAX_WALLS), randomly add 2 walls
     private void generateWalls() {
         while (walls.size() < MAX_WALLS - 1) {
-            walls.add(new Wall(RND.nextInt(WIDTH), RND.nextInt(HEIGHT), WALL_DIM_2, WALL_DIM_1, WALL_HP));
-            walls.add(new Wall(RND.nextInt(WIDTH), RND.nextInt(HEIGHT), WALL_DIM_1, WALL_DIM_2, WALL_HP));
+            Wall wallToAdd = new Wall(RND.nextInt(WIDTH), RND.nextInt(HEIGHT), WALL_DIM_2, WALL_DIM_1, WALL_HP);
+            if (!player.intersects(wallToAdd)) {
+                walls.add(wallToAdd);
+            }
+            wallToAdd = new Wall(RND.nextInt(WIDTH), RND.nextInt(HEIGHT), WALL_DIM_1, WALL_DIM_2, WALL_HP);
+            if (!player.intersects(wallToAdd)) {
+                walls.add(wallToAdd);
+            }
         }
     }
 

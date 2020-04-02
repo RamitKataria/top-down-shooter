@@ -1,80 +1,80 @@
 {
   "walls": [
     {
-      "posX": 536.0,
-      "posY": 582.0,
+      "posX": 684.0,
+      "posY": 519.0,
       "width": 25.0,
       "height": 200.0,
       "maxHp": 200.0,
       "hp": 200.0
     },
     {
-      "posX": 371.0,
-      "posY": 112.0,
+      "posX": 953.0,
+      "posY": 172.0,
       "width": 200.0,
       "height": 25.0,
       "maxHp": 200.0,
       "hp": 200.0
     },
     {
-      "posX": 1063.0,
-      "posY": 226.0,
+      "posX": 815.0,
+      "posY": 341.0,
       "width": 25.0,
       "height": 200.0,
       "maxHp": 200.0,
       "hp": 200.0
     },
     {
-      "posX": 165.0,
-      "posY": 43.0,
+      "posX": 723.0,
+      "posY": 585.0,
       "width": 200.0,
       "height": 25.0,
       "maxHp": 200.0,
       "hp": 200.0
     },
     {
-      "posX": 172.0,
-      "posY": 5.0,
+      "posX": 379.0,
+      "posY": 266.0,
       "width": 25.0,
       "height": 200.0,
       "maxHp": 200.0,
       "hp": 200.0
     },
     {
-      "posX": 1038.0,
-      "posY": 44.0,
+      "posX": 260.0,
+      "posY": 384.0,
       "width": 200.0,
       "height": 25.0,
       "maxHp": 200.0,
       "hp": 200.0
     },
     {
-      "posX": 246.0,
-      "posY": 22.0,
+      "posX": 496.0,
+      "posY": 196.0,
       "width": 25.0,
       "height": 200.0,
       "maxHp": 200.0,
       "hp": 200.0
     },
     {
-      "posX": 632.0,
-      "posY": 215.0,
+      "posX": 832.0,
+      "posY": 118.0,
       "width": 200.0,
       "height": 25.0,
       "maxHp": 200.0,
       "hp": 200.0
     },
     {
-      "posX": 944.0,
-      "posY": 505.0,
+      "posX": 1024.0,
+      "posY": 614.0,
       "width": 25.0,
       "height": 200.0,
       "maxHp": 200.0,
       "hp": 200.0
     },
     {
-      "posX": 451.0,
-      "posY": 548.0,
+      "posX": 597.0,
+      "posY": 0.0,
       "width": 200.0,
       "height": 25.0,
       "maxHp": 200.0,
@@ -107,6 +107,5 @@
     "maxHp": 100.0,
     "hp": 100.0
   },
-  "milliTimeElapsed": 0,
-  "collisionCheckedPairs": []
+  "milliTimeElapsed": 0
 }
