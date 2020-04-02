@@ -1,0 +1,291 @@
+{
+  "walls": [
+    {
+      "posX": 717.0,
+      "posY": 522.0,
+      "width": 25.0,
+      "height": 200.0,
+      "maxHp": 200.0,
+      "hp": 200.0
+    },
+    {
+      "posX": 481.0,
+      "posY": 12.0,
+      "width": 200.0,
+      "height": 25.0,
+      "maxHp": 200.0,
+      "hp": 200.0
+    },
+    {
+      "posX": 466.0,
+      "posY": 319.0,
+      "width": 25.0,
+      "height": 200.0,
+      "maxHp": 200.0,
+      "hp": 200.0
+    },
+    {
+      "posX": 673.0,
+      "posY": 73.0,
+      "width": 200.0,
+      "height": 25.0,
+      "maxHp": 200.0,
+      "hp": 200.0
+    },
+    {
+      "posX": 358.0,
+      "posY": 186.0,
+      "width": 25.0,
+      "height": 200.0,
+      "maxHp": 200.0,
+      "hp": 200.0
+    },
+    {
+      "posX": 676.0,
+      "posY": 567.0,
+      "width": 200.0,
+      "height": 25.0,
+      "maxHp": 200.0,
+      "hp": 200.0
+    },
+    {
+      "posX": 999.0,
+      "posY": 301.0,
+      "width": 25.0,
+      "height": 200.0,
+      "maxHp": 200.0,
+      "hp": 200.0
+    },
+    {
+      "posX": 352.0,
+      "posY": 645.0,
+      "width": 200.0,
+      "height": 25.0,
+      "maxHp": 200.0,
+      "hp": 200.0
+    },
+    {
+      "posX": 610.0,
+      "posY": 118.0,
+      "width": 25.0,
+      "height": 200.0,
+      "maxHp": 200.0,
+      "hp": 200.0
+    },
+    {
+      "posX": 117.0,
+      "posY": 675.0,
+      "width": 200.0,
+      "height": 25.0,
+      "maxHp": 200.0,
+      "hp": 200.0
+    }
+  ],
+  "enemies": [
+    {
+      "isAuto": false,
+      "speed": 0.0,
+      "dx": 2.0,
+      "dy": -2.0,
+      "posX": 811.0,
+      "posY": 499.0,
+      "width": 20.0,
+      "height": 20.0,
+      "maxHp": 25.0,
+      "hp": 25.0
+    },
+    {
+      "isAuto": false,
+      "speed": 0.0,
+      "dx": 2.0,
+      "dy": -2.0,
+      "posX": 1079.0,
+      "posY": 331.0,
+      "width": 20.0,
+      "height": 20.0,
+      "maxHp": 25.0,
+      "hp": 25.0
+    },
+    {
+      "isAuto": false,
+      "speed": 0.0,
+      "dx": 0.0,
+      "dy": -2.0,
+      "posX": 945.0,
+      "posY": 525.0,
+      "width": 20.0,
+      "height": 20.0,
+      "maxHp": 25.0,
+      "hp": 25.0
+    },
+    {
+      "isAuto": false,
+      "speed": 0.0,
+      "dx": 0.0,
+      "dy": 0.0,
+      "posX": 810.0,
+      "posY": 170.0,
+      "width": 20.0,
+      "height": 20.0,
+      "maxHp": 25.0,
+      "hp": 25.0
+    },
+    {
+      "isAuto": false,
+      "speed": 0.0,
+      "dx": 2.0,
+      "dy": 2.0,
+      "posX": 66.0,
+      "posY": 26.0,
+      "width": 20.0,
+      "height": 20.0,
+      "maxHp": 25.0,
+      "hp": 25.0
+    },
+    {
+      "isAuto": false,
+      "speed": 0.0,
+      "dx": -2.0,
+      "dy": -2.0,
+      "posX": 667.0,
+      "posY": 287.0,
+      "width": 20.0,
+      "height": 20.0,
+      "maxHp": 25.0,
+      "hp": 25.0
+    },
+    {
+      "isAuto": false,
+      "speed": 0.0,
+      "dx": 2.0,
+      "dy": 2.0,
+      "posX": 982.0,
+      "posY": 542.0,
+      "width": 20.0,
+      "height": 20.0,
+      "maxHp": 25.0,
+      "hp": 25.0
+    },
+    {
+      "isAuto": false,
+      "speed": 0.0,
+      "dx": 2.0,
+      "dy": -2.0,
+      "posX": 951.0,
+      "posY": 559.0,
+      "width": 20.0,
+      "height": 20.0,
+      "maxHp": 25.0,
+      "hp": 25.0
+    },
+    {
+      "isAuto": false,
+      "speed": 0.0,
+      "dx": 2.0,
+      "dy": -2.0,
+      "posX": 146.0,
+      "posY": 434.0,
+      "width": 20.0,
+      "height": 20.0,
+      "maxHp": 25.0,
+      "hp": 25.0
+    },
+    {
+      "isAuto": false,
+      "speed": 0.0,
+      "dx": -2.0,
+      "dy": 2.0,
+      "posX": 323.0,
+      "posY": 607.0,
+      "width": 20.0,
+      "height": 20.0,
+      "maxHp": 25.0,
+      "hp": 25.0
+    },
+    {
+      "isAuto": true,
+      "speed": 4.0,
+      "dx": 3.9146844465763637,
+      "dy": 0.8217333410134396,
+      "posX": 461.2764821705784,
+      "posY": 437.4267589652507,
+      "width": 30.0,
+      "height": 30.0,
+      "maxHp": 70.0,
+      "hp": 70.0
+    },
+    {
+      "isAuto": false,
+      "speed": 0.0,
+      "dx": 2.0,
+      "dy": 0.0,
+      "posX": 725.0,
+      "posY": 425.0,
+      "width": 20.0,
+      "height": 20.0,
+      "maxHp": 25.0,
+      "hp": 25.0
+    },
+    {
+      "isAuto": false,
+      "speed": 0.0,
+      "dx": 0.0,
+      "dy": 2.0,
+      "posX": 945.0,
+      "posY": 335.0,
+      "width": 20.0,
+      "height": 20.0,
+      "maxHp": 25.0,
+      "hp": 25.0
+    },
+    {
+      "isAuto": false,
+      "speed": 0.0,
+      "dx": 0.0,
+      "dy": 2.0,
+      "posX": 405.0,
+      "posY": 627.0,
+      "width": 20.0,
+      "height": 20.0,
+      "maxHp": 25.0,
+      "hp": 25.0
+    },
+    {
+      "isAuto": false,
+      "speed": 0.0,
+      "dx": 0.0,
+      "dy": 2.0,
+      "posX": 675.0,
+      "posY": 417.0,
+      "width": 20.0,
+      "height": 20.0,
+      "maxHp": 25.0,
+      "hp": 25.0
+    },
+    {
+      "isAuto": false,
+      "speed": 0.0,
+      "dx": 0.0,
+      "dy": 0.0,
+      "posX": 270.0,
+      "posY": 510.0,
+      "width": 20.0,
+      "height": 20.0,
+      "maxHp": 25.0,
+      "hp": 25.0
+    }
+  ],
+  "bullets": [],
+  "player": {
+    "speed": 5.0,
+    "dx": 0.0,
+    "dy": 0.0,
+    "posX": 645.0609665440982,
+    "posY": 476.00505063388385,
+    "width": 20.0,
+    "height": 20.0,
+    "maxHp": 100.0,
+    "hp": 100.0
+  },
+  "milliTimeElapsed": 6431
+}
