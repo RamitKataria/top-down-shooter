@@ -1,7 +1,5 @@
 package model;
 
-import com.google.gson.annotations.Expose;
-
 import static java.lang.Math.sqrt;
 
 /*
@@ -10,9 +8,7 @@ import static java.lang.Math.sqrt;
 public class Enemy extends MovingObject {
     private boolean isAuto;
     private double speed;
-
-    @Expose(serialize = false, deserialize = false)
-    private Player player;
+    private transient Player player;
 
     // EFFECTS: constructs a regular enemy
     public Enemy(double posX, double posY, double length, double dx, double dy, double hp) {

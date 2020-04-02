@@ -1,7 +1,6 @@
 package model;
 
 import com.google.gson.Gson;
-import com.google.gson.annotations.Expose;
 import model.exceptions.GameOverException;
 import model.exceptions.OutOfDomainException;
 import persistence.Saveable;
@@ -47,9 +46,7 @@ public class Game implements Saveable {
     private List<Bullet> bullets;
     private Player player;
     private long milliTimeElapsed;
-
-    @Expose(serialize = false, deserialize = false)
-    private List<CollisionPair> collisionCheckedPairs;
+    private transient List<CollisionPair> collisionCheckedPairs;
 
     // EFFECTS: constructs a new game with a player and MAX_WALLS walls
     public Game() {
