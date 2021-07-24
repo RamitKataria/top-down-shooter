@@ -1,5 +1,5 @@
-This was a project for CPSC 210 at UBC, so there could
-be some weird things here for the purpose of meeting the
+This was a project for a course, so there could be some
+weird things here for the purpose of meeting the
 requirements.
 
 # My Personal Project: Top-down shooter game
